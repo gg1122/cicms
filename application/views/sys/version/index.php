@@ -14,22 +14,22 @@
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
     <legend>资源版本控制</legend>
 </fieldset>
-<?php
-print_r($versiol_list);die;
-?>
-<form class="layui-form" action="">
-    <div class="layui-form-item">
-        <label class="layui-form-label">JS版本</label>
-        <div class="layui-input-block">
-            <input name="javascript" class="layui-input" type="text" title="JS版本" readonly />
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">CSS版本</label>
-        <div class="layui-input-block">
-            <input name="css" class="layui-input" type="text" title="CSS版本" readonly />
-        </div>
-    </div>
+<?php echo validation_errors(); ?>
+<?php echo form_open('sys/version/index', array('class' => 'layui-form')); ?>
+    <?php
+    if (!empty($version_list)) {
+        foreach ($version_list as $version) {
+            ?>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><?=$version['name']?></label>
+                <div class="layui-input-inline">
+                    <input name="name[<?=$version['name']?>]" class="layui-input" type="text" title="JS版本" value="<?=$version['version']?>" readonly/>
+                </div>
+            </div>
+            <?php
+        }
+    }
+    ?>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>

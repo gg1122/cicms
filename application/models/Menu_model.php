@@ -29,7 +29,6 @@ class Menu_model extends CI_Model
 
     public function disable()
     {
-
         $menu_id = $this->input->get('menu_id');
         $this->db->set('menu_status', 0);
         $this->db->where('menu_id', $menu_id);

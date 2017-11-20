@@ -58,7 +58,6 @@ $route['user/update?(:any)'] = 'sys/user/update/$1';
 $route['user'] = 'sys/user';
 
 $route['cleanCache'] = 'sys/menu/cleanCache';
-$route['version'] = 'sys/version/index';
 $route['menu/add'] = 'sys/menu/add';
 $route['menu/getList'] = 'sys/menu/getList';
 $route['menu/get'] = 'sys/menu/get';
