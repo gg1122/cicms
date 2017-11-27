@@ -28,7 +28,7 @@ class Version extends CI_Controller
 
     public function index()
     {
-
+        $this->output->enable_profiler(TRUE);
         $data['title'] = '资源版本控制';
         if ($this->_formValidation() === FALSE) {
             $data['version_list'] = $this->version_model->get_version_list();

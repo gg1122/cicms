@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/layui.css" media="all">
 </head>
 <body>
-
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
     <legend>资源版本控制</legend>
 </fieldset>

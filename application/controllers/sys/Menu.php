@@ -18,10 +18,13 @@ class Menu extends CI_Controller
      */
     public function index()
     {
+        $this->benchmark->mark('a_start');
         $data['menu'] = $this->menu_model->get_menu(array('menu_fid' => 0));
         $data['title'] = 'Menu List';
         $data['menuList'] = $this->menu_model->get_all_menu();
         $this->load->view('sys/menu/index', $data);
+        $this->benchmark->mark('a_end');
+        echo $this->benchmark->elapsed_time('a_start','a_end');
     }
 
     /**
