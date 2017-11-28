@@ -20,7 +20,7 @@
     <div class="layui-header header header-demo">
         <div class="layui-main">
             <div class="admin-login-box">
-                <a class="logo" style="left: 0;" href="index.php">
+                <a class="logo" style="left: 0;" href="">
                     <span style="font-size: 22px;">UCKENDO</span>
                 </a>
                 <div class="admin-side-toggle">

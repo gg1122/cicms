@@ -24,7 +24,7 @@ class Menu extends CI_Controller
         $data['menuList'] = $this->menu_model->get_all_menu();
         $this->load->view('sys/menu/index', $data);
         $this->benchmark->mark('a_end');
-        echo $this->benchmark->elapsed_time('a_start','a_end');
+        echo $this->benchmark->elapsed_time('a_start', 'a_end');
     }
 
     /**
@@ -65,7 +65,7 @@ class Menu extends CI_Controller
      *
      * @return mixed
      */
-    public function _formValidation()
+    private function _formValidation()
     {
         $this->load->helper('form');
         $this->load->library('form_validation');
@@ -93,7 +93,7 @@ class Menu extends CI_Controller
     }
 
     /**
-     * 查看菜单详情
+     * 菜单详情
      */
     public function view()
     {
@@ -105,20 +105,37 @@ class Menu extends CI_Controller
         $this->load->view('sys/menu/view', $data);
     }
 
+    /**
+     * 获取菜单
+     */
     public function getList()
     {
         $params = $this->input->get();
         exit($this->menu_model->get_menu($params, 'json'));
     }
 
+    /**
+     * 清除菜单缓存
+     */
     public function cleanCache()
     {
         $this->menu_model->save_menu();
-        exit(json_encode(array('status' => TRUE, 'message' => 'Success')));
+        exit(json_encode(array('status' => TRUE, 'callback' => ['message' => 'Success'])));
     }
 
-    public function getActionTree()
+    /**
+     * 获取菜单树
+     */
+    public function getModTree()
     {
+        try {
+            if (IS_AJAX) {
+                if (!empty($this->input->post('module'))) {
 
+                }
+            }
+        } catch (Exception $e) {
+            exit(json_decode(['status' => FALSE, 'callback' => ['message' => $e->getMessage()]]));
+        }
     }
 }

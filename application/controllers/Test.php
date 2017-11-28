@@ -15,24 +15,20 @@ class Test extends CI_Controller
 
     public function index()
     {
-        $files = glob(APPPATH.'controllers/*');
-        $module_list = array();
-        if (!empty($files)) {
-            foreach ($files as $item){
-                if(is_dir($item)){
-                    $php_list = glob($item.'/*.php');
-                    if(!empty($php_list)){
-                        foreach ($php_list as $php){
-                            include_once $php;
-                            print_r(get_class_methods('Menu'));die;
-                        }
-                    }
-                }else{
-                    include_once $item;
-                }
-            }
-        }
-        print_r($module_list);
-    }
+//        $a = $this->menu_model->get_module('sys/menu');
+        $a = $this->menu_model->get_module('');
+        print_r($a);die;
 
+        $ob = new ReflectionClass($this->menu_model);
+
+        $doc = $ob->getDocComment();
+        $method_list = $ob->getMethods();
+        foreach ($method_list as $item){
+            echo $item->getName(),PHP_EOL;
+//            echo $item->getDocComment(),PHP_EOL;
+        }
+        die;
+        $list = $this->menu_model->get_module('sys/Menu');
+        print_r($list);
+    }
 }

@@ -15,6 +15,12 @@ class Menu_model extends CI_Model
         $this->load->database();
     }
 
+    /**
+     * 获取单个菜单数据
+     *
+     * @param int $menu_id
+     * @return array
+     */
     public function get($menu_id = 0)
     {
         $menu = $this->db->get_where($this->_model, array('menu_id' => $menu_id))->row_array();
@@ -22,11 +28,19 @@ class Menu_model extends CI_Model
         return $menu;
     }
 
+    /**
+     * 删除菜单
+     */
     public function delete()
     {
     }
 
 
+    /**
+     * 禁用菜单
+     *
+     * @return CI_DB_active_record|CI_DB_result
+     */
     public function disable()
     {
         $menu_id = $this->input->get('menu_id');
@@ -214,5 +228,65 @@ class Menu_model extends CI_Model
             $menu_list[] = $menu;
         }
         file_put_contents('assets/menu.json', json_encode($menu_list));
+    }
+
+    /**
+     * 获取模块列表 ／ 获取类的方法
+     *
+     * @param string $module_name
+     * @return array
+     */
+    public function get_module($module_name = '')
+    {
+        $path = APPPATH . 'controllers/*';
+        if ($module_name !== '') {
+            $path = APPPATH . 'controllers/' . $module_name . '.php';
+            if (!file_exists($path)) {
+                return [];
+            }
+            include $path;
+            $class_info = explode('/', $module_name);
+            $class = $class_info[count($class_info) - 1];
+            $method_list = get_class_methods($class);
+            unset($method_list[array_search('__construct', $method_list)]);
+            unset($method_list[array_search('get_instance', $method_list)]);
+            $method_list = array_flip($method_list);
+            if (!empty($method_list)) {
+                $reflection_obj = new ReflectionClass($class);
+                foreach ($method_list as $method => $key) {
+                    $key = $method;
+                    $method_list[$method] = $key;
+                    $method_obj = $reflection_obj->getMethod($method);
+                    $doc = $method_obj->getDocComment();
+                    if (!empty($doc)) {
+                        $doc_line = explode(chr(10), $doc);
+                        if (isset($doc_line[1])) {
+                            $method_list[$method] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                        }
+                    }
+                }
+
+            }
+            ksort($method_list);
+            return $method_list;
+        } else {
+            $files = glob($path);
+            $modules_list = array();
+            if (!empty($files)) {
+                foreach ($files as $item) {
+                    if (is_dir($item)) {
+                        $php_list = glob($item . '/*.php');
+                        if (!empty($php_list)) {
+                            foreach ($php_list as $php)
+                                $modules_list[] = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
+                        }
+                    } else {
+                        $modules_list[] = str_replace([APPPATH . 'controllers/', '.php'], [], $item);
+                    }
+                }
+            }
+            ksort($modules_list);
+            return $modules_list;
+        }
     }
 }
