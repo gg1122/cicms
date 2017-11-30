@@ -21,4 +21,6 @@ $config['web_prompt'] = array(
     'close' => '关闭',
     'open' => '开启',
     'edit' => '编辑',
+    'save' => '保存',
+    'submit' => '提交'
 );

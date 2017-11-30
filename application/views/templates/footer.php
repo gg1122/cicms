@@ -18,7 +18,7 @@
         <script type="text/template" id="lock-temp">
             <div class="admin-header-lock" id="lock-box">
                 <div class="admin-header-lock-img">
-                    <img src="<?=$this->config->item('base_url')?>/assets/images/0.jpg"/>
+                    <img src="<?=$this->config->base_url()?>/assets/images/0.jpg"/>
                 </div>
                 <div class="admin-header-lock-name" id="lockUserName"><?= $this->session->get_userdata()['user_name']; ?></div>
                 <input type="password" class="admin-header-lock-input" value="" placeholder="输入密码解锁.." name="lockPwd" id="lockPwd"/>
@@ -26,10 +26,10 @@
             </div>
         </script>
         <!--锁屏模板 end -->
-        <script type="text/javascript" src="<?=$this->config->item('base_url')?>/assets/plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="<?=$this->config->base_url()?>/assets/plugins/layui/layui.js"></script>
         <script>
-            var navs = <?=file_get_contents($this->config->item('base_url').'/assets/menu.json')?>;
+            var navs = <?=file_get_contents($this->config->base_url().'/assets/menu.json')?>;
         </script>
-        <script src="<?=$this->config->item('base_url')?>/assets/js/index.js"></script>
+        <script src="<?=$this->config->base_url()?>/assets/js/index.js"></script>
     </body>
 </html>

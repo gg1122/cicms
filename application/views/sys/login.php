@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/plugins/layui/css/layui.css"
+    <link rel="stylesheet" href="<?= $this->config->base_url() ?>/assets/plugins/layui/css/layui.css"
           media="all"/>
-    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/login.css"/>
+    <link rel="stylesheet" href="<?= $this->config->base_url() ?>/assets/css/login.css"/>
 </head>
 
 <body class="beg-login-bg">
@@ -50,7 +50,7 @@
         <p>ERP © www.cicims.com</p>
     </footer>
 </div>
-<script type="text/javascript" src="<?= $this->config->item('base_url') ?>/assets/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="<?= $this->config->base_url() ?>/assets/plugins/layui/layui.js"></script>
 <script>
     layui.use(['layer', 'form'], function () {
         var layer = layui.layer,

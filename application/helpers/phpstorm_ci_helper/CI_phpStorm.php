@@ -1,4 +1,4 @@
-<?php  die('This file is not really here!');
+<?php die('This file is not really here!');
 
 /**
  * ------------- DO NOT UPLOAD THIS FILE TO LIVE SERVER ---------------------
@@ -72,7 +72,9 @@
  */
 class CI_Controller extends my_models
 {
-  public function __construct() {} //This default return construct as set
+    public function __construct()
+    {
+    } //This default return construct as set
 }
 
 /**
@@ -119,8 +121,11 @@ class CI_Controller extends my_models
  * @property CI_Security $security                Security Class, xss, csrf, etc...
  * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
  * @property CI_Cache $cache                      CodeIgniter Caching Class
+ * @property CI_Encryption $encryption            CodeIgniter Encryption Class
  */
 class CI_Model extends my_models
 {
-  public function __construct() {} //This default return construct as set
+    public function __construct()
+    {
+    } //This default return construct as set
 }
