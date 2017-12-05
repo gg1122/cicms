@@ -277,11 +277,22 @@ class Menu_model extends CI_Model
                     if (is_dir($item)) {
                         $php_list = glob($item . '/*.php');
                         if (!empty($php_list)) {
-                            foreach ($php_list as $php)
-                                $modules_list[] = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
+                            foreach ($php_list as $php) {
+                                $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
+                                $module_info = explode('/', $module_name);
+                                $modules_list[] = $module_info[1];
+                            }
                         }
                     } else {
-                        $modules_list[] = str_replace([APPPATH . 'controllers/', '.php'], [], $item);
+                        $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
+                        $module_obj = new ReflectionClass($module_name);
+                        $doc = $module_obj->getDocComment();
+                        if (!empty($doc)) {
+                            $doc_line = explode(chr(10), $doc);
+                            if (isset($doc_line[1])) {
+                                $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                            }
+                        }
                     }
                 }
             }

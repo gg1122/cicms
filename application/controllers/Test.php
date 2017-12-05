@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * 测试页面
+ *
  * User: kendo
  */
 class Test extends CI_Controller
@@ -10,34 +12,35 @@ class Test extends CI_Controller
     {
         parent::__construct();
         $this->load->model('menu_model');
-        $this->load->helper('url');
+        $this->load->helper(array('url', 'form'));
     }
 
     public function index()
     {
-        $this->load->library('cache');
-        $this->ca
-        echo strlen($this->encryption->create_key(16));
+        $this->load->helper('captcha');
+        $vals = array(
+//            'word'      => 'Random word',
+            'img_path'  => APPPATH.'/captcha/',
+            'img_url'   => site_url().'/captcha/',
+            'font_path' => './path/to/fonts/texb.ttf',
+            'img_width' => 100,
+            'img_height'    => 30,
+            'expiration'    => 7200,
+            'word_length'   => 5,
+            'font_size' => 50,
+            'img_id'    => 'Imageid',
+            'pool'      => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 
-        die;
-        //echo $this->config->base_url();die;
-        $this->load->library('calendar',$pref);
-        echo $this->calendar->generate($this->uri->segment(3),$this->uri->segment(4));
-        die;
-//        $a = $this->menu_model->get_module('sys/menu');
-        $a = $this->menu_model->get_module('');
-        print_r($a);die;
+            // White background and border, black text and red grid
+            'colors'    => array(
+                'background' => array(255, 255, 255),
+                'border' => array(255, 255, 255),
+                'text' => array(0, 0, 0),
+                'grid' => array(255, 40, 40)
+            )
+        );
 
-        $ob = new ReflectionClass($this->menu_model);
-
-        $doc = $ob->getDocComment();
-        $method_list = $ob->getMethods();
-        foreach ($method_list as $item){
-            echo $item->getName(),PHP_EOL;
-//            echo $item->getDocComment(),PHP_EOL;
-        }
-        die;
-        $list = $this->menu_model->get_module('sys/Menu');
-        print_r($list);
+        $cap =  create_captcha($vals);
+//        echo $cap['image'];
     }
 }

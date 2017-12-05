@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * 菜单管理
+ *
  * User: kendo
  */
 class Menu extends CI_Controller
@@ -106,7 +108,7 @@ class Menu extends CI_Controller
     }
 
     /**
-     * 获取菜单
+     * 获取菜单列表
      */
     public function getList()
     {
@@ -130,9 +132,8 @@ class Menu extends CI_Controller
     {
         try {
             if (IS_AJAX) {
-                if (!empty($this->input->post('module'))) {
-
-                }
+                $module = strval($this->input->post());
+                return json_encode($this->menu_model->get_module($module));
             }
         } catch (Exception $e) {
             exit(json_decode(['status' => FALSE, 'callback' => ['message' => $e->getMessage()]]));

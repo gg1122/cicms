@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * 默认首页
+ *
  * User: kendo
  */
 class Home extends CI_Controller
@@ -13,8 +15,7 @@ class Home extends CI_Controller
 
     public function index($page = 'index')
     {
-        if ( ! file_exists(APPPATH.'views/home/'.$page.'.php'))
-        {
+        if (!file_exists(APPPATH . 'views/home/' . $page . '.php')) {
             show_404();
         }
         $data['title'] = '网站ERP'; // Capitalize the first letter
@@ -22,6 +23,4 @@ class Home extends CI_Controller
         $this->load->view('templates/index', $data);
         $this->load->view('templates/footer', $data);
     }
-
-
 }
