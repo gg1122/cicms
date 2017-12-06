@@ -488,7 +488,6 @@ class CI_Xmlrpc {
 	{
 		$this->message = new XML_RPC_Message($this->method, $this->data);
 		$this->message->debug = $this->debug;
-
 		if ( ! $this->result = $this->client->send($this->message) OR ! is_object($this->result->val))
 		{
 			$this->error = $this->result->errstr;
@@ -1121,7 +1120,6 @@ class XML_RPC_Message extends CI_Xmlrpc
 	public function parseResponse($fp)
 	{
 		$data = '';
-
 		while ($datum = fread($fp, 4096))
 		{
 			$data .= $datum;

@@ -119,7 +119,7 @@ class Menu extends CI_Controller
     /**
      * 清除菜单缓存
      */
-    public function cleanCache()
+    public function clean_cache()
     {
         $this->menu_model->save_menu();
         exit(json_encode(array('status' => TRUE, 'callback' => ['message' => 'Success'])));
@@ -128,15 +128,17 @@ class Menu extends CI_Controller
     /**
      * 获取菜单树
      */
-    public function getModTree()
+    public function get_module_tree()
     {
         try {
             if (IS_AJAX) {
                 $module = strval($this->input->post());
                 return json_encode($this->menu_model->get_module($module));
+            } else {
+                exit(json_encode(array('status' => FALSE, 'message' => '非法提交')));
             }
         } catch (Exception $e) {
-            exit(json_decode(['status' => FALSE, 'callback' => ['message' => $e->getMessage()]]));
+            exit(json_encode(array('status' => FALSE, 'callback' => array('message' => $e->getMessage()))));
         }
     }
 }

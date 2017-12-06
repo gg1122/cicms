@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="<?= $this->config->base_url() ?>/assets/plugins/layui/css/layui.css"
+    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/plugins/layui/css/layui.css"
           media="all"/>
-    <link rel="stylesheet" href="<?= $this->config->base_url() ?>/assets/css/login.css"/>
+    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/login.css"/>
 </head>
 
 <body class="beg-login-bg">
@@ -15,7 +15,7 @@
     <header>
         <h1><?= $title ?></h1>
     </header>
-    <div class="beg-login-main">
+    <div class="beg-login-main" style="height: 250px;">
         <?php echo validation_errors() ?>
         <?php echo form_open('', array('class' => 'layui-form', 'method' => 'post')); ?>
         <div class="layui-form-item">
@@ -31,6 +31,16 @@
             </label>
             <input type="password" name="loginpwd" lay-verify="loginpwd" autocomplete="off" placeholder="请输入密码"
                    class="layui-input" required>
+        </div>
+        <div class="layui-form-item">
+            <label class="beg-login-icon">
+                <i class="layui-icon">&#xe642;</i>
+            </label>
+            <div class="layui-input-inline" style="width: 160px;">
+                <input type="text" name="captchacode" lay-verify="captchacode" autocomplete="off"
+                       placeholder="验证码" class="layui-input" required>
+            </div>
+            <img id="captchacode" src="<?= $this->config->item('base_url') ?>/front/captcha">
         </div>
         <div class="layui-form-item">
             <div class="beg-pull-left beg-login-remember">
@@ -50,12 +60,15 @@
         <p>ERP © www.cicims.com</p>
     </footer>
 </div>
-<script type="text/javascript" src="<?= $this->config->base_url() ?>/assets/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="<?= $this->config->item('base_url') ?>/assets/plugins/layui/layui.js"></script>
 <script>
-    layui.use(['layer', 'form'], function () {
+    layui.use(['layer', 'form', 'jquery'], function () {
         var layer = layui.layer,
             $ = layui.jquery,
             form = layui.form();
+        $('#captchacode').on('click', function () {
+            $('#captchacode').attr('src', '<?=$this->config->item('base_url')?>/front/captcha?' + Math.random());
+        });
         form.on('submit(login)', function () {
             $.ajax({
                 type: 'post',
@@ -68,7 +81,7 @@
                             icon: 1,
                             time: 1 //2秒关闭（如果不配置，默认是3秒）
                         }, function () {
-                            window.location.href = '<?=site_url()?>';
+                            window.location.href = '<?=$this->config->item('base_url')?>';
                         });
                         layer.close(index);
                     } else {

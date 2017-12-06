@@ -12,7 +12,35 @@ class Front extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('sys/user_model');
+        $this->load->library('session');
+    }
+
+    /**
+     * 登入
+     */
+    public function login()
+    {
+        $user_data = $this->session->userdata();
+        if (!empty($user_data['user_name']) && $user_data['expire_time'] >= time()) {
+            $this->load->helper('url');
+            redirect('/');
+        }
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('loginname', 'LoginName', 'required');
+        $this->form_validation->set_rules('loginpwd', 'LoginPwd', 'required');
+        $this->form_validation->set_rules('captchacode', 'CaptchaCode', 'required');
+        if (IS_AJAX) {
+            if ($this->form_validation->run() === FALSE) {
+                exit(json_encode(array('status' => FALSE, 'message' => '表单验证不通过')));
+            } else {
+                $this->load->model('sys/user_model');
+                $this->user_model->login();
+            }
+        } else {
+            $data['title'] = '登录页面';
+            $this->load->view('sys/login', $data);
+        }
     }
 
     /**
@@ -26,9 +54,9 @@ class Front extends CI_Controller
     /**
      * 登录检测,返回JSON
      */
-    public function check_login()
+    public function is_login()
     {
-        $user_data = $this->session->get_userdata();
+        $user_data = $this->session->userdata();
         if (isset($user_data['user_name']) && isset($user_data['expire_time']) && $user_data['expire_time'] >= time()) {
             exit(json_encode(array('status' => TRUE)));
         } else {
@@ -38,24 +66,33 @@ class Front extends CI_Controller
 
     /**
      * 显示验证码
+     *
+     * 获取五次验证码
      */
-    public function get_verification_code()
+    public function captcha()
     {
+        $captcha = $this->session->userdata('captcha');
+        if (is_null($captcha)) {
+            $this->session->set_userdata('captcha', array('captcha_num' => 0));
+        } elseif (isset($captcha['captcha_num']) && $captcha['captcha_num'] >= 5) {
+            if (isset($captcha['captcha_expire_time']) && time() - $captcha['captcha_expire_time'] > 10) {
+                $this->session->set_userdata('captcha', array('captcha_num' => 0));
+            } else {
+//                exit("Cant't Get Captcha Code At This Moment . Please Tray Again After Five Minutes.");
+            }
+        }
         $this->load->helper('captcha');
         $vals = array(
-//            'word'      => 'Random word',
             'img_path' => APPPATH . '/captcha/',
-            'img_url' => site_url() . '/captcha/',
+            'img_url' => $this->config->item('base_url') . '/captcha/',
             'font_path' => './path/to/fonts/texb.ttf',
             'img_width' => 100,
-            'img_height' => 30,
+            'img_height' => 38,
             'expiration' => 7200,
             'word_length' => 5,
             'font_size' => 50,
             'img_id' => 'Imageid',
-            'pool' => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-
-            // White background and border, black text and red grid
+            'pool' => '123456789abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ',
             'colors' => array(
                 'background' => array(255, 255, 255),
                 'border' => array(255, 255, 255),
@@ -63,8 +100,13 @@ class Front extends CI_Controller
                 'grid' => array(255, 40, 40)
             )
         );
-
         $cap = create_captcha($vals);
-        echo $cap['image'];
+        $captcha = $this->session->userdata('captcha');
+        $captcha = array(
+            'captcha_num' => ++$captcha['captcha_num'],
+            'captcha_expire_time' => time(),
+            'captcha_code' => $cap['word'],
+        );
+        $this->session->set_userdata('captcha', $captcha);
     }
 }

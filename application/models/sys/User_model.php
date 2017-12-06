@@ -25,6 +25,9 @@ class User_model extends CI_Model
             $this->session->set_userdata('expire_time', time() + 3600);
             exit(json_encode(array('status' => TRUE, 'message' => 'Already Logged In')));
         } else {    //正常登录
+            if (strtoupper($this->input->post('captchacode')) != strtoupper($user_data['captcha']['captcha_code'])) {
+                exit(json_encode(array('status' => FALSE, 'message' => '验证码不匹配！')));
+            }
             $data = $this->db->get_where($this->_model, array('user_name' => $this->input->post('loginname')))->row_array();
             if (empty($data)) {
                 exit(json_encode(array('status' => FALSE, 'message' => '用户名或密码不正确！')));

@@ -327,7 +327,7 @@ class CI_Config {
 	/**
 	 * Build URI string
 	 *
-	 * @used-by	CI_Config::site_url()
+	 * @used-by	CI_Config::$this->config->item('base_url')
 	 * @used-by	CI_Config::base_url()
 	 *
 	 * @param	string|string[]	$uri	URI string or an array of segments

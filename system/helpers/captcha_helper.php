@@ -51,16 +51,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 if ( ! function_exists('create_captcha'))
 {
-	/**
-	 * Create CAPTCHA
-	 *
-	 * @param	array	$data		data for the CAPTCHA
-	 * @param	string	$img_path	path to create the image in
-	 * @param	string	$img_url	URL to the CAPTCHA image folder
-	 * @param	string	$font_path	server path to font
-	 * @return	string
-	 */
-	function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = '')
+
+    /**
+     * Create CAPTCHA
+     *
+     * @param array $data
+     * @param string $img_path
+     * @param string $img_url
+     * @param string $font_path
+     * @return array|bool
+     */
+	function create_captcha($data = [], $img_path = '', $img_url = '', $font_path = '')
 	{
 		$defaults = array(
 			'word'		=> '',
@@ -73,7 +74,7 @@ if ( ! function_exists('create_captcha'))
 			'word_length'	=> 8,
 			'font_size'	=> 16,
 			'img_id'	=> '',
-			'pool'		=> '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+			'pool'		=> '123456789abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ',
 			'colors'	=> array(
 				'background'	=> array(255,255,255),
 				'border'	=> array(153,102,102),
@@ -320,13 +321,15 @@ if ( ! function_exists('create_captcha'))
 
 		if (function_exists('imagejpeg'))
 		{
+            header('Content-Type: image/jpeg');
 			$img_filename = $now.'.jpg';
-			imagejpeg($im, $img_path.$img_filename);
+			imagejpeg($im);
 		}
 		elseif (function_exists('imagepng'))
 		{
+            header('Content-Type: image/png');
 			$img_filename = $now.'.png';
-			imagepng($im, $img_path.$img_filename);
+			imagepng($im);
 		}
 		else
 		{

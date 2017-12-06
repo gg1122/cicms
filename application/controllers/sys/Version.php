@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * 版本控制
+ *
  * User: kendo
  */
 class Version extends CI_Controller
