@@ -20,10 +20,12 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单类型</label>
         <div class="layui-input-block">
-            <select name="menu_type" lay-verify="required">
-                <option value="1" <?php echo $menuObj['menu_type'] == 1 ? 'selected' : '' ?>>左部菜单</option>
-                <option value="2" <?php echo $menuObj['menu_type'] == 2 ? 'selected' : '' ?>>顶部菜单</option>
-                <option value="3" <?php echo $menuObj['menu_type'] == 3 ? 'selected' : '' ?>>页面功能</option>
+            <select name="menu_type" lay-filter="menu_type" lay-verify="required">
+                <option value="">请选择</option>
+                <option value="1" <?= $menuObj['menu_type'] == 1 ? 'selected' : '' ?>>顶部菜单</option>
+                <option value="2" <?= $menuObj['menu_type'] == 2 ? 'selected' : '' ?>>左部菜单</option>
+                <option value="3" <?= $menuObj['menu_type'] == 3 ? 'selected' : '' ?>>左部子菜单</option>
+                <option value="4" <?= $menuObj['menu_type'] == 4 ? 'selected' : '' ?>>模块功能</option>
             </select>
         </div>
     </div>
@@ -62,7 +64,7 @@
         <label class="layui-form-label">菜单状态</label>
         <div class="layui-input-block">
             <input type="checkbox" name="menu_status" lay-skin="switch"
-                   lay-verify="required" <?php echo $menuObj['menu_status'] == 1 ? 'checked' : '' ?>/>
+                   lay-verify="required" <?= $menuObj['menu_status'] == 1 ? 'checked' : '' ?>/>
         </div>
     </div>
     <div class="layui-form-item layui-form-text">

@@ -2,27 +2,14 @@
     <?php echo validation_errors(); ?>
     <?php echo form_open('sys/menu/add', array('class' => 'layui-form')); ?>
     <div class="layui-form-item">
-        <label class="layui-form-label">上级菜单</label>
-        <div class="layui-input-block">
-            <select name="menu_fid" lay-verify="required">
-                <option value="">请选择</option>
-                <option value="0">顶级菜单</option>
-                <?php
-                foreach ($menuList as $item) {
-
-                    echo "<option value='{$item['menu_id']}'>{$item['menu_name']}</option>";
-                }
-                ?>
-            </select>
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">菜单类型</label>
         <div class="layui-input-block">
-            <select name="menu_type" lay-verify="required">
-                <option value="1" selected>左部菜单</option>
-                <option value="2">顶部菜单</option>
-                <option value="3">页面功能</option>
+            <select name="menu_type" lay-filter="menu_type" lay-verify="required">
+                <option value="">请选择</option>
+                <option value="1">顶部菜单</option>
+                <option value="2">左部菜单</option>
+                <option value="3">左部子菜单</option>
+                <option value="4">模块功能</option>
             </select>
         </div>
     </div>
@@ -68,3 +55,6 @@
     <button lay-filter="edit" lay-submit style="display: none;"></button>
     </form>
 </div>
+<script type="text/javascript" charset="utf-8">
+    var menu_list = <?=json_encode($menuList)?>
+</script>

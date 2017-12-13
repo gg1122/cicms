@@ -65,6 +65,6 @@ $route['menu/view/(:any)'] = 'sys/menu/view/$1';
 $route['menu/disable?(:any)'] = 'sys/menu/disable/$1';
 $route['menu'] = 'sys/menu';
 $route['default_controller'] = 'home/index';
-//$route['(:any)'] = 'pages/view/$1';
+$route['(:any)'] = 'pages/view/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

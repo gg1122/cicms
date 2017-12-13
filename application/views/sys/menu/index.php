@@ -32,11 +32,11 @@
             <select name="menu_id" id="menu_id" lay-verify="required" lay-search="">
                 <option value="">直接选择或搜索选择</option>
                 <?php
-                    if(!empty($menuList)){
-                        foreach ($menuList as $item){
-                            echo "<option value='{$item['menu_id']}'>{$item['menu_name']}</option>";
-                        }
+                if(!empty($menuList)){
+                    foreach ($menuList as $item){
+                        echo "<option value='{$item['menu_id']}'>{$item['menu_name']}</option>";
                     }
+                }
                 ?>
             </select>
         </div>
@@ -62,7 +62,7 @@
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
-<script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.js" charset="utf-8"></script>
+<script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
 <script src="<?= $this->config->item('base_url') ?>/assets/js/sys/menu.js" charset="utf-8"></script>
 </body>
 </html>
