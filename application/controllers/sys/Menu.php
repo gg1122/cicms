@@ -20,13 +20,13 @@ class Menu extends CI_Controller
      */
     public function index()
     {
-        $this->benchmark->mark('a_start');
+//        $this->benchmark->mark('a_start');
         $data['menu'] = $this->menu_model->get_menu(array('menu_fid' => 0));
         $data['title'] = 'Menu List';
         $data['menuList'] = $this->menu_model->get_all_menu();
         $this->load->view('sys/menu/index', $data);
-        $this->benchmark->mark('a_end');
-        echo $this->benchmark->elapsed_time('a_start', 'a_end');
+//        $this->benchmark->mark('a_end');
+//        echo $this->benchmark->elapsed_time('a_start', 'a_end');
     }
 
     /**
@@ -132,13 +132,13 @@ class Menu extends CI_Controller
     {
         try {
             if (IS_AJAX) {
-                $module = strval($this->input->post());
-                return json_encode($this->menu_model->get_module($module));
+                $module = strval($this->input->get_post('module'));
+                send_json(TRUE, $this->menu_model->get_module($module));
             } else {
-                exit(json_encode(array('status' => FALSE, 'message' => '非法提交')));
+                send_json(FALSE, '非法提交');
             }
         } catch (Exception $e) {
-            exit(json_encode(array('status' => FALSE, 'callback' => array('message' => $e->getMessage()))));
+            send_json(FALSE, $e->getMessage());
         }
     }
 }

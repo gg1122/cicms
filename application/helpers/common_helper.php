@@ -32,8 +32,26 @@ function logout()
     $ci = &load_class('Model', 'core');
     $ci->session->unset_userdata('user_name');
     if (IS_AJAX) {
-        exit(json_encode(array('status' => TRUE, 'message' => 'Success')));
+        send_json(TRUE, 'Success');
     } else {
         header('location:/login');
     }
+}
+
+/**
+ * 返回JSON
+ *
+ * @param bool $status
+ * @param array $info
+ */
+function send_json($status = TRUE, $info = [])
+{
+    $data['status'] = $status;
+    $data['message'] = '';
+    if (is_string($info)) {
+        $data['message'] = $info;
+    } else {
+        $data['data'] = $info;
+    }
+    exit(json_encode($data));
 }

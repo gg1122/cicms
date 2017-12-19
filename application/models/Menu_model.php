@@ -126,20 +126,20 @@ class Menu_model extends CI_Model
         $menu = $db->get()->result_array();
         if ($data_type == 'json') { //只获取一层
             $row_num = $this->db->count_all_results();
-            $menu_list = array();
+            $menu_list = [];
             $menu_list['code'] = 0;
             $menu_list['rel'] = true;
             $menu_list['msg'] = '获取成功';
             foreach ($menu as $item) {
                 $menu_icon = get_icon_str($item['menu_icon']);
-                $menu_list['data'][] = array(
+                $menu_list['data'][] = [
                     'menu_id' => $item['menu_id'],
                     'menu_name' => $item['menu_name'],
                     'menu_uri' => $item['menu_uri'],
                     'menu_icon' => $menu_icon,
                     'menu_status' => $item['menu_status'],
                     'create_time' => date('Y-m-d H:i:s', $item['create_time']),
-                );
+                ];
             }
             $menu_list['count'] = $row_num;
             return json_encode($menu_list);
@@ -147,10 +147,10 @@ class Menu_model extends CI_Model
             $menu = $this->db->order_by('menu_sort asc')->get()->result_array();
             $menu_list = array();
             foreach ($menu as $item) {
-                $menu_list[] = array(
+                $menu_list[] = [
                     'menu_id' => $item['menu_id'],
                     'menu_name' => str_repeat('-', $item['menu_type']) . $item['menu_name']
-                );
+                ];
             }
         }
         return $menu;
@@ -164,7 +164,7 @@ class Menu_model extends CI_Model
     public function set_menu()
     {
         $this->load->helper('url');
-        $data = array(
+        $data = [
             'menu_name' => $this->input->post('menu_name'),
             'menu_fid' => $this->input->post('menu_fid'),
             'menu_uri' => $this->input->post('menu_uri'),
@@ -173,11 +173,11 @@ class Menu_model extends CI_Model
             'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
             'menu_desc' => $this->input->post('menu_desc'),
             'update_time' => time(),
-        );
+        ];
         if (!empty($this->input->post('menu_id'))) {
             $data['menu_id'] = $this->input->post('menu_id');
         } else {
-            $data = array(
+            $data = [
                 'menu_name' => $this->input->post('menu_name'),
                 'menu_fid' => $this->input->post('menu_fid'),
                 'menu_uri' => $this->input->post('menu_uri'),
@@ -187,7 +187,7 @@ class Menu_model extends CI_Model
                 'menu_desc' => $this->input->post('menu_desc'),
                 'create_time' => time(),
                 'update_time' => time(),
-            );
+            ];
         }
         if ($this->db->replace($this->_model, $data)) {
             $this->save_menu();
@@ -198,15 +198,15 @@ class Menu_model extends CI_Model
 
     public function get_menu_byid($menu_id = 0)
     {
-        return $this->db->get_where($this->_model, array('menu_id' => $menu_id, 'menu_status' => 1))->row_array();
+        return $this->db->get_where($this->_model, ['menu_id' => $menu_id, 'menu_status' => 1])->row_array();
     }
 
     public function save_menu()
     {
         $this->reset_menu_sort(0);
         $menu_list = [];
-        foreach ($this->db->get_where($this->_model, array('menu_fid' => 0, 'menu_status' => 1))->result_array() as $k => $item) {
-            $children_list = $this->db->get_where($this->_model, array('menu_fid' => $item['menu_id'], 'menu_status' => 1))->result_array();
+        foreach ($this->db->get_where($this->_model, ['menu_fid' => 0, 'menu_status' => 1])->result_array() as $k => $item) {
+            $children_list = $this->db->get_where($this->_model, ['menu_fid' => $item['menu_id'], 'menu_status' => 1])->result_array();
             $menu = array();
             $menu['title'] = $item['menu_name'];
             $menu['icon'] = $item['menu_icon'];
@@ -215,10 +215,10 @@ class Menu_model extends CI_Model
             }
             if (!empty($children_list)) {
                 foreach ($children_list as $children) {
-                    $c_item = array(
+                    $c_item = [
                         'title' => $children['menu_name'],
                         'icon' => $children['menu_icon'],
-                    );
+                    ];
                     if (!empty($children['menu_uri'])) {
                         $c_item['href'] = $children['menu_uri'];
                     }
@@ -239,74 +239,83 @@ class Menu_model extends CI_Model
     public function get_module($module_name = '')
     {
         $path = APPPATH . 'controllers/*';
-        if ($module_name !== '') {
-            $path = APPPATH . 'controllers/' . $module_name . '.php';
-            if (!file_exists($path)) {
-                return [];
-            }
-            include $path;
-            $class_info = explode('/', $module_name);
-            $class = $class_info[count($class_info) - 1];
-            $method_list = get_class_methods($class);
-            unset($method_list[array_search('__construct', $method_list)]);
-            unset($method_list[array_search('get_instance', $method_list)]);
-            $method_list = array_flip($method_list);
-            if (!empty($method_list)) {
-                $reflection_obj = new ReflectionClass($class);
-                foreach ($method_list as $method => $key) {
-                    $key = $method;
-                    $method_list[$method] = $key;
-                    $method_obj = $reflection_obj->getMethod($method);
-                    $doc = $method_obj->getDocComment();
-                    if (!empty($doc)) {
-                        $doc_line = explode(chr(10), $doc);
-                        if (isset($doc_line[1])) {
-                            $method_list[$method] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
-                        }
-                    }
+        try {
+            if ($module_name !== '') {
+                $path = APPPATH . 'controllers/' . $module_name . '.php';
+                if (!file_exists($path)) {
+                    throw new Exception($module_name . '不可读／不存在');
                 }
-
-            }
-            ksort($method_list);
-            return $method_list;
-        } else {
-            $files = glob($path);
-            $modules_list = array();
-            if (!empty($files)) {
-                foreach ($files as $item) {
-                    if (is_dir($item)) {
-                        $php_list = glob($item . '/*.php');
-                        if (!empty($php_list)) {
-                            foreach ($php_list as $php) {
-                                include_once $php;
-                                $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
-                                $module_info = explode('/', $module_name);
-                                $module_obj = new ReflectionClass($module_info[1]);
-                                $doc = $module_obj->getDocComment();
-                                if (!empty($doc)) {
-                                    $doc_line = explode(chr(10), $doc);
-                                    if (isset($doc_line[1])) {
-                                        $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        include_once $item;
-                        $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $item);
-                        $module_obj = new ReflectionClass($module_name);
-                        $doc = $module_obj->getDocComment();
+                include_once $path;
+                $class_info = explode('/', $module_name);
+                $class = $class_info[count($class_info) - 1];
+                $method_list = get_class_methods($class);
+                unset($method_list[array_search('__construct', $method_list)]);
+                unset($method_list[array_search('get_instance', $method_list)]);
+                $method_list = array_flip($method_list);
+                if (!empty($method_list)) {
+                    $reflection_obj = new ReflectionClass($class);
+                    foreach ($method_list as $method => $key) {
+                        $key = $method;
+                        $method_list[$method] = $key;
+                        $method_obj = $reflection_obj->getMethod($method);
+                        $doc = $method_obj->getDocComment();
                         if (!empty($doc)) {
                             $doc_line = explode(chr(10), $doc);
                             if (isset($doc_line[1])) {
-                                $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                $method_uri = $module_name . '/' . $method;
+                                $data = $this->db->get_where($this->_model, ['menu_uri' => $method_uri, 'menu_type >' => 2])
+                                    ->result_array();
+                                if (empty($data)) {
+                                    $method_list[$method_uri] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                }
+                                unset($method_list[$method]);
                             }
                         }
                     }
                 }
+                ksort($method_list);
+                return $method_list;
+            } else {
+                $files = glob($path);
+                $modules_list = [];
+                if (!empty($files)) {
+                    foreach ($files as $item) {
+                        if (is_dir($item)) {
+                            $php_list = glob($item . '/*.php');
+                            if (!empty($php_list)) {
+                                foreach ($php_list as $php) {
+                                    include_once $php;
+                                    $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
+                                    $module_info = explode('/', $module_name);
+                                    $module_obj = new ReflectionClass($module_info[1]);
+                                    $doc = $module_obj->getDocComment();
+                                    if (!empty($doc)) {
+                                        $doc_line = explode(chr(10), $doc);
+                                        if (isset($doc_line[1])) {
+                                            $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            include_once $item;
+                            $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $item);
+                            $module_obj = new ReflectionClass($module_name);
+                            $doc = $module_obj->getDocComment();
+                            if (!empty($doc)) {
+                                $doc_line = explode(chr(10), $doc);
+                                if (isset($doc_line[1])) {
+                                    $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+                ksort($modules_list);
+                return $modules_list;
             }
-            ksort($modules_list);
-            return $modules_list;
+        } catch (Exception $e) {
+            send_json(FALSE, $e->getMessage());
         }
     }
 }

@@ -1,7 +1,7 @@
 <div style="margin: 15px;">
     <?php echo validation_errors(); ?>
     <?php echo form_open('sys/menu/add', array('class' => 'layui-form')); ?>
-    <div class="layui-form-item">
+    <div class="layui-form-item" id="menu_type_div">
         <label class="layui-form-label">菜单类型</label>
         <div class="layui-input-block">
             <select name="menu_type" lay-filter="menu_type" lay-verify="required">
@@ -10,6 +10,20 @@
                 <option value="2">左部菜单</option>
                 <option value="3">左部子菜单</option>
                 <option value="4">模块功能</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item" id="menu_fid_div" style="display: none;">
+        <label class="layui-form-label">上级菜单</label>
+        <div class="layui-input-block">
+            <select name="menu_fid" id="menu_fid" lay-verify="required">
+                <option value="" selected>请选择</option>
+                <option value="0" >顶级菜单</option>
+                <?php
+                foreach ($menuList as $item) {
+                    echo "<option value='{$item['menu_id']}' data-menu_type='{$item['menu_type']}'>{$item['menu_name']}</option>";
+                }
+                ?>
             </select>
         </div>
     </div>

@@ -29,7 +29,7 @@
             <label class="beg-login-icon">
                 <i class="layui-icon">&#xe642;</i>
             </label>
-            <input type="password" name="loginpwd" lay-verify="loginpwd" autocomplete="off" placeholder="请输入密码"
+            <input type="password" name="loginpass" lay-verify="loginpass" autocomplete="off" placeholder="请输入密码"
                    class="layui-input" required>
         </div>
         <div class="layui-form-item">
@@ -73,7 +73,7 @@
             $.ajax({
                 type: 'post',
                 data: $("form").serialize(),
-                url: '/login',
+                url: '/login?'+Math.random(),
                 dataType: 'json',
                 success: function (callback) {
                     if (callback.status) {

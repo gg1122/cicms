@@ -20,7 +20,7 @@ class User extends CI_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->form_validation->set_rules('loginname', 'LoginName', 'required');
-        $this->form_validation->set_rules('loginpwd', 'LoginPwd', 'required');
+        $this->form_validation->set_rules('loginpass', 'LoginPassword', 'required');
         if ($this->form_validation->run() === FALSE) {
             $data['title'] = '登录页面';
             $this->load->view('sys/login', $data);

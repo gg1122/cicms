@@ -28,11 +28,12 @@ class Front extends CI_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->form_validation->set_rules('loginname', 'LoginName', 'required');
-        $this->form_validation->set_rules('loginpwd', 'LoginPwd', 'required');
-        $this->form_validation->set_rules('captchacode', 'CaptchaCode', 'required');
+        $this->form_validation->set_rules('loginpass', 'LoginPassword', 'required');
+//        $this->form_validation->set_rules('captchacode', 'CaptchaCode', 'required');
         if (IS_AJAX) {
             if ($this->form_validation->run() === FALSE) {
-                exit(json_encode(array('status' => FALSE, 'message' => '表单验证不通过')));
+                $this->load->library('error', 'language');
+                send_json(FALSE, $this->form_validation->error_string());
             } else {
                 $this->load->model('sys/user_model');
                 $this->user_model->login();
@@ -58,9 +59,9 @@ class Front extends CI_Controller
     {
         $user_data = $this->session->userdata();
         if (isset($user_data['user_name']) && isset($user_data['expire_time']) && $user_data['expire_time'] >= time()) {
-            exit(json_encode(array('status' => TRUE)));
+            send_json();
         } else {
-            exit(json_encode(array('status' => FALSE)));
+            send_json(FALSE);
         }
     }
 
@@ -72,13 +73,14 @@ class Front extends CI_Controller
     public function captcha()
     {
         $captcha = $this->session->userdata('captcha');
+        $too_much = FALSE;
         if (is_null($captcha)) {
             $this->session->set_userdata('captcha', array('captcha_num' => 0));
         } elseif (isset($captcha['captcha_num']) && $captcha['captcha_num'] >= 5) {
             if (isset($captcha['captcha_expire_time']) && time() - $captcha['captcha_expire_time'] > 10) {
                 $this->session->set_userdata('captcha', array('captcha_num' => 0));
             } else {
-//                exit("Cant't Get Captcha Code At This Moment . Please Tray Again After Five Minutes.");
+                $too_much = TRUE;
             }
         }
         $this->load->helper('captcha');
@@ -100,13 +102,18 @@ class Front extends CI_Controller
                 'grid' => array(255, 40, 40)
             )
         );
+        if ($too_much) {
+            $vals['word'] = 'Too busy';
+        }
         $cap = create_captcha($vals);
-        $captcha = $this->session->userdata('captcha');
-        $captcha = array(
-            'captcha_num' => ++$captcha['captcha_num'],
-            'captcha_expire_time' => time(),
-            'captcha_code' => $cap['word'],
-        );
-        $this->session->set_userdata('captcha', $captcha);
+        if (!$too_much) {
+            $captcha = $this->session->userdata('captcha');
+            $captcha = array(
+                'captcha_num' => ++$captcha['captcha_num'],
+                'captcha_expire_time' => time(),
+                'captcha_code' => $cap['word'],
+            );
+            $this->session->set_userdata('captcha', $captcha);
+        }
     }
 }

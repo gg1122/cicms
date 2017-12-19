@@ -21,7 +21,9 @@
                     <img src="<?=$this->config->item('base_url')?>/assets/images/0.jpg"/>
                 </div>
                 <div class="admin-header-lock-name" id="lockUserName"><?= $this->session->get_userdata()['user_name']; ?></div>
-                <input type="password" class="admin-header-lock-input" value="" placeholder="输入密码解锁.." name="lockPwd" id="lockPwd"/>
+                <input type="text" class="admin-header-lock-input" value="" placeholder="输入验证码.." name="captchacode" id="captchacode" style="width: 94px;height: 38px;"/>
+                <img id="captchacodeimg" src="code_url">
+                <input type="password" class="admin-header-lock-input" value="" placeholder="输入密码解锁.." name="lockPwd" id="lockPwd"  style="height: 38px;"/>
                 <button class="layui-btn layui-btn-small" id="unlock">解锁</button>
             </div>
         </script>
