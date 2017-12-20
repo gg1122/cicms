@@ -23,7 +23,7 @@ class Menu_model extends CI_Model
      */
     public function get($menu_id = 0)
     {
-        $menu = $this->db->get_where($this->_model, array('menu_id' => $menu_id))->row_array();
+        $menu = $this->db->get_where($this->_model, ['menu_id' => $menu_id])->row_array();
         if (!$menu) show_error('请传入正确的菜单ID');
         return $menu;
     }
@@ -110,14 +110,16 @@ class Menu_model extends CI_Model
     {
         $page = isset($param['page']) ? intval($param['page']) : 1;
         $limit = isset($param['limit']) ? intval($param['limit']) : 10;
-        if (!isset($param['menu_status'])) {
+        if (empty($param['menu_status'])) {
             $param['menu_status'] = 1;
         }
-        if (!empty($this->input->get('menu_id'))) {
-            $this->db->where('menu_id', $this->input->get('menu_id'));
-        } else {
-            $menu_fid = isset($param['menu_fid']) ? intval($param['menu_fid']) : 0;
-            $this->db->where('menu_fid', $menu_fid);
+        if (!empty($param['menu_type'])) {
+            $this->db->where('menu_type', $param['menu_type']);
+        }
+        if (!empty($param['menu_id'])) {
+            $this->db->where('menu_id', $param['menu_id']);
+        } elseif (isset($param['menu_fid'])) {
+            $this->db->where('menu_fid', $param['menu_fid']);
         }
         $this->db->where('menu_status', $param['menu_status']);
         $this->db->from($this->_model);
@@ -143,7 +145,7 @@ class Menu_model extends CI_Model
             }
             $menu_list['count'] = $row_num;
             return json_encode($menu_list);
-        } elseif ($data_type == 'list') {  //返回全部的订单,select
+        } elseif ($data_type == 'list') {  //返回全部菜单,select
             $menu = $this->db->order_by('menu_sort asc')->get()->result_array();
             $menu_list = array();
             foreach ($menu as $item) {
@@ -167,27 +169,26 @@ class Menu_model extends CI_Model
         $data = [
             'menu_name' => $this->input->post('menu_name'),
             'menu_fid' => $this->input->post('menu_fid'),
-            'menu_uri' => $this->input->post('menu_uri'),
+            'menu_uri' => $this->input->post('menu_uri', ''),
+            'menu_uri_short' => $this->input->post('menu_uri', ''),
             'menu_icon' => $this->input->post('menu_icon'),
             'menu_type' => $this->input->post('menu_type'),
             'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
-            'menu_desc' => $this->input->post('menu_desc'),
             'update_time' => time(),
         ];
         if (!empty($this->input->post('menu_id'))) {
             $data['menu_id'] = $this->input->post('menu_id');
         } else {
-            $data = [
-                'menu_name' => $this->input->post('menu_name'),
-                'menu_fid' => $this->input->post('menu_fid'),
-                'menu_uri' => $this->input->post('menu_uri'),
-                'menu_icon' => $this->input->post('menu_icon'),
-                'menu_type' => $this->input->post('menu_type'),
-                'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
-                'menu_desc' => $this->input->post('menu_desc'),
-                'create_time' => time(),
-                'update_time' => time(),
-            ];
+            $data['create_time'] = time();
+        }
+        if (is_null($data['menu_uri'])) {
+            $data['menu_uri'] = '';
+        }
+        if (is_null($data['menu_fid'])) {
+            $data['menu_fid'] = 0;
+        }
+        if (is_null($data['menu_uri_short'])) {
+            $data['menu_uri_short'] = '';
         }
         if ($this->db->replace($this->_model, $data)) {
             $this->save_menu();
@@ -201,6 +202,9 @@ class Menu_model extends CI_Model
         return $this->db->get_where($this->_model, ['menu_id' => $menu_id, 'menu_status' => 1])->row_array();
     }
 
+    /**
+     * 重新生产菜单JSON
+     */
     public function save_menu()
     {
         $this->reset_menu_sort(0);
@@ -219,7 +223,9 @@ class Menu_model extends CI_Model
                         'title' => $children['menu_name'],
                         'icon' => $children['menu_icon'],
                     ];
-                    if (!empty($children['menu_uri'])) {
+                    if (!empty($children['menu_uri_short'])) {
+                        $c_item['href'] = $children['menu_uri_short'];
+                    } elseif (!empty($children['menu_uri'])) {
                         $c_item['href'] = $children['menu_uri'];
                     }
                     $menu['children'][] = $c_item;
@@ -233,10 +239,11 @@ class Menu_model extends CI_Model
     /**
      * 获取模块列表 ／ 获取类的方法
      *
-     * @param string $module_name
-     * @return array
+     * @param string $module_name 模块名称
+     * @param int $menu_type 菜单类型
+     * @return array|bool
      */
-    public function get_module($module_name = '')
+    public function get_module($module_name = '', $menu_type = 2)
     {
         $path = APPPATH . 'controllers/*';
         try {
@@ -255,21 +262,22 @@ class Menu_model extends CI_Model
                 if (!empty($method_list)) {
                     $reflection_obj = new ReflectionClass($class);
                     foreach ($method_list as $method => $key) {
-                        $key = $method;
-                        $method_list[$method] = $key;
+                        unset($method_list[$method]);
+                        if ($method[0] == '_') continue;
                         $method_obj = $reflection_obj->getMethod($method);
                         $doc = $method_obj->getDocComment();
                         if (!empty($doc)) {
                             $doc_line = explode(chr(10), $doc);
                             if (isset($doc_line[1])) {
                                 $method_uri = $module_name . '/' . $method;
-                                $data = $this->db->get_where($this->_model, ['menu_uri' => $method_uri, 'menu_type >' => 2])
+                                $data = $this->db->get_where($this->_model, ['menu_uri' => $method_uri, 'menu_type >' => $menu_type])
                                     ->result_array();
                                 if (empty($data)) {
                                     $method_list[$method_uri] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
                                 }
-                                unset($method_list[$method]);
                             }
+                        }else{
+                            $method_list[$method] = $method;
                         }
                     }
                 }

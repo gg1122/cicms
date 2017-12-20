@@ -20,13 +20,14 @@ class Menu extends CI_Controller
      */
     public function index()
     {
-//        $this->benchmark->mark('a_start');
-        $data['menu'] = $this->menu_model->get_menu(array('menu_fid' => 0));
+        $param['menu_id'] = $this->input->get('menu_id');
+        $param['menu_fid'] = $this->input->get('menu_fid');
+        $param['menu_type'] = $this->input->get('menu_type');
+        $param['menu_status'] = $this->input->get('menu_status');
+        $data['menu'] = $this->menu_model->get_menu($param);
         $data['title'] = 'Menu List';
         $data['menuList'] = $this->menu_model->get_all_menu();
         $this->load->view('sys/menu/index', $data);
-//        $this->benchmark->mark('a_end');
-//        echo $this->benchmark->elapsed_time('a_start', 'a_end');
     }
 
     /**
@@ -40,7 +41,7 @@ class Menu extends CI_Controller
             $this->load->view('sys/menu/add', $data);
         } else {
             $this->menu_model->set_menu();
-            exit(json_encode(array('status' => TRUE, 'message' => 'Success')));
+            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
         }
     }
 
@@ -57,7 +58,7 @@ class Menu extends CI_Controller
             $this->load->view('sys/menu/update', $data);
         } else {
             $this->menu_model->set_menu();
-            exit(json_encode(array('status' => TRUE, 'message' => 'Success')));
+            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
         }
     }
 
@@ -72,7 +73,6 @@ class Menu extends CI_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->form_validation->set_rules('menu_name', 'MenuName', 'required');
-        $this->form_validation->set_rules('menu_fid', 'Upper level menu', 'required');
         $this->form_validation->set_rules('menu_icon', 'MenuIcon', 'required');
         $this->form_validation->set_rules('menu_type', 'MenuType', 'required');
         return $this->form_validation->run();
@@ -122,11 +122,11 @@ class Menu extends CI_Controller
     public function clean_cache()
     {
         $this->menu_model->save_menu();
-        exit(json_encode(array('status' => TRUE, 'callback' => ['message' => 'Success'])));
+        exit(json_encode(['status' => TRUE, 'callback' => ['message' => 'Success']]));
     }
 
     /**
-     * 获取菜单树
+     * 获取菜单树,未使用
      */
     public function get_module_tree()
     {
@@ -134,6 +134,24 @@ class Menu extends CI_Controller
             if (IS_AJAX) {
                 $module = strval($this->input->get_post('module'));
                 send_json(TRUE, $this->menu_model->get_module($module));
+            } else {
+                send_json(FALSE, '非法提交');
+            }
+        } catch (Exception $e) {
+            send_json(FALSE, $e->getMessage());
+        }
+    }
+
+    /**
+     * 获取菜单树，已经使用了的
+     */
+    public function get_module_tree_used()
+    {
+        try {
+            if (IS_AJAX) {
+                $menu_type = intval($this->input->get_post('menu_type'));
+                $menu_list = $this->menu_model->get_menu(['menu_type' => $menu_type - 1, 'menu_status' => 1]);
+                send_json(TRUE, $menu_list);
             } else {
                 send_json(FALSE, '非法提交');
             }

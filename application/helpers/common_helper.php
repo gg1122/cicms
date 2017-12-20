@@ -50,7 +50,7 @@ function send_json($status = TRUE, $info = [])
     $data['message'] = '';
     if (is_string($info)) {
         $data['message'] = $info;
-    } else {
+    } elseif (is_array($info)) {
         $data['data'] = $info;
     }
     exit(json_encode($data));

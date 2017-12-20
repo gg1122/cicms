@@ -71,13 +71,6 @@
                    lay-verify="required" <?= $menuObj['menu_status'] == 1 ? 'checked' : '' ?>/>
         </div>
     </div>
-    <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">菜单描述</label>
-        <div class="layui-input-block">
-            <textarea name="menu_desc" placeholder="请输入内容"
-                      class="layui-textarea"><?= $menuObj['menu_desc'] ?></textarea>
-        </div>
-    </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>
     </form>
 </div>

@@ -28,6 +28,9 @@ class Version extends CI_Controller
         return $this->form_validation->run();
     }
 
+    /**
+     * 默认界面
+     */
     public function index()
     {
         $this->output->enable_profiler(TRUE);
