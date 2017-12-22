@@ -2,8 +2,7 @@
     ERP全站开发，响应式框架
 ***
 # 前端框架
-    [LayUI](http://www.layui.com/demo/laytpl.html)
-    [我的博客](http://blog.csdn.net/guodongxiaren "悬停显示")
+    [LayUI 2.2.45](http://www.layui.com/demo/laytpl.html)
 ---
 # 开发语言：
     PHP 7.1.8
