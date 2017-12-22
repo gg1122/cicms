@@ -76,7 +76,7 @@ class Menu_model extends CI_Model
      * @param int $menu_sort
      * @param int $deep
      */
-    public function reset_menu_sort($menu_fid = 0, $menu_sort = 0, $deep = 0)
+    public function reset_menu_sort($menu_fid = 0, $menu_sort = 0, $deep = 1)
     {
         $this->db->reset_query();
         $this->db->select('menu_id');
@@ -170,7 +170,7 @@ class Menu_model extends CI_Model
             'menu_name' => $this->input->post('menu_name'),
             'menu_fid' => $this->input->post('menu_fid'),
             'menu_uri' => $this->input->post('menu_uri', ''),
-            'menu_uri_short' => $this->input->post('menu_uri', ''),
+            'menu_uri_short' => $this->input->post('menu_uri_short', ''),
             'menu_icon' => $this->input->post('menu_icon'),
             'menu_type' => $this->input->post('menu_type'),
             'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
@@ -276,7 +276,7 @@ class Menu_model extends CI_Model
                                     $method_list[$method_uri] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
                                 }
                             }
-                        }else{
+                        } else {
                             $method_list[$method] = $method;
                         }
                     }

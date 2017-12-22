@@ -36,12 +36,28 @@ class Menu extends CI_Controller
     public function add()
     {
         $data['title'] = '新增菜单';
+        try{
+
+        }catch (Exception $e){
+            if(IS_AJAX){
+                send_json(FALSE,$e->getMessage());
+            }else{
+                throw new Exception($e->getMessage());
+            }
+        }
+
+        if(IS_AJAX){
+            if($this->_formValidation() === FALSE){
+                send_json(FALSE,'表单验证失败');
+            }else{
+                $this->menu_model->set_menu();
+                exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+            }
+        }
         if ($this->_formValidation() === FALSE) {
-            $data['menuList'] = $this->menu_model->get_all_menu();
-            $this->load->view('sys/menu/add', $data);
+
         } else {
-            $this->menu_model->set_menu();
-            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+
         }
     }
 
