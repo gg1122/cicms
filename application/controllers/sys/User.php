@@ -15,6 +15,9 @@ class User extends CI_Controller
         $this->load->model('sys/user_model');
     }
 
+    /**
+     * 登录页面
+     */
     public function login()
     {
         $this->load->helper('form');
@@ -29,5 +32,34 @@ class User extends CI_Controller
         }
     }
 
+    /**
+     * 用户列表
+     */
+    public function index()
+    {
 
+    }
+
+    /**
+     * 新增用户
+     */
+    public function create()
+    {
+
+    }
+
+    /**
+     * 更新用户
+     */
+    public function update()
+    {
+
+    }
+
+    /**
+     * 控制访问
+     */
+    public function access()
+    {
+    }
 }

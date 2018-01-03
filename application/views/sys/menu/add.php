@@ -23,7 +23,7 @@
         <label class="layui-form-label">菜单图标</label>
         <div class="layui-input-block">
             <input type="text" name="menu_icon" placeholder="请输入" autocomplete="off" class="layui-input"
-                   lay-verify="required">
+                   lay-verify="required" value='&amp#xe614;'>
         </div>
     </div>
     <div class="layui-form-item">
@@ -35,7 +35,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="menu_status" lay-skin="switch" lay-verify="required"/>
+            <input type="checkbox" name="menu_status" checked="" lay-skin="switch" lay-verify="required"/>
         </div>
     </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>

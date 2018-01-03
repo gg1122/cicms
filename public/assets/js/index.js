@@ -72,8 +72,8 @@ layui.config({
     });
     //清除缓存
     $('#clearCached').on('click', function () {
-        navbar.cleanCached();
-        $.getJSON('/cleanCache', null, function (res) {
+        // navbar.cleanCached();
+        $.getJSON('/sys/menu/clean_cache', null, function (res) {
             if (res.status) {
                 layer.alert('刷新重载菜单!', {icon: 1, title: '系统提示'}, function () {
                     location.reload();//刷新
@@ -226,7 +226,7 @@ function lock($, layer) {
             var unlock = function (un, pwd, code) {
                 console.log(un, pwd);
                 //这里可以使用ajax方法解锁
-                $.post('/login?'+Math.random(), {loginname: un, loginpass: pwd, captchacode: code}, function (res) {
+                $.post('/login?' + Math.random(), {loginname: un, loginpass: pwd, captchacode: code}, function (res) {
                     //验证成功
                     if (res.status) {
                         //关闭锁屏层
