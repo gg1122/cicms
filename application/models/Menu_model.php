@@ -127,11 +127,10 @@ class Menu_model extends CI_Model
         $db->limit($limit, ($page - 1) * $limit);
         $menu = $db->get()->result_array();
         if ($data_type == 'json') { //只获取一层
-            $row_num = $this->db->count_all_results();
-            $menu_list = [];
             $menu_list['code'] = 0;
             $menu_list['rel'] = true;
             $menu_list['msg'] = '获取成功';
+            $menu_list['count'] = $this->db->count_all_results();
             foreach ($menu as $item) {
                 $menu_icon = get_icon_str($item['menu_icon']);
                 $menu_list['data'][] = [
@@ -143,17 +142,7 @@ class Menu_model extends CI_Model
                     'create_time' => date('Y-m-d H:i:s', $item['create_time']),
                 ];
             }
-            $menu_list['count'] = $row_num;
             return json_encode($menu_list);
-        } elseif ($data_type == 'list') {  //返回全部菜单,select
-            $menu = $this->db->order_by('menu_sort asc')->get()->result_array();
-            $menu_list = array();
-            foreach ($menu as $item) {
-                $menu_list[] = [
-                    'menu_id' => $item['menu_id'],
-                    'menu_name' => str_repeat('-', $item['menu_type']) . $item['menu_name']
-                ];
-            }
         }
         return $menu;
     }

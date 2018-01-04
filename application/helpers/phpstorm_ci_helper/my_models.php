@@ -18,6 +18,8 @@
  * @property film_model $film_model
  * @property film_model1 $film_model1
  * @property menu_model $menu_model
+ * @property role_model $role_model
+ * @property user_model $user_model
  *
  *
  *
