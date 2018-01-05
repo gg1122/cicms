@@ -41,7 +41,7 @@ class Menu extends CI_Controller
             $this->load->view('sys/menu/add', $data);
         } else {
             $this->menu_model->set_menu();
-            exit(json_encode(array('status' => TRUE, 'message' => 'Success')));
+            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
         }
     }
 

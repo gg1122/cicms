@@ -143,6 +143,15 @@ class Menu_model extends CI_Model
                 ];
             }
             return json_encode($menu_list);
+        } elseif ($data_type == 'list') {  //返回全部菜单,select
+            $menu = $this->db->order_by('menu_sort asc')->get()->result_array();
+            $menu_list = array();
+            foreach ($menu as $item) {
+                $menu_list[] = [
+                    'menu_id' => $item['menu_id'],
+                    'menu_name' => str_repeat('-', $item['menu_type']) . $item['menu_name']
+                ];
+            }
         }
         return $menu;
     }

@@ -6,10 +6,10 @@
         <label class="layui-form-label">菜单类型</label>
         <div class="layui-input-block">
             <select name="menu_type" lay-filter="menu_type" lay-verify="required">
-                <option value="1" <?= $menuObj['menu_type'] == 1 ? 'selected' : '' ?> disabled>顶部菜单</option>
-                <option value="2" <?= $menuObj['menu_type'] == 2 ? 'selected' : '' ?> disabled>左部菜单</option>
-                <option value="3" <?= $menuObj['menu_type'] == 3 ? 'selected' : '' ?> disabled>左部子菜单</option>
-                <option value="4" <?= $menuObj['menu_type'] == 4 ? 'selected' : '' ?> disabled>模块功能</option>
+                <option value="1" <?= $menuObj['menu_type'] == 1 ? 'selected ' : 'disabled' ?> >顶部菜单</option>
+                <option value="2" <?= $menuObj['menu_type'] == 2 ? 'selected ' : 'disabled' ?> >左部菜单</option>
+                <option value="3" <?= $menuObj['menu_type'] == 3 ? 'selected ' : 'disabled' ?> >左部子菜单</option>
+                <option value="4" <?= $menuObj['menu_type'] == 4 ? 'selected ' : 'disabled' ?> >模块功能</option>
             </select>
         </div>
     </div>
@@ -23,8 +23,8 @@
                 <option value="0" disabled>顶级菜单</option>
                 <?php
                 foreach ($menuList as $item) {
-                    $selected = $menuObj['menu_fid'] == $item['menu_id'] ? 'selected' : '';
-                    echo "<option value='{$item['menu_id']}' {$selected} disabled>{$item['menu_name']}</option>";
+                    $selected = $menuObj['menu_fid'] == $item['menu_id'] ? 'selected' : 'disabled';
+                    echo "<option value='{$item['menu_id']}' {$selected}>{$item['menu_name']}</option>";
                 }
                 ?>
             </select>

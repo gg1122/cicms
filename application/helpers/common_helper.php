@@ -48,10 +48,18 @@ function send_json($status = TRUE, $info = [])
 {
     $data['status'] = $status;
     $data['message'] = '';
-    if (is_string($info)) {
-        $data['message'] = $info;
-    } elseif (is_array($info)) {
-        $data['data'] = $info;
+    if (empty($info)) {
+        if ($status) {
+            $data['message'] = 'Success';
+        } else {
+            $data['message'] = 'Failure';
+        }
+    } else {
+        if (is_string($info)) {
+            $data['message'] = $info;
+        } elseif (is_array($info) && !empty($info)) {
+            $data['data'] = $info;
+        }
     }
     exit(json_encode($data));
 }

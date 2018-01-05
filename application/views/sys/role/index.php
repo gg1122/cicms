@@ -40,6 +40,7 @@
     </thead>
 </table>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="config">配置</a>
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>

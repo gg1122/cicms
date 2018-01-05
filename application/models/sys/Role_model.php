@@ -24,10 +24,17 @@ class Role_model extends CI_Model
     public function get($role_id = 0)
     {
         $role = $this->db->get_where($this->_model, ['role_id' => $role_id])->row_array();
-        if (!$role) show_error('请传入正确的角色ID');
+        if (empty($role)) show_error('请传入正确的角色ID');
         return $role;
     }
 
+    /**
+     * 获取角色列表
+     *
+     * @param array $param
+     * @param string $data_type
+     * @return string
+     */
     public function get_role(array $param, $data_type = 'array')
     {
         $page = isset($param['page']) ? intval($param['page']) : 1;
@@ -54,7 +61,7 @@ class Role_model extends CI_Model
                     'role_id' => $role['role_id'],
                     'role_name' => $role['role_name'],
                     'role_desc' => $role['role_desc'],
-                    'role_status' => $role['role_status'],
+                    'role_status' => $role['role_status'] ? '启用中' : '禁用中',
                     'create_time' => date('Y-m-d H:i:s', $role['create_time']),
                 ];
             }
@@ -63,8 +70,28 @@ class Role_model extends CI_Model
         return $role_list;
     }
 
-    public function save_role()
+    /**
+     * 保存角色数据
+     *
+     * @param array $param
+     * @return bool
+     * @throws Exception
+     */
+    public function save_role(array $param)
     {
-
+        if (isset($param['role_status'])) {
+            if ($param['role_status'] === 'on') {
+                $param['role_status'] = 1;
+            } else {
+                $param['role_status'] = 0;
+            }
+        } else {
+            $param['role_status'] = 0;
+        }
+        if ($this->db->replace($this->_model, $param)) {
+            return TRUE;
+        } else {
+            throw new Exception($this->db->error());
+        }
     }
 }
