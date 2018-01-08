@@ -19,6 +19,7 @@ class Role extends CI_Controller
      */
     public function index()
     {
+//        phpinfo();die;
         $data['title'] = '角色列表';
         if (!empty($this->input->get())) {
             exit($this->role_model->get_role($this->input->get(), 'json'));
@@ -69,7 +70,7 @@ class Role extends CI_Controller
         } else {
             try {
                 $this->role_model->save_role($this->input->post());
-                send_json(TRUE,'Success');
+                send_json(TRUE, 'Success');
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }
@@ -79,7 +80,26 @@ class Role extends CI_Controller
     /**
      * 设置权限
      */
-    public function set_access(){
-        $this->load->view();
+    public function set_access()
+    {
+        try {
+            if (!IS_AJAX) {
+                throw new Exception('拒绝非AJAX访问请求！');
+            } else {
+                $this->load->model('menu_model');
+                $role_id = $this->input->get('role_id');
+                $data['role'] = $this->role_model->get($role_id);
+                $data['menuList'] = $this->menu_model->get_all_menu();
+                $data['title'] = 1111;
+                $this->output->set_output($this->load->view('', $data, TRUE));
+                send_json(TRUE, ['accessList' => $this->output->get_output()]);
+            }
+        } catch (Exception $e) {
+            if (IS_AJAX) {
+                send_json(FALSE, $e->getMessage());
+            } else {
+                throw new Exception($e->getMessage());
+            }
+        }
     }
 }

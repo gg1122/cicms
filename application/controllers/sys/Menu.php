@@ -122,7 +122,7 @@ class Menu extends CI_Controller
     public function clean_cache()
     {
         $this->menu_model->save_menu();
-        exit(json_encode(['status' => TRUE, 'callback' => ['message' => 'Success']]));
+        send_json();
     }
 
     /**

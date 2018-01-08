@@ -73,11 +73,13 @@ layui.config({
     //清除缓存
     $('#clearCached').on('click', function () {
         // navbar.cleanCached();
-        $.getJSON('/sys/menu/clean_cache', null, function (res) {
-            if (res.status) {
+        $.getJSON('/sys/menu/clean_cache', null, function (callback) {
+            if (callback.status) {
                 layer.alert('刷新重载菜单!', {icon: 1, title: '系统提示'}, function () {
                     location.reload();//刷新
                 });
+            } else {
+                layer.alert(callback.message, {icon: 2});
             }
         }, 'json');
     });
