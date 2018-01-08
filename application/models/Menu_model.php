@@ -20,6 +20,7 @@ class Menu_model extends CI_Model
      *
      * @param int $menu_id
      * @return array
+     * @throws Exception
      */
     public function get($menu_id = 0)
     {
@@ -197,6 +198,10 @@ class Menu_model extends CI_Model
         }
     }
 
+    /**
+     * @param int $menu_id
+     * @return array
+     */
     public function get_menu_byid($menu_id = 0)
     {
         return $this->db->get_where($this->_model, ['menu_id' => $menu_id, 'menu_status' => 1])->row_array();
@@ -209,15 +214,15 @@ class Menu_model extends CI_Model
     {
         $this->reset_menu_sort(0);
         $menu_list = [];
-        $menu_left = 0;
-        $menu_right = 1;
+        $menu_num = 0;
         $data_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => 0, 'menu_status' => 1])->result_array();
         foreach ($data_list as $key => $item) {
-            echo '------', $item['menu_name'], ' $menu_left:', $menu_left, '<br/>';
-            $this->db->update($this->_model, ['menu_left' => $menu_left], ['menu_id' => $item['menu_id']]);
-            $menu_left++;
+            //更新节点左支
+            $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $item['menu_id']]);
+            $menu_num++;
+
             $children_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => $item['menu_id'], 'menu_status' => 1])->result_array();
-            $menu = array();
+            $menu = [];
             $menu['title'] = $item['menu_name'];
             $menu['icon'] = $item['menu_icon'];
             if (!empty($item['menu_uri'])) {
@@ -225,9 +230,9 @@ class Menu_model extends CI_Model
             }
             if (!empty($children_list)) {
                 foreach ($children_list as $key_1 => $children) {
-                    echo '--------', $children['menu_name'], ' $menu_left:', $menu_left, '<br/>';
-                    $this->db->update($this->_model, ['menu_left' => $menu_left], ['menu_id' => $children['menu_id']]);
-                    $menu_left++;
+                    $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $children['menu_id']]);
+                    $menu_num++;
+
                     $c_item = [
                         'title' => $children['menu_name'],
                         'icon' => $children['menu_icon'],
@@ -241,31 +246,18 @@ class Menu_model extends CI_Model
                     $detail_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => $children['menu_id'], 'menu_status' => 1])->result_array();
                     if (!empty($detail_list)) {
                         foreach ($detail_list as $key_2 => $detail) {
-                            $menu_right = $menu_left + 1;
-                            echo '----------------', $detail['menu_name'], ' $menu_left:', $menu_left, '<br/>';
-                            echo '----------------', $detail['menu_name'], ' $menu_right:', $menu_right, '<br/>';
-                            $this->db->update($this->_model, ['menu_left' => $menu_left], ['menu_id' => $detail['menu_id']]);
-                            $this->db->update($this->_model, ['menu_right' => $menu_right], ['menu_id' => $detail['menu_id']]);
-                            if (count($detail_list) - 1 != $key_1) {
-                                $menu_left += 2;
-                                $menu_right = $menu_left + 1;
-                            } else {
-                                $menu_left++;
-                                $menu_right = $menu_left;
-                            }
+                            $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $detail['menu_id']]);
+                            $menu_num++;
+                            $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $detail['menu_id']]);
+                            $menu_num++;
                         }
-                    } else {
-                        $menu_right = $menu_right + 1;
                     }
-                    echo '--------', $children['menu_name'], ' $menu_right:', $menu_right, '<br/>';
-                    $this->db->update($this->_model, ['menu_right' => $menu_right], ['menu_id' => $children['menu_id']]);
-                    if (count($children_list) - 1 != $key_2) {
-                        $menu_left++;
-                    }
+                    $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $children['menu_id']]);
+                    $menu_num++;
                 }
             }
-            echo '--------', $item['menu_name'], ' $menu_right:', $menu_right, '<br/>';
-            $this->db->update($this->_model, ['menu_right' => $menu_right], ['menu_id' => $item['menu_id']]);
+            $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $item['menu_id']]);
+            $menu_num++;
             $menu_list[] = $menu;
         }
         file_put_contents('assets/menu.json', json_encode($menu_list));
@@ -360,5 +352,13 @@ class Menu_model extends CI_Model
         } catch (Exception $e) {
             send_json(FALSE, $e->getMessage());
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function get_access()
+    {
+        return $this->db->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
     }
 }
