@@ -1,3 +1,4 @@
+var base_url = 'http://cicms.com';
 layui.use(['table', 'form','tree'], function () {
     var table = layui.table;
     var form = layui.form;

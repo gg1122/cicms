@@ -94,4 +94,16 @@ class Role_model extends CI_Model
             throw new Exception($this->db->error());
         }
     }
+
+    /**
+     * 获取角色-菜单
+     *
+     * @param int $role_id
+     * @return array
+     */
+    public function get_role_menu($role_id = 0)
+    {
+        $this->load->model('sys/role_menu_model');
+        return $this->role_menu_model->get_role_menu($role_id);
+    }
 }

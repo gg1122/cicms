@@ -355,10 +355,12 @@ class Menu_model extends CI_Model
     }
 
     /**
+     * 根据菜单左支获取菜单树
+     *
      * @return array
      */
-    public function get_access()
+    public function get_menu_tree()
     {
-        return $this->db->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
+        return $this->db->select('menu_id,menu_name,menu_type,menu_left,menu_right')->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
     }
 }

@@ -19,7 +19,6 @@ class Role extends CI_Controller
      */
     public function index()
     {
-//        phpinfo();die;
         $data['title'] = '角色列表';
         if (!empty($this->input->get())) {
             exit($this->role_model->get_role($this->input->get(), 'json'));
@@ -86,11 +85,9 @@ class Role extends CI_Controller
             if (!IS_AJAX) {
                 throw new Exception('拒绝非AJAX访问请求！');
             } else {
-                $this->load->model('menu_model');
                 $role_id = $this->input->get('role_id');
                 $data['role'] = $this->role_model->get($role_id);
-                $data['menuList'] = $this->menu_model->get_all_menu();
-                $data['title'] = 1111;
+                $data['role_menu_tree'] = $this->role_model->get_role_menu($role_id);
                 $this->output->set_output($this->load->view('', $data, TRUE));
                 send_json(TRUE, ['accessList' => $this->output->get_output()]);
             }
@@ -101,5 +98,10 @@ class Role extends CI_Controller
                 throw new Exception($e->getMessage());
             }
         }
+    }
+
+    public function get_access_tree()
+    {
+
     }
 }

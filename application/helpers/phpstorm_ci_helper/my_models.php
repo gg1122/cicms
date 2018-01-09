@@ -20,6 +20,8 @@
  * @property menu_model $menu_model
  * @property role_model $role_model
  * @property user_model $user_model
+ * @property user_role_model $user_role_model
+ * @property role_menu_model $role_menu_model
  *
  *
  *
