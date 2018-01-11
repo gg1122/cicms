@@ -85,11 +85,17 @@ class Role extends CI_Controller
             if (!IS_AJAX) {
                 throw new Exception('拒绝非AJAX访问请求！');
             } else {
-                $role_id = $this->input->get('role_id');
-                $data['role'] = $this->role_model->get($role_id);
-                $data['role_menu_tree'] = $this->role_model->get_role_menu($role_id);
-                $this->output->set_output($this->load->view('', $data, TRUE));
-                send_json(TRUE, ['accessList' => $this->output->get_output()]);
+                $role_id = $this->input->get_post('role_id');
+                if (IS_GET) {
+                    $this->load->helper('form');
+                    $data['role'] = $this->role_model->get($role_id);
+                    $data['role_menu_tree'] = $this->role_model->get_role_menu($role_id);
+                    $this->output->set_output($this->load->view('', $data, TRUE));
+                    send_json(TRUE, ['accessList' => $this->output->get_output()]);
+                } else {
+                    $this->role_model->set_role_menu($this->input->post());
+                    send_json();
+                }
             }
         } catch (Exception $e) {
             if (IS_AJAX) {

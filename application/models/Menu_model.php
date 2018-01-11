@@ -174,6 +174,7 @@ class Menu_model extends CI_Model
             'menu_uri_short' => $this->input->post('menu_uri_short', ''),
             'menu_icon' => $this->input->post('menu_icon'),
             'menu_type' => $this->input->post('menu_type'),
+            'menu_sort' => $this->input->post('menu_sort'),
             'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
             'update_time' => time(),
         ];

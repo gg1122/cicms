@@ -118,7 +118,7 @@ class CI_Controller
                         if (IS_GET) {
                             exit($msg);
                         } else {
-                            exit(json_encode(array('status' => FALSE, 'message' => $msg)));
+                            exit(json_encode(['status' => FALSE, 'message' => $msg]));
                         }
                     }
                 } elseif ($user_data['expire_time'] <= time()) {   //SESSION超时
@@ -129,7 +129,7 @@ class CI_Controller
                         if (IS_GET) {
                             exit($msg);
                         } else {
-                            exit(json_encode(array('status' => FALSE, 'message' => $msg)));
+                            exit(json_encode(['status' => FALSE, 'message' => $msg]));
                         }
                     }
                 }

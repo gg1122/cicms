@@ -8,8 +8,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * 图片的配置
  */
 $config['image']['upload_path'] = './upload/image/';
-$config['image']['allowed_types'] = 'gif|jpg|png';
-$config['image']['max_size'] = '10';
+$config['image']['allowed_types'] = 'gif|jpg|jpeg|png';
+$config['image']['max_size'] = '2048';
 $config['image']['max_width'] = '1024';
 $config['image']['max_height'] = '768';
 

@@ -135,7 +135,7 @@ layui.use(['table', 'form','tree'], function () {
             });
         });
     }
-    
+
     function saveAccess(role_id) {
         var title = '权限控制';
         $.get(base_url + '/sys/role/set_access?role_id='+role_id, null, function (result) {

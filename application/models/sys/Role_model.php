@@ -44,6 +44,9 @@ class Role_model extends CI_Model
         } else {
             $this->db->where('role_status = 1');
         }
+        if(!empty($param['role_name'])){
+            $this->db->like('role_name',$param['role_name']);
+        }
         if (!empty($param['role_id'])) {
             $this->db->where('role_id', intval($param['role_id']));
         }
@@ -105,5 +108,17 @@ class Role_model extends CI_Model
     {
         $this->load->model('sys/role_menu_model');
         return $this->role_menu_model->get_role_menu($role_id);
+    }
+
+    /**
+     * 设置角色-菜单
+     *
+     * @param array $param
+     * @return array
+     */
+    public function set_role_menu(array $param)
+    {
+        $this->load->model('sys/role_menu_model');
+        return $this->role_menu_model->set_role_menu($param);
     }
 }

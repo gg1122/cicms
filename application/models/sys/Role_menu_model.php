@@ -15,6 +15,12 @@ class Role_menu_model extends CI_Model
         $this->load->database();
     }
 
+    public function insert($params)
+    {
+        echo 11;
+        die;
+    }
+
     /**
      * 获取混合权限后的角色-菜单
      *
@@ -35,11 +41,11 @@ class Role_menu_model extends CI_Model
             $last_key_one = -1;
             $last_key_two = -1;
             foreach ($menu_tree as $key => $menu) {
-                $menu_check = '<input type="checkbox" name="access[' . $menu['menu_id'] . ']" id="menu_' . $menu['menu_right'] . '">';
-                $have_access = 0;
+                $have_access = '';
                 if (in_array($menu['menu_id'], $role_access_old)) {
-                    $have_access = 1;
+                    $have_access = 'checked';
                 }
+                $menu_check = '<input type="checkbox" name="access[' . $menu['menu_id'] . ']" id="menu_' . $menu['menu_right'] . '" value="' . $menu['menu_id'] . '" ' . $have_access . '>';
                 $menu['have_access'] = $have_access;
                 if ($menu['menu_type'] == 2) {    //左部菜单
                     $last_key_one++;
@@ -69,6 +75,49 @@ class Role_menu_model extends CI_Model
             return $role_access_new;
         } else {
             return [];
+        }
+    }
+
+    /**
+     * 设置角色-菜单
+     *
+     * @param array $param
+     * @throws Exception
+     */
+    public function set_role_menu(array $param)
+    {
+        try {
+            $this->db->trans_begin();
+            $time = time();
+            $user_id = $this->session->get_userdata()['user_id'];
+            $this->db->query("update {$this->_model} set access_status = 0,update_time = {$time},update_userid = {$user_id} where role_id = {$param['role_id']}");
+            if (!empty($param['access'])) {
+                foreach ($param['access'] as $menu_id) {
+                    $data = [
+                        'role_id' => $param['role_id'],
+                        'menu_id' => $menu_id,
+                        'access_status' => 1,
+                        'create_time' => $time,
+                        'update_time' => $time,
+                        'create_userid' => $user_id,
+                        'update_userid' => $user_id
+                    ];
+                    $role_menu = $this->db->select('id,access_status')->get_where($this->_model, ['role_id' => $param['role_id'], 'menu_id' => $menu_id])->row_array();
+                    if ($role_menu) {
+                        unset($data['create_time']);
+                        unset($data['create_userid']);
+                        $this->db->update($this->_model, $data, ['id' => $role_menu['id']]);
+                    } else {
+                        $this->db->insert($this->_model, $data);
+                    }
+                }
+            }
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('保存失败');
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }

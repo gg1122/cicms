@@ -371,14 +371,9 @@ if (!function_exists('show_error')) {
         } else {
             $exit_status = 1; // EXIT_ERROR
         }
-
         $_error =& load_class('Exceptions', 'core');
-        if (ENVIRONMENT == 'development') {
-            throw new Exception($message);
-        } else {
-            echo $_error->show_error($heading, $message, 'error_general', $status_code);
-            exit($exit_status);
-        }
+        echo $_error->show_error($heading, $message, 'error_general', $status_code);
+        exit($exit_status);
     }
 }
 

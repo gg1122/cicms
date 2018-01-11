@@ -19,32 +19,17 @@ layui.config({
             console.log(data.id); //当前Tab的Id
             console.log(data.index); //得到当前Tab的所在下标
             console.log(data.elem); //得到当前的Tab大容器
-
             console.log(tab.getCurrentTabId())
         },
         closeBefore: function (obj) {//tab 关闭之前触发的事件
             console.log(obj);
-            //obj.title  -- 标题
-            //obj.url    -- 链接地址
-            //obj.id     -- id
-            //obj.tabId  -- lay-id
-            if (obj.title === 'BTable') {
-                layer.confirm('确定要关闭' + obj.title + '吗?', {icon: 3, title: '系统提示'}, function (index) {
-                    //因为confirm是非阻塞的，所以这里关闭当前tab需要调用一下deleteTab方法
-                    tab.deleteTab(obj.tabId);
-                    layer.close(index);
-                });
-                //返回true会直接关闭当前tab
-                return false;
-            } else if (obj.title === '表单') {
-                layer.confirm('未保存的数据可能会丢失哦，确定要关闭吗?', {icon: 3, title: '系统提示'}, function (index) {
-                    tab.deleteTab(obj.tabId);
-                    layer.close(index);
-                });
-                return false;
-            }
-            return true;
-        },
+            layer.confirm('确定要关闭' + obj.title + '吗?', {icon: 3, title: '系统提示'}, function (index) {
+                //因为confirm是非阻塞的，所以这里关闭当前tab需要调用一下deleteTab方法
+                tab.deleteTab(obj.tabId);
+                layer.close(index);
+            });
+            return false;
+        }
     });
     //iframe自适应
     $(window).on('resize', function () {
@@ -185,10 +170,6 @@ function lock($, layer) {
                         $this.attr('type', 'text').val('输入密码解锁..');
                     }
                 });
-            //在此处可以写一个请求到服务端删除相关身份认证，因为考虑到如果浏览器被强制刷新的时候，身份验证还存在的情况
-            //do something...
-            //e.g.
-
             $.getJSON('/logout', null, function (res) {
                 if (!res.rel) {
                     layer.msg(res.msg);
