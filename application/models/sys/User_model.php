@@ -117,18 +117,22 @@ class User_model extends CI_Model
                     //验证码比对失败
 //                    throw new Exception($this->lang->line('user_captcha_error'));
                 }
-                $data = $this->db->get_where($this->_model, ['user_name' => $user_name])
-                    ->row_array();
-                if (empty($data)) {
+                $userObj = $this->db->get_where($this->_model, ['user_name' => $user_name])
+                    ->row();
+                if (empty($userObj)) {
                     throw new Exception($this->lang->line('user_info_error'));
                 }
-                if (password_verify($user_pass, $data['user_pass']) === FALSE) {
+                if (password_verify($user_pass, $userObj->user_pass) === FALSE) {
                     throw new Exception($this->lang->line('user_info_error'));
                 } else {
+                    $userObj->last_ip = ip2long($_SERVER['REMOTE_ADDR']);
+                    $userObj->last_login = time();
+                    $this->db->set($userObj);
+                    $this->db->update($this->_model);
                     $user_data = [
-                        'user_id' => $data['user_id'],
-                        'user_name' => $data['user_name'],
-                        'display_name' => $data['display_name'],
+                        'user_id' => $userObj->user_id,
+                        'user_name' => $userObj->user_name,
+                        'display_name' => $userObj->display_name,
                         'expire_time' => time() + $this->config->item('sess_expiration'),
                         'login_ip' => $_SERVER['REMOTE_ADDR']
                     ];
