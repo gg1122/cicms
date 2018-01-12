@@ -11,7 +11,7 @@ if (!function_exists('show_404')) {
     function show_404($page = '', $log_error = TRUE)
     {
         if (IS_AJAX) {
-            exit(json_encode(['status' => FALSE,'message' => 'The page you requested was not found.']));
+            exit(json_encode(['status' => FALSE, 'message' => 'The page you requested was not found.']));
         }
         $_error =& load_class('Exceptions', 'core');
         $_error->show_404($page, $log_error);
@@ -81,11 +81,3 @@ if (!function_exists('_exception_handler')) {
         }
     }
 }
-//
-////showdown的时候
-//if (!function_exists('_shutdown_handler')) {
-//    function _shutdown_handler()
-//    {
-//
-//    }
-//}

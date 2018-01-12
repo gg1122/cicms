@@ -1,5 +1,5 @@
 var base_url = 'http://cicms.com';
-layui.use(['table', 'upload', 'form', 'tree'], function () {
+layui.use(['table', 'form'], function () {
     var table = layui.table;
     var form = layui.form;
 
@@ -59,7 +59,7 @@ layui.use(['table', 'upload', 'form', 'tree'], function () {
         var url = '';
         if (type != 'create') {
             title = '更新用户';
-            url = 'user_id=' + userid
+            url = '?user_id=' + userid
         }
         $.get(base_url + '/sys/user/' + type + url, null, function (form) {
             layer.open({
@@ -69,11 +69,10 @@ layui.use(['table', 'upload', 'form', 'tree'], function () {
                 btn: ['保存', '取消'],
                 shade: false,
                 offset: ['50px', '30%'],
-                area: ['400px', '450px'],
+                area: ['450px', '450px'],
                 zIndex: 10,
                 maxmin: true,
                 yes: function () {
-                    alert(1);
                     $('form.layui-form').find('button[lay-filter=edit]').click();
                 }, full: function (elem) {
                     var win = window.top === window.self ? window : parent.window;
@@ -108,7 +107,7 @@ layui.use(['table', 'upload', 'form', 'tree'], function () {
                                         location.reload();//刷新
                                     });
                                 } else {
-                                    layer.alert(callback.message, {icon: 2});
+                                    layer.alert(callback.messawge, {icon: 2});
                                 }
                             }
                         });

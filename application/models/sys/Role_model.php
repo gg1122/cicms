@@ -32,27 +32,31 @@ class Role_model extends CI_Model
      * 获取角色列表
      *
      * @param array $param
+     * @param bool $is_page
      * @param string $data_type
      * @return string
      */
-    public function get_role(array $param, $data_type = 'array')
+    public function get_role(array $param, $is_page = TRUE, $data_type = 'array')
     {
-        $page = isset($param['page']) ? intval($param['page']) : 1;
-        $limit = isset($param['limit']) ? intval($param['limit']) : 10;
+        $this->db->select(['role_id', 'role_name', 'role_desc', 'role_status', 'create_time']);
         if (isset($param['role_status'])) {
             $this->db->where('role_status', boolval($param['role_status']));
         } else {
             $this->db->where('role_status = 1');
         }
-        if(!empty($param['role_name'])){
-            $this->db->like('role_name',$param['role_name']);
+        if (!empty($param['role_name'])) {
+            $this->db->like('role_name', $param['role_name']);
         }
         if (!empty($param['role_id'])) {
             $this->db->where('role_id', intval($param['role_id']));
         }
         $this->db->from($this->_model);
         $db = clone($this->db);
-        $db->limit($limit, ($page - 1) * $limit);
+        if ($is_page) {
+            $page = isset($param['page']) ? intval($param['page']) : 1;
+            $limit = isset($param['limit']) ? intval($param['limit']) : 10;
+            $db->limit($limit, ($page - 1) * $limit);
+        }
         $role_list = $db->get()->result_array();
         if ($data_type == 'json') { //只获取一层
             $json_info['code'] = 0;

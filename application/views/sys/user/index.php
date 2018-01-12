@@ -8,6 +8,7 @@
     <link rel="stylesheet"
           href="<?= $this->config->item('base_url') ?>/assets/plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/layui.css" media="all">
+    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/select.css" media="all">
 </head>
 <body style="margin-left: 10px;margin-top: 10px;">
 <div class="demoTable">
@@ -54,10 +55,10 @@
     </thead>
 </table>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="config">配置</a>
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
 </script>
-<script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
+<script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.js" charset="utf-8"></script>
 <script src="<?= $this->config->item('base_url') ?>/assets/js/sys/user.js" charset="utf-8"></script>
+<script src="<?= $this->config->item('base_url') ?>/assets/js/select.js" charset="utf-8"></script>
 </body>
 </html>

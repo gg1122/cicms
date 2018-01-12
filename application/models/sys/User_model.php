@@ -25,7 +25,7 @@ class User_model extends CI_Model
      */
     public function get($user_id = 0)
     {
-        $user = $this->db->get_where($this->_model, ['user_id' => $user_id])->result_array();
+        $user = $this->db->get_where($this->_model, ['user_id' => $user_id])->row_array();
         if (!$user) show_error('请输入正确的用户ID');
         return $user;
     }
@@ -72,6 +72,13 @@ class User_model extends CI_Model
         return $menu;
     }
 
+    /**
+     * 保存用户信息
+     *
+     * @param array $param
+     * @return bool
+     * @throws Exception
+     */
     public function save_user(array $param)
     {
         $data = [
@@ -83,17 +90,23 @@ class User_model extends CI_Model
             'create_time' => time(),
             'update_time' => time(),
         ];
+        if(isset($param['user_pass'])){
+
+        }
         if (isset($param['user_id'])) {
             unset($param['create_time']);
         }
         if ($this->db->replace($this->_model, $data)) {
-            $a = $this->db->insert_id();
-            echo $a;
-            return $a;
+            $user_id = $this->db->insert_id();
+            if (!empty($param['user_role'])) {
+                $this->user_role_model->save_user_role($user_id, $param['user_role']);
+            }
+            return TRUE;
         } else {
             throw new Exception($this->db->error());
         }
     }
+
 
     /**
      * 用户登录
@@ -128,7 +141,7 @@ class User_model extends CI_Model
                     $userObj->last_ip = ip2long($_SERVER['REMOTE_ADDR']);
                     $userObj->last_login = time();
                     $this->db->set($userObj);
-                    $this->db->update($this->_model);
+                    $this->db->update($this->_model, null, ['user_id' => $userObj->user_id]);
                     $user_data = [
                         'user_id' => $userObj->user_id,
                         'user_name' => $userObj->user_name,

@@ -15,5 +15,56 @@ class User_role_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_user_role(){}
+    /**
+     * 根据用户ID，获取用户有效的角色组
+     *
+     * @param int $user_id
+     * @return array
+     */
+    public function get_user_role($user_id = 0)
+    {
+        return $this->db->select('role_id')
+            ->get_where($this->_model, ['user_id' => $user_id, 'user_role_status' => 1])
+            ->result_array();
+    }
+
+
+    /**
+     * 保存用户-角色配置
+     *
+     * @param int $user_id
+     * @param array $role_list
+     */
+    public function save_user_role($user_id = 0, array $role_list)
+    {
+        $time = time();
+        $operator_userid = $this->session->get_userdata()['user_id'];
+        //重制旧的角色组
+        $data = [
+            'user_role_status' => 0,
+            'update_time' => $time,
+            'update_userid' => $operator_userid,
+        ];
+        $this->db->where('user_id', $user_id);
+        $this->db->update($this->_model, $data);
+        //更新角色组
+        foreach ($role_list as $role_id) {
+            $info = $this->db->select('id')->get_where($this->_model, ['user_id' => $user_id, 'role_id' => $role_id])->row_array();
+            if ($info) {
+                $this->db->set('user_role_status', 1);
+                $this->db->where('id', $info['id']);
+                $this->db->update($this->_model);
+            } else {
+                $user_role = [
+                    'user_id' => $user_id,
+                    'role_id' => $role_id,
+                    'create_time' => $time,
+                    'update_time' => $time,
+                    'create_userid' => $operator_userid,
+                    'update_userid' => $operator_userid,
+                ];
+                $this->db->insert($this->_model, $user_role);
+            }
+        }
+    }
 }

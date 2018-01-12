@@ -1,74 +1,76 @@
 <div style="margin: 15px;">
-    <?php validation_errors(); ?>
-    <?php echo form_open('sys/menu/update', array('class' => 'layui-form')); ?>
-    <input type="hidden" name="menu_id" value="<?= $menuObj['menu_id'] ?>"/>
-    <div class="layui-form-item" id="menu_type_div">
-        <label class="layui-form-label">菜单类型</label>
+    <?php echo form_open_multipart('sys/user/create', array('class' => 'layui-form')); ?>
+    <input type="hidden" name="user_id" value="<?= $user_info['user_id'] ?>">
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录名</label>
         <div class="layui-input-block">
-            <select name="menu_type" lay-filter="menu_type" lay-verify="required">
-                <option value="1" <?= $menuObj['menu_type'] == 1 ? 'selected' : '' ?> disabled>顶部菜单</option>
-                <option value="2" <?= $menuObj['menu_type'] == 2 ? 'selected' : '' ?> disabled>左部菜单</option>
-                <option value="3" <?= $menuObj['menu_type'] == 3 ? 'selected' : '' ?> disabled>左部子菜单</option>
-                <option value="4" <?= $menuObj['menu_type'] == 4 ? 'selected' : '' ?> disabled>模块功能</option>
-            </select>
+            <input type="text" name="user_name" value="<?= $user_info['user_name'] ?>" autocomplete="off"
+                   class="layui-input" id="user_name"
+                   lay-verify="required" minlength="4" disabled>
         </div>
     </div>
-    <?php
-        if($menuObj['menu_type'] > 0):
-    ?>
+
     <div class="layui-form-item">
-        <label class="layui-form-label">上级菜单</label>
+        <label class="layui-form-label">登录密码</label>
         <div class="layui-input-block">
-            <select name="menu_fid" lay-verify="required">
-                <option value="0" disabled>顶级菜单</option>
+            <input type="password" name="user_pass" value="**********" autocomplete="off"
+                   class="layui-input"
+                   id="user_pass" lay-verify="required" minlength="6" maxlength="20" disabled>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码确认</label>
+        <div class="layui-input-block">
+            <input type="password" name="user_pass_confirm" value="**********" autocomplete="off"
+                   class="layui-input"
+                   id="user_pass_confirm" lay-verify="required" minlength="6" maxlength="20" disabled>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">展示名</label>
+        <div class="layui-input-block">
+            <input type="text" name="display_name" value="<?= $user_info['display_name'] ?>" autocomplete="off"
+                   class="layui-input"
+                   id="display_name" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-block">
+            <input type="text" name="user_email" value="<?= $user_info['user_email'] ?>" autocomplete="off"
+                   class="layui-input"
+                   id="user_email" lay-verify="email">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级</label>
+        <div class="layui-input-block">
+            <select name="user_level" lay-filter="user_level" lay-verify="required">
                 <?php
-                foreach ($menuList as $item) {
-                    $selected = $menuObj['menu_fid'] == $item['menu_id'] ? 'selected' : '';
-                    echo "<option value='{$item['menu_id']}' {$selected} disabled>{$item['menu_name']}</option>";
-                }
-                ?>
+                foreach ($user_level as $level => $name):
+                    ?>
+                    <option value="<?= $level ?>" <?= $user_info['user_level'] == $level ? 'selected' : '' ?>><?= $name ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>
-    <?php
-        endif;
-    ?>
     <div class="layui-form-item">
-        <label class="layui-form-label">菜单名称</label>
+        <label class="layui-form-label">角色</label>
         <div class="layui-input-block">
-            <input type="text" name="menu_name" value="<?= $menuObj['menu_name'] ?>" placeholder="请输入"
-                   autocomplete="off" class="layui-input"
-                   lay-verify="required">
+            <select name="user_level" lay-filter="user_level" lay-verify="required" multiple>
+                <?php
+                foreach ($role_list as $role):
+                    ?>
+                    <option value="<?= $role['role_id'] ?>" <?= in_array($role['role_id'], $user_role) ? 'selected' : '' ?>><?= $role['role_name'] ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">菜单URI</label>
+        <label class="layui-form-label">状态</label>
         <div class="layui-input-block">
-            <input type="text" name="menu_uri" value="<?= $menuObj['menu_uri'] ?>" placeholder="请输入" autocomplete="off"
-                   class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">菜单图标</label>
-        <div class="layui-input-block">
-            <input type="text" name="menu_icon" value="<?= $menuObj['menu_icon'] ?>" placeholder="请输入"
-                   autocomplete="off" class="layui-input"
-                   lay-verify="required">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">菜单排序</label>
-        <div class="layui-input-block">
-            <input type="text" name="menu_sort" value="<?= $menuObj['menu_sort'] ?>" placeholder="请输入"
-                   autocomplete="off" class="layui-input"
-                   lay-verify="required">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">菜单状态</label>
-        <div class="layui-input-block">
-            <input type="checkbox" name="menu_status" lay-skin="switch"
-                   lay-verify="required" <?= $menuObj['menu_status'] == 1 ? 'checked' : '' ?>/>
+            <input type="checkbox" name="user_status" <?= $user_info['user_status'] == 1 ? 'checked' : '' ?>
+                   lay-skin="switch" lay-value="1|0"/>
         </div>
     </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>

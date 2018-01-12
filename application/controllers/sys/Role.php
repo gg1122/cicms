@@ -21,7 +21,7 @@ class Role extends CI_Controller
     {
         $data['title'] = '角色列表';
         if (!empty($this->input->get())) {
-            exit($this->role_model->get_role($this->input->get(), 'json'));
+            exit($this->role_model->get_role($this->input->get(), TRUE,'json'));
         }
         $this->load->view('', $data);
     }
