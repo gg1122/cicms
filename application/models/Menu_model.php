@@ -362,6 +362,6 @@ class Menu_model extends CI_Model
      */
     public function get_menu_tree()
     {
-        return $this->db->select('menu_id,menu_name,menu_type,menu_left,menu_right')->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
+        return $this->db->select('menu_id,menu_fid,menu_name,menu_type,menu_left,menu_right')->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
     }
 }

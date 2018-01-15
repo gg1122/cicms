@@ -63,3 +63,20 @@ function send_json($status = TRUE, $info = [])
     }
     exit(json_encode($data));
 }
+
+/**
+ * 发送列表页需要的JSON数据
+ *
+ * @param array $list
+ * @param int $total
+ * @return string
+ */
+function send_list_json(array $list, $total = 0)
+{
+    $data_list['code'] = 0;
+    $data_list['rel'] = true;
+    $data_list['msg'] = '获取成功';
+    $data_list['count'] = $total;
+    $data_list['data'] = $list;
+    echo json_encode($data_list);
+}

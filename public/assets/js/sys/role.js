@@ -1,7 +1,8 @@
 var base_url = 'http://cicms.com';
-layui.use(['table', 'form','tree'], function () {
+layui.use(['table','element','form','tree'], function () {
     var table = layui.table;
     var form = layui.form;
+    var element = layui.element;
     //监听表格复选框选择
     table.on('checkbox(demo)', function (obj) {
         console.log(obj)
@@ -154,6 +155,7 @@ layui.use(['table', 'form','tree'], function () {
                 maxmin: true,
                 yes: function () {
                     //触发表单的提交事件
+                    resetAccess();
                     $('form.accessList').find('button[lay-filter=edit]').click();
                 }, full: function (elem) {
                     var win = window.top === window.self ? window : parent.window;
@@ -201,5 +203,4 @@ layui.use(['table', 'form','tree'], function () {
             });
         },'JSON');
     }
-
 });

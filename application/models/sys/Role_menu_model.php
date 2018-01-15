@@ -31,48 +31,23 @@ class Role_menu_model extends CI_Model
     {
         $this->load->model('menu_model');
         $menu_tree = $this->menu_model->get_menu_tree();
-        $role_menu = $this->db->select('menu_id')->get_where($this->_model, ['role_id' => $role_id, 'access_status' => 1])->result_array();
-        $role_access_old = [];
-        if (!empty($role_menu)) {
-            $role_access_old = array_column($role_menu, 'menu_id');
-        }
-        $role_access_new = [];
         if (!empty($menu_tree)) {
-            $last_key_one = -1;
-            $last_key_two = -1;
-            foreach ($menu_tree as $key => $menu) {
-                $have_access = '';
-                if (in_array($menu['menu_id'], $role_access_old)) {
-                    $have_access = 'checked';
-                }
-                $menu_check = '<input type="checkbox" name="access[' . $menu['menu_id'] . ']" id="menu_' . $menu['menu_right'] . '" value="' . $menu['menu_id'] . '" ' . $have_access . '>';
-                $menu['have_access'] = $have_access;
-                if ($menu['menu_type'] == 2) {    //左部菜单
-                    $last_key_one++;
-                    $role_access_new[$key] = [
-                        'id' => $menu['menu_id'],
-                        'name' => $menu['menu_name'] . $menu_check,
-                        'menu_left' => $menu['menu_left'],
-                        'menu_right' => $menu['menu_right'],
-                    ];
-                } elseif ($menu['menu_type'] == 3) {    //左部子菜单
-                    $role_access_new[$last_key_one]['children'][] = [
-                        'id' => $menu['menu_id'],
-                        'name' => $menu['menu_name'] . $menu_check,
-                        'menu_left' => $menu['menu_left'],
-                        'menu_right' => $menu['menu_right'],
-                    ];
-                    $last_key_two++;
-                } elseif ($menu['menu_type'] == 4) {  //左部子菜单模块
-                    $role_access_new[$last_key_one]['children'][$last_key_two]['children'][] = [
-                        'id' => $menu['menu_id'],
-                        'name' => $menu['menu_name'] . $menu_check,
-                        'menu_left' => $menu['menu_left'],
-                        'menu_right' => $menu['menu_right'],
-                    ];
-                }
+            $role_menu = $this->db->select('menu_id')->get_where($this->_model, ['role_id' => $role_id, 'access_status' => 1])->result_array();
+            $role_access_old = [];
+            if (!empty($role_menu)) {
+                $role_access_old = array_column($role_menu, 'menu_id');
             }
-            return $role_access_new;
+            $data = [];
+            foreach ($menu_tree as $menu) {
+                $data[] = [
+                    'id' => $menu['menu_id'],
+                    'pId' => $menu['menu_fid'],
+                    'name' => $menu['menu_name'],
+                    'open' => ($menu['menu_right'] - $menu['menu_left']) > 1,
+                    'checked' => in_array($menu['menu_id'], $role_access_old),
+                ];
+            }
+            return $data;
         } else {
             return [];
         }
@@ -92,7 +67,8 @@ class Role_menu_model extends CI_Model
             $user_id = $this->session->get_userdata()['user_id'];
             $this->db->query("update {$this->_model} set access_status = 0,update_time = {$time},update_userid = {$user_id} where role_id = {$param['role_id']}");
             if (!empty($param['access'])) {
-                foreach ($param['access'] as $menu_id) {
+                $access_menu = explode(',', $param['access']);
+                foreach ($access_menu as $menu_id) {
                     $data = [
                         'role_id' => $param['role_id'],
                         'menu_id' => $menu_id,

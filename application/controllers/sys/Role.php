@@ -89,7 +89,7 @@ class Role extends CI_Controller
                 if (IS_GET) {
                     $this->load->helper('form');
                     $data['role'] = $this->role_model->get($role_id);
-                    $data['role_menu_tree'] = $this->role_model->get_role_menu($role_id);
+                    $data['menu_tree'] = json_encode($this->role_model->get_role_menu($role_id));
                     $this->output->set_output($this->load->view('', $data, TRUE));
                     send_json(TRUE, ['accessList' => $this->output->get_output()]);
                 } else {

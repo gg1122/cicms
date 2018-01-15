@@ -52,22 +52,19 @@ class User_model extends CI_Model
         }
         $menu = $db->get()->result_array();
         if ($data_type == 'json') { //只获取一层
-            $user_list['code'] = 0;
-            $user_list['rel'] = true;
-            $user_list['msg'] = '获取成功';
-            $user_list['count'] = $this->db->count_all_results();
+            $list = [];
             foreach ($menu as $item) {
-                $user_list['data'][] = [
+                $list[] = [
                     'user_id' => $item['user_id'],
                     'user_name' => $item['user_name'],
                     'user_email' => $item['user_email'],
                     'display_name' => $item['display_name'],
                     'user_status' => $item['user_status'],
                     'last_ip' => long2ip($item['last_ip']),
-                    'last_login' => date('Y-m-d H:i:s', $item['last_login']),
+                    'last_login' => $item['last_login'] == 0 ? '暂未登录过' : date('Y-m-d H:i:s', $item['last_login']),
                 ];
             }
-            return json_encode($user_list);
+            return send_list_json($list, $this->db->count_all_results());
         }
         return $menu;
     }
@@ -90,7 +87,7 @@ class User_model extends CI_Model
             'create_time' => time(),
             'update_time' => time(),
         ];
-        if(isset($param['user_pass'])){
+        if (isset($param['user_pass'])) {
 
         }
         if (isset($param['user_id'])) {
