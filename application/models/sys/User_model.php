@@ -144,7 +144,7 @@ class User_model extends CI_Model
                         'user_name' => $userObj->user_name,
                         'display_name' => $userObj->display_name,
                         'expire_time' => time() + $this->config->item('sess_expiration'),
-                        'login_ip' => $_SERVER['REMOTE_ADDR']
+                        'login_ip' => $_SERVER['REMOTE_ADDR'],
                     ];
                     $this->session->set_userdata($user_data);
                     if ($this->input->post('rememberMe') === 'true') {

@@ -20,7 +20,7 @@ class Role extends CI_Controller
     public function index()
     {
         $data['title'] = '角色列表';
-        if (!empty($this->input->get())) {
+        if (!empty($this->input->get()) && IS_AJAX) {
             exit($this->role_model->get_role($this->input->get(), TRUE,'json'));
         }
         $this->load->view('', $data);
