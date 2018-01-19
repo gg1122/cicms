@@ -7,7 +7,7 @@
  */
 class User_role_model extends CI_Model
 {
-    private $_model = 'sys_user_role';
+    private $_table = 'sys_user_role';
 
     public function __construct()
     {
@@ -24,7 +24,7 @@ class User_role_model extends CI_Model
     public function get_user_role($user_id = 0)
     {
         return $this->db->select('role_id')
-            ->get_where($this->_model, ['user_id' => $user_id, 'user_role_status' => 1])
+            ->get_where($this->_table, ['user_id' => $user_id, 'user_role_status' => 1])
             ->result_array();
     }
 
@@ -46,14 +46,14 @@ class User_role_model extends CI_Model
             'update_userid' => $operator_userid,
         ];
         $this->db->where('user_id', $user_id);
-        $this->db->update($this->_model, $data);
+        $this->db->update($this->_table, $data);
         //更新角色组
         foreach ($role_list as $role_id) {
-            $info = $this->db->select('id')->get_where($this->_model, ['user_id' => $user_id, 'role_id' => $role_id])->row_array();
+            $info = $this->db->select('id')->get_where($this->_table, ['user_id' => $user_id, 'role_id' => $role_id])->row_array();
             if ($info) {
                 $this->db->set('user_role_status', 1);
                 $this->db->where('id', $info['id']);
-                $this->db->update($this->_model);
+                $this->db->update($this->_table);
             } else {
                 $user_role = [
                     'user_id' => $user_id,
@@ -63,7 +63,7 @@ class User_role_model extends CI_Model
                     'create_userid' => $operator_userid,
                     'update_userid' => $operator_userid,
                 ];
-                $this->db->insert($this->_model, $user_role);
+                $this->db->insert($this->_table, $user_role);
             }
         }
     }

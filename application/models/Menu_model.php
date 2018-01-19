@@ -7,7 +7,7 @@
  */
 class Menu_model extends CI_Model
 {
-    private $_model = 'sys_menu';
+    private $_table = 'sys_menu';
 
     public function __construct()
     {
@@ -24,7 +24,7 @@ class Menu_model extends CI_Model
      */
     public function get($menu_id = 0)
     {
-        $menu = $this->db->get_where($this->_model, ['menu_id' => $menu_id])->row_array();
+        $menu = $this->db->get_where($this->_table, ['menu_id' => $menu_id])->row_array();
         if (!$menu) show_error('请传入正确的菜单ID');
         return $menu;
     }
@@ -47,7 +47,7 @@ class Menu_model extends CI_Model
         $menu_id = $this->input->get('menu_id');
         $this->db->set('menu_status', 0);
         $this->db->where('menu_id', $menu_id);
-        return $this->db->update($this->_model);
+        return $this->db->update($this->_table);
     }
 
     /**
@@ -59,7 +59,7 @@ class Menu_model extends CI_Model
     {
         $this->db->reset_query();
         $this->db->select('menu_id,menu_name,menu_type,menu_icon');
-        $this->db->from($this->_model);
+        $this->db->from($this->_table);
         $this->db->where('menu_status', 1);
         $this->db->order_by('menu_sort asc');
         $menu = $this->db->get()->result_array();
@@ -81,7 +81,7 @@ class Menu_model extends CI_Model
     {
         $this->db->reset_query();
         $this->db->select('menu_id');
-        $this->db->from($this->_model);
+        $this->db->from($this->_table);
         $this->db->where('menu_status', 1);
         $this->db->where('menu_fid', $menu_fid);
         $this->db->order_by('menu_sort asc');
@@ -94,7 +94,7 @@ class Menu_model extends CI_Model
                 $this->db->set('menu_sort', $menu_sort, FALSE);
                 $this->db->set('menu_type', $deep, FALSE);
                 $this->db->where('menu_id', $item['menu_id']);
-                $this->db->update($this->_model);
+                $this->db->update($this->_table);
                 $this->reset_menu_sort($item['menu_id'], $menu_sort, $deep);
             }
         }
@@ -121,7 +121,7 @@ class Menu_model extends CI_Model
             $this->db->where('menu_fid', $param['menu_fid']);
         }
         $this->db->where('menu_status', $param['menu_status']);
-        $this->db->from($this->_model);
+        $this->db->from($this->_table);
         $db = clone($this->db);
         if ($need_page) {
             $page = isset($param['page']) ? intval($param['page']) : 1;
@@ -192,7 +192,7 @@ class Menu_model extends CI_Model
         if (is_null($data['menu_uri_short'])) {
             $data['menu_uri_short'] = '';
         }
-        if ($this->db->replace($this->_model, $data)) {
+        if ($this->db->replace($this->_table, $data)) {
             $this->save_menu();
         } else {
             throw new Exception($this->db->error());
@@ -205,7 +205,7 @@ class Menu_model extends CI_Model
      */
     public function get_menu_byid($menu_id = 0)
     {
-        return $this->db->get_where($this->_model, ['menu_id' => $menu_id, 'menu_status' => 1])->row_array();
+        return $this->db->get_where($this->_table, ['menu_id' => $menu_id, 'menu_status' => 1])->row_array();
     }
 
     /**
@@ -216,13 +216,13 @@ class Menu_model extends CI_Model
         $this->reset_menu_sort(0);
         $menu_list = [];
         $menu_num = 0;
-        $data_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => 0, 'menu_status' => 1])->result_array();
+        $data_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_table, ['menu_fid' => 0, 'menu_status' => 1])->result_array();
         foreach ($data_list as $key => $item) {
             //更新节点左支
-            $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $item['menu_id']]);
+            $this->db->update($this->_table, ['menu_left' => $menu_num], ['menu_id' => $item['menu_id']]);
             $menu_num++;
 
-            $children_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => $item['menu_id'], 'menu_status' => 1])->result_array();
+            $children_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_table, ['menu_fid' => $item['menu_id'], 'menu_status' => 1])->result_array();
             $menu = [];
             $menu['title'] = $item['menu_name'];
             $menu['icon'] = $item['menu_icon'];
@@ -231,7 +231,7 @@ class Menu_model extends CI_Model
             }
             if (!empty($children_list)) {
                 foreach ($children_list as $key_1 => $children) {
-                    $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $children['menu_id']]);
+                    $this->db->update($this->_table, ['menu_left' => $menu_num], ['menu_id' => $children['menu_id']]);
                     $menu_num++;
 
                     $c_item = [
@@ -244,20 +244,20 @@ class Menu_model extends CI_Model
                         $c_item['href'] = $children['menu_uri'];
                     }
                     $menu['children'][] = $c_item;
-                    $detail_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_model, ['menu_fid' => $children['menu_id'], 'menu_status' => 1])->result_array();
+                    $detail_list = $this->db->order_by('menu_sort', 'asc')->get_where($this->_table, ['menu_fid' => $children['menu_id'], 'menu_status' => 1])->result_array();
                     if (!empty($detail_list)) {
                         foreach ($detail_list as $key_2 => $detail) {
-                            $this->db->update($this->_model, ['menu_left' => $menu_num], ['menu_id' => $detail['menu_id']]);
+                            $this->db->update($this->_table, ['menu_left' => $menu_num], ['menu_id' => $detail['menu_id']]);
                             $menu_num++;
-                            $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $detail['menu_id']]);
+                            $this->db->update($this->_table, ['menu_right' => $menu_num], ['menu_id' => $detail['menu_id']]);
                             $menu_num++;
                         }
                     }
-                    $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $children['menu_id']]);
+                    $this->db->update($this->_table, ['menu_right' => $menu_num], ['menu_id' => $children['menu_id']]);
                     $menu_num++;
                 }
             }
-            $this->db->update($this->_model, ['menu_right' => $menu_num], ['menu_id' => $item['menu_id']]);
+            $this->db->update($this->_table, ['menu_right' => $menu_num], ['menu_id' => $item['menu_id']]);
             $menu_num++;
             $menu_list[] = $menu;
         }
@@ -298,7 +298,7 @@ class Menu_model extends CI_Model
                             $doc_line = explode(chr(10), $doc);
                             if (isset($doc_line[1])) {
                                 $method_uri = $module_name . '/' . $method;
-                                $data = $this->db->get_where($this->_model, ['menu_uri' => $method_uri, 'menu_type >' => $menu_type])
+                                $data = $this->db->get_where($this->_table, ['menu_uri' => $method_uri, 'menu_type >' => $menu_type])
                                     ->result_array();
                                 if (empty($data)) {
                                     $method_list[$method_uri] = $method . ':' . str_replace(['*', ' '], [], $doc_line[1]);
@@ -362,6 +362,6 @@ class Menu_model extends CI_Model
      */
     public function get_menu_tree()
     {
-        return $this->db->select('menu_id,menu_fid,menu_name,menu_type,menu_left,menu_right')->order_by('menu_left', 'asc')->get_where($this->_model, ['menu_status' => 1])->result_array();
+        return $this->db->select('menu_id,menu_fid,menu_name,menu_type,menu_left,menu_right')->order_by('menu_left', 'asc')->get_where($this->_table, ['menu_status' => 1])->result_array();
     }
 }

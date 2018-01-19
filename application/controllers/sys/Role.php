@@ -21,7 +21,7 @@ class Role extends CI_Controller
     {
         $data['title'] = '角色列表';
         if (!empty($this->input->get()) && IS_AJAX) {
-            exit($this->role_model->get_role($this->input->get(), TRUE,'json'));
+            exit($this->role_model->get_role($this->input->get(), TRUE, FALSE));
         }
         $this->load->view('', $data);
     }
@@ -65,7 +65,8 @@ class Role extends CI_Controller
         $role_id = $this->input->get_post('role_id');
         if ($this->_formValidation() === FALSE || empty($role_id)) {
             $data['role'] = $this->role_model->get($role_id);
-            $this->load->view('', $data);
+            $html = $this->load->view('', $data, TRUE);
+            send_json(TRUE, $html);
         } else {
             try {
                 $this->role_model->save_role($this->input->post());

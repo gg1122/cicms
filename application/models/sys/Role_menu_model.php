@@ -7,7 +7,7 @@
  */
 class Role_menu_model extends CI_Model
 {
-    private $_model = 'sys_role_menu';
+    private $_table = 'sys_role_menu';
 
     public function __construct()
     {
@@ -32,7 +32,7 @@ class Role_menu_model extends CI_Model
         $this->load->model('menu_model');
         $menu_tree = $this->menu_model->get_menu_tree();
         if (!empty($menu_tree)) {
-            $role_menu = $this->db->select('menu_id')->get_where($this->_model, ['role_id' => $role_id, 'access_status' => 1])->result_array();
+            $role_menu = $this->db->select('menu_id')->get_where($this->_table, ['role_id' => $role_id, 'access_status' => 1])->result_array();
             $role_access_old = [];
             if (!empty($role_menu)) {
                 $role_access_old = array_column($role_menu, 'menu_id');
@@ -65,7 +65,7 @@ class Role_menu_model extends CI_Model
             $this->db->trans_begin();
             $time = time();
             $user_id = $this->session->get_userdata()['user_id'];
-            $this->db->query("update {$this->_model} set access_status = 0,update_time = {$time},update_userid = {$user_id} where role_id = {$param['role_id']}");
+            $this->db->query("update {$this->_table} set access_status = 0,update_time = {$time},update_userid = {$user_id} where role_id = {$param['role_id']}");
             if (!empty($param['access'])) {
                 $access_menu = explode(',', $param['access']);
                 foreach ($access_menu as $menu_id) {
@@ -78,13 +78,13 @@ class Role_menu_model extends CI_Model
                         'create_userid' => $user_id,
                         'update_userid' => $user_id
                     ];
-                    $role_menu = $this->db->select('id,access_status')->get_where($this->_model, ['role_id' => $param['role_id'], 'menu_id' => $menu_id])->row_array();
+                    $role_menu = $this->db->select('id,access_status')->get_where($this->_table, ['role_id' => $param['role_id'], 'menu_id' => $menu_id])->row_array();
                     if ($role_menu) {
                         unset($data['create_time']);
                         unset($data['create_userid']);
-                        $this->db->update($this->_model, $data, ['id' => $role_menu['id']]);
+                        $this->db->update($this->_table, $data, ['id' => $role_menu['id']]);
                     } else {
-                        $this->db->insert($this->_model, $data);
+                        $this->db->insert($this->_table, $data);
                     }
                 }
             }

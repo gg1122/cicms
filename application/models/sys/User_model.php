@@ -7,7 +7,7 @@
  */
 class User_model extends CI_Model
 {
-    private $_model = 'sys_user';
+    private $_table = 'sys_user';
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class User_model extends CI_Model
      */
     public function get($user_id = 0)
     {
-        $user = $this->db->get_where($this->_model, ['user_id' => $user_id])->row_array();
+        $user = $this->db->get_where($this->_table, ['user_id' => $user_id])->row_array();
         if (!$user) show_error('请输入正确的用户ID');
         return $user;
     }
@@ -43,7 +43,7 @@ class User_model extends CI_Model
         if (!empty($param['search_type']) && isset($param['search_value'])) {
             $this->db->where($param['search_type'], $param['search_value']);
         }
-        $this->db->from($this->_model);
+        $this->db->from($this->_table);
         $db = clone($this->db);
         if ($need_page) {
             $page = isset($param['page']) ? intval($param['page']) : 1;
@@ -93,7 +93,7 @@ class User_model extends CI_Model
         if (isset($param['user_id'])) {
             unset($param['create_time']);
         }
-        if ($this->db->replace($this->_model, $data)) {
+        if ($this->db->replace($this->_table, $data)) {
             $user_id = $this->db->insert_id();
             if (!empty($param['user_role'])) {
                 $this->user_role_model->save_user_role($user_id, $param['user_role']);
@@ -127,7 +127,7 @@ class User_model extends CI_Model
                     //验证码比对失败
 //                    throw new Exception($this->lang->line('user_captcha_error'));
                 }
-                $userObj = $this->db->get_where($this->_model, ['user_name' => $user_name])
+                $userObj = $this->db->get_where($this->_table, ['user_name' => $user_name])
                     ->row();
                 if (empty($userObj)) {
                     throw new Exception($this->lang->line('user_info_error'));
@@ -138,7 +138,7 @@ class User_model extends CI_Model
                     $userObj->last_ip = ip2long($_SERVER['REMOTE_ADDR']);
                     $userObj->last_login = time();
                     $this->db->set($userObj);
-                    $this->db->update($this->_model, null, ['user_id' => $userObj->user_id]);
+                    $this->db->update($this->_table, null, ['user_id' => $userObj->user_id]);
                     $user_data = [
                         'user_id' => $userObj->user_id,
                         'user_name' => $userObj->user_name,

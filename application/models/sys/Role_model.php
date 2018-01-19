@@ -7,7 +7,7 @@
  */
 class Role_model extends CI_Model
 {
-    private $_model = 'sys_role';
+    private $_table = 'sys_role';
 
     public function __construct()
     {
@@ -20,11 +20,12 @@ class Role_model extends CI_Model
      *
      * @param int $role_id
      * @return array
+     * @throws Exception
      */
     public function get($role_id = 0)
     {
-        $role = $this->db->get_where($this->_model, ['role_id' => $role_id])->row_array();
-        if (empty($role)) show_error('请传入正确的角色ID');
+        $role = $this->db->get_where($this->_table, ['role_id' => $role_id])->row_array();
+        if (empty($role)) throw new Exception('请传入正确的角色ID');
         return $role;
     }
 
@@ -33,10 +34,10 @@ class Role_model extends CI_Model
      *
      * @param array $param
      * @param bool $is_page
-     * @param string $data_type
+     * @param bool $is_array
      * @return string
      */
-    public function get_role(array $param, $is_page = TRUE, $data_type = 'array')
+    public function get_role(array $param, $is_page = TRUE, $is_array = TRUE)
     {
         $this->db->select(['role_id', 'role_name', 'role_desc', 'role_status', 'create_time']);
         if (isset($param['role_status'])) {
@@ -50,21 +51,19 @@ class Role_model extends CI_Model
         if (!empty($param['role_id'])) {
             $this->db->where('role_id', intval($param['role_id']));
         }
-        $this->db->from($this->_model);
-        $db = clone($this->db);
+        $this->db->from($this->_table);
         if ($is_page) {
             $page = isset($param['page']) ? intval($param['page']) : 1;
             $limit = isset($param['limit']) ? intval($param['limit']) : 10;
-            $db->limit($limit, ($page - 1) * $limit);
+            $this->db->limit($limit, ($page - 1) * $limit);
         }
-        $role_list = $db->get()->result_array();
-        if ($data_type == 'json') { //只获取一层
-            $json_info['code'] = 0;
-            $json_info['rel'] = true;
-            $json_info['msg'] = '获取成功';
-            $json_info['count'] = $this->db->count_all_results();
+        $role_list = $this->db->get()->result_array();
+        if ($is_array) {
+            return $role_list;
+        } else {
+            $data = [];
             foreach ($role_list as $role) {
-                $json_info['data'][] = [
+                $data[] = [
                     'role_id' => $role['role_id'],
                     'role_name' => $role['role_name'],
                     'role_desc' => $role['role_desc'],
@@ -72,9 +71,9 @@ class Role_model extends CI_Model
                     'create_time' => date('Y-m-d H:i:s', $role['create_time']),
                 ];
             }
-            return json_encode($json_info);
+            $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
+            return send_list_json($data, $result->num_rows);
         }
-        return $role_list;
     }
 
     /**
@@ -84,18 +83,20 @@ class Role_model extends CI_Model
      * @return bool
      * @throws Exception
      */
-    public function save_role(array $param)
+    public function save_role(array $data)
     {
-        if (isset($param['role_status'])) {
-            if ($param['role_status'] === 'on') {
-                $param['role_status'] = 1;
-            } else {
-                $param['role_status'] = 0;
-            }
+        $time = time();
+        $user_id = $this->session->get_userdata()['user_id'];
+        if (isset($data['role_id'])) {
+            $this->get($data['role_id']);
         } else {
-            $param['role_status'] = 0;
+            $data['create_time'] = $time;
+            $data['create_userid'] = $user_id;
         }
-        if ($this->db->replace($this->_model, $param)) {
+        $data['role_status'] = $data['role_status'] === 'on' ? 1 : 0;
+        $data['update_time'] = $time;
+        $data['update_userid'] = $user_id;
+        if ($this->db->replace($this->_table, $data)) {
             return TRUE;
         } else {
             throw new Exception($this->db->error());

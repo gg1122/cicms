@@ -80,3 +80,19 @@ function send_list_json(array $list, $total = 0)
     $data_list['data'] = $list;
     echo json_encode($data_list);
 }
+
+/**
+ * 过滤掉 limit 后面的字符
+ *
+ * @param string $sql
+ * @return bool|int|string
+ */
+function filter_limit_sql($sql = '')
+{
+    $sql = strtoupper($sql);
+    $pos = strpos($sql, 'LIMIT');
+    if ($pos) {
+        $sql = substr($sql, 0, $pos);
+    }
+    return $sql;
+}
