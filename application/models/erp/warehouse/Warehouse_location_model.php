@@ -38,9 +38,9 @@ class Warehouse_location_model extends CI_Model
      * @param bool $is_array
      * @return string
      */
-    public function get_location(array $param, $is_page = TRUE, $is_array = TRUE)
+    public function get_location(array $param, $is_array = TRUE, $is_page = TRUE)
     {
-        $this->db->select('l.location_id,l.location_code,l.location_status,s.section_name,w.warehouse_name');
+        $this->db->select('l.location_id,l.location_code,l.location_status,s.section_name,w.warehouse_name,from_unixtime(l.create_time) create_time');
         $param_int = ['location_id', 'warehouse_id', 'section_id', 'location_status'];
         foreach ($param_int as $column) {
             if (isset($param[$column]) && $param[$column] !== '') {
@@ -65,14 +65,8 @@ class Warehouse_location_model extends CI_Model
             $data = [];
             $status_tips = ['已删除', '未使用', '使用中'];
             foreach ($location_list as $location) {
-                $data[] = [
-                    'location_id' => $location['location_id'],
-                    'location_code' => $location['location_code'],
-                    'section_name' => $location['section_name'],
-                    'warehouse_name' => $location['warehouse_name'],
-                    'location_status' => $status_tips[$location['location_status']],
-                    'create_time' => date('Y-m-d H:i:s', $location['create_time'])
-                ];
+                $location['location_status'] = $status_tips[$location['location_status']];
+                $data[] = $location;
             }
             $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
             return send_list_json($data, $result->num_rows);

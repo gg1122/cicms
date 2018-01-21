@@ -17,8 +17,6 @@ class Role_menu_model extends CI_Model
 
     public function insert($params)
     {
-        echo 11;
-        die;
     }
 
     /**

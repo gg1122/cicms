@@ -37,7 +37,12 @@ class User extends CI_Controller
             $data['title'] = '登录页面';
             $this->load->view('sys/login', $data);
         } else {
-            $this->user_model->login();
+            try {
+                $this->user_model->login();
+                send_json(TRUE, $this->lang->line('user_login_success'));
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
+            }
         }
     }
 
@@ -81,7 +86,7 @@ class User extends CI_Controller
     public function index()
     {
         if (!empty($this->input->get())) {
-            exit($this->user_model->get_user($this->input->get(), 'json'));
+            exit($this->user_model->get_user($this->input->get(), FALSE));
         }
         $this->load->view('');
     }

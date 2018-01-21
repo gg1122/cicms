@@ -22,6 +22,7 @@ class User_model extends CI_Model
      *
      * @param int $user_id
      * @return array
+     * @throws Exception
      */
     public function get($user_id = 0)
     {
@@ -34,69 +35,57 @@ class User_model extends CI_Model
      * 获取用户列表
      *
      * @param array $param
-     * @param string $data_type
-     * @param bool $need_page
+     * @param bool $is_page
+     * @param bool $is_array
      * @return string
      */
-    public function get_user(array $param, $data_type = 'array', $need_page = TRUE)
+    public function get_user(array $param, $is_array = TRUE, $is_page = TRUE)
     {
+        $this->db->select('user_id,user_name,user_email,display_name,user_status,inet_ntoa(last_ip) last_ip,from_unixtime(last_login) last_login');
         if (!empty($param['search_type']) && isset($param['search_value'])) {
             $this->db->where($param['search_type'], $param['search_value']);
         }
-        $this->db->from($this->_table);
-        $db = clone($this->db);
-        if ($need_page) {
-            $page = isset($param['page']) ? intval($param['page']) : 1;
-            $limit = isset($param['limit']) ? intval($param['limit']) : 10;
-            $db->limit($limit, ($page - 1) * $limit);
+        if ($is_page) {
+            $page = !empty($param['page']) ? intval($param['page']) : 1;
+            $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
+            $this->db->limit($limit, ($page - 1) * $limit);
         }
-        $menu = $db->get()->result_array();
-        if ($data_type == 'json') { //只获取一层
-            $list = [];
-            foreach ($menu as $item) {
-                $list[] = [
-                    'user_id' => $item['user_id'],
-                    'user_name' => $item['user_name'],
-                    'user_email' => $item['user_email'],
-                    'display_name' => $item['display_name'],
-                    'user_status' => $item['user_status'],
-                    'last_ip' => long2ip($item['last_ip']),
-                    'last_login' => $item['last_login'] == 0 ? '暂未登录过' : date('Y-m-d H:i:s', $item['last_login']),
-                ];
-            }
-            return send_list_json($list, $this->db->count_all_results());
+        $user_list = $this->db->get($this->_table)->result_array();
+        if ($is_array) {
+            return $user_list;
+        } else {
+            $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
+            return send_list_json($user_list, $result->num_rows);
         }
-        return $menu;
     }
 
     /**
      * 保存用户信息
      *
-     * @param array $param
+     * @param array $data
      * @return bool
      * @throws Exception
      */
-    public function save_user(array $param)
+    public function save_user(array $data)
     {
         $data = [
-            'user_name' => $param['user_name'],
-            'user_email' => $param['user_email'],
-            'display_name' => $param['display_name'],
-            'user_pass' => password_hash($param['user_pass'], PASSWORD_DEFAULT),
-            'user_level' => $param['user_level'],
+            'user_name' => $data['user_name'],
+            'user_email' => $data['user_email'],
+            'display_name' => $data['display_name'],
+            'user_level' => $data['user_level'],
             'create_time' => time(),
             'update_time' => time(),
         ];
-        if (isset($param['user_pass'])) {
-
+        if (isset($data['user_pass'])) {
+            $data['user_pass'] = password_hash($data['user_pass'], PASSWORD_DEFAULT);
         }
-        if (isset($param['user_id'])) {
-            unset($param['create_time']);
+        if (isset($data['user_id'])) {
+            unset($data['create_time']);
         }
         if ($this->db->replace($this->_table, $data)) {
             $user_id = $this->db->insert_id();
-            if (!empty($param['user_role'])) {
-                $this->user_role_model->save_user_role($user_id, $param['user_role']);
+            if (!empty($data['user_role'])) {
+                $this->user_role_model->save_user_role($user_id, $data['user_role']);
             }
             return TRUE;
         } else {
@@ -154,7 +143,7 @@ class User_model extends CI_Model
             }
             send_json(TRUE, $this->lang->line('user_login_success'));
         } catch (Exception $e) {
-            send_json(FALSE, $e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 

@@ -53,8 +53,8 @@ class Role_model extends CI_Model
         }
         $this->db->from($this->_table);
         if ($is_page) {
-            $page = isset($param['page']) ? intval($param['page']) : 1;
-            $limit = isset($param['limit']) ? intval($param['limit']) : 10;
+            $page = !empty($param['page']) ? intval($param['page']) : 1;
+            $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
         }
         $role_list = $this->db->get()->result_array();
@@ -79,7 +79,7 @@ class Role_model extends CI_Model
     /**
      * 保存角色数据
      *
-     * @param array $param
+     * @param array $data
      * @return bool
      * @throws Exception
      */
@@ -119,7 +119,7 @@ class Role_model extends CI_Model
      * 设置角色-菜单
      *
      * @param array $param
-     * @return array
+     * @throws Exception
      */
     public function set_role_menu(array $param)
     {

@@ -57,7 +57,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">角色</label>
         <div class="layui-input-block">
-            <select name="user_level" lay-filter="user_level" lay-verify="required" multiple>
+            <select name="user_role" lay-filter="user_role" lay-verify="required" multiple>
                 <?php
                 foreach ($role_list as $role):
                     ?>

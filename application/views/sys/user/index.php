@@ -43,7 +43,7 @@
     <thead>
     <tr>
         <th lay-data="{checkbox:true, fixed: true}"></th>
-        <th lay-data="{field:'user_id', width:100, sort: true, fixed: true}">ID</th>
+        <th lay-data="{field:'user_id', width:100, sort: true, fixed: true,type:space,display:none}">ID1</th>
         <th lay-data="{field:'user_name', width:100}">登录名</th>
         <th lay-data="{field:'display_name', width:100}">展示名</th>
         <th lay-data="{field:'user_email', width:150}">邮箱</th>
