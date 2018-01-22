@@ -22,6 +22,7 @@
  * @property user_model $user_model
  * @property user_role_model $user_role_model
  * @property role_menu_model $role_menu_model
+ * @property warehouse_model $warehouse_model
  *
  *
  *

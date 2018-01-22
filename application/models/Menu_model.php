@@ -24,7 +24,7 @@ class Menu_model extends CI_Model
      */
     public function get($menu_id = 0)
     {
-        $menu = $this->db->get_where($this->_table, ['menu_id' => $menu_id])->row_array();
+        $menu = $this->db->get_where($this->_table, ['menu_id' => intval($menu_id)])->row_array();
         if (!$menu) show_error('请传入正确的菜单ID');
         return $menu;
     }
@@ -160,40 +160,24 @@ class Menu_model extends CI_Model
     }
 
     /**
-     * 设置菜单信息
+     * 保存菜单数据
      *
+     * @param array $data
      * @throws Exception
      */
-    public function set_menu()
+    public function save_menu(array $data)
     {
-        $this->load->helper('url');
-        $data = [
-            'menu_name' => $this->input->post('menu_name'),
-            'menu_fid' => $this->input->post('menu_fid'),
-            'menu_uri' => $this->input->post('menu_uri', ''),
-            'menu_uri_short' => $this->input->post('menu_uri_short', ''),
-            'menu_icon' => $this->input->post('menu_icon'),
-            'menu_type' => $this->input->post('menu_type'),
-            'menu_sort' => $this->input->post('menu_sort'),
-            'menu_status' => strtolower($this->input->post('menu_status')) == 'on' ? 1 : 0,
-            'update_time' => time(),
-        ];
-        if (!empty($this->input->post('menu_id'))) {
-            $data['menu_id'] = $this->input->post('menu_id');
+        $time = time();
+        if (isset($data['menu_id'])) {
+            $this->get($data['menu_id']);
         } else {
-            $data['create_time'] = time();
+            $data['create_time'] = $time;
         }
-        if (is_null($data['menu_uri'])) {
-            $data['menu_uri'] = '';
-        }
-        if (is_null($data['menu_fid'])) {
-            $data['menu_fid'] = 0;
-        }
-        if (is_null($data['menu_uri_short'])) {
-            $data['menu_uri_short'] = '';
-        }
+        $data['update_time'] = $time;
+        $data['menu_status'] = intval(isset($data['menu_status']));
+        unset($data['menu_module']);
         if ($this->db->replace($this->_table, $data)) {
-            $this->save_menu();
+            $this->recreate_menu_json();
         } else {
             throw new Exception($this->db->error());
         }
@@ -211,7 +195,7 @@ class Menu_model extends CI_Model
     /**
      * 重新生产菜单JSON
      */
-    public function save_menu()
+    public function recreate_menu_json()
     {
         $this->reset_menu_sort(0);
         $menu_list = [];
@@ -317,18 +301,35 @@ class Menu_model extends CI_Model
                 if (!empty($files)) {
                     foreach ($files as $item) {
                         if (is_dir($item)) {
-                            $php_list = glob($item . '/*.php');
-                            if (!empty($php_list)) {
-                                foreach ($php_list as $php) {
-                                    include_once $php;
-                                    $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $php);
-                                    $module_info = explode('/', $module_name);
-                                    $module_obj = new ReflectionClass($module_info[1]);
-                                    $doc = $module_obj->getDocComment();
-                                    if (!empty($doc)) {
-                                        $doc_line = explode(chr(10), $doc);
-                                        if (isset($doc_line[1])) {
-                                            $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                            $file_second_list = glob($item . '/*');
+                            if (!empty($file_second_list)) {
+                                foreach ($file_second_list as $file_second) {
+                                    if (is_dir($file_second)) {
+                                        $file_third_list = glob($file_second . '/*.php');
+                                        foreach ($file_third_list as $file_third) {
+                                            include_once $file_third;
+                                            $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $file_third);
+                                            $module_info = explode('/', $module_name);
+                                            $module_obj = new ReflectionClass($module_info[count($module_info) - 1]);
+                                            $doc = $module_obj->getDocComment();
+                                            if (!empty($doc)) {
+                                                $doc_line = explode(chr(10), $doc);
+                                                if (isset($doc_line[1])) {
+                                                    $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        include_once $file_second;
+                                        $module_name = str_replace([APPPATH . 'controllers/', '.php'], '', $file_second);
+                                        $module_info = explode('/', $module_name);
+                                        $module_obj = new ReflectionClass($module_info[1]);
+                                        $doc = $module_obj->getDocComment();
+                                        if (!empty($doc)) {
+                                            $doc_line = explode(chr(10), $doc);
+                                            if (isset($doc_line[1])) {
+                                                $modules_list[$module_name] = $module_name . ':' . str_replace(['*', ' '], [], $doc_line[1]);
+                                            }
                                         }
                                     }
                                 }

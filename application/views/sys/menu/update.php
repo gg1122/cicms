@@ -68,7 +68,7 @@
         <label class="layui-form-label">菜单状态</label>
         <div class="layui-input-block">
             <input type="checkbox" name="menu_status" lay-skin="switch"
-                   lay-verify="required" <?= $menuObj['menu_status'] == 1 ? 'checked' : '' ?>/>
+                   lay-verify="required" <?= $menuObj['menu_status'] == 1 ? 'checked' : '' ?> />
         </div>
     </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>

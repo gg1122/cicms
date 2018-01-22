@@ -9,7 +9,7 @@
                 <option value="1">顶部菜单</option>
                 <option value="2">左部菜单</option>
                 <option value="3">左部子菜单</option>
-                <option value="4">模块功能</option>
+                <option value="4">子菜单功能</option>
             </select>
         </div>
     </div>
@@ -35,7 +35,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="menu_status" checked="" lay-skin="switch" lay-verify="required"/>
+            <input type="checkbox" name="menu_status" checked="" lay-skin="switch" lay-verify="required" lay-value="1|0"/>
         </div>
     </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>

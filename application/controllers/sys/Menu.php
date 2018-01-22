@@ -33,15 +33,19 @@ class Menu extends CI_Controller
     /**
      * 新增菜单
      */
-    public function add()
+    public function create()
     {
         $data['title'] = '新增菜单';
         if ($this->_formValidation() === FALSE) {
             $data['menuList'] = $this->menu_model->get_all_menu();
-            $this->load->view('sys/menu/add', $data);
+            send_json(TRUE,$this->load->view('', $data,TRUE));
         } else {
-            $this->menu_model->set_menu();
-            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+            try{
+                $this->menu_model->save_menu($this->input->post());
+                exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+            }catch (Exception $e){
+                send_json(FALSE,$e->getMessage());
+            }
         }
     }
 
@@ -55,9 +59,9 @@ class Menu extends CI_Controller
         if ($this->_formValidation() === FALSE || empty($menu_id)) {
             $data['menuList'] = $this->menu_model->get_all_menu();
             $data['menuObj'] = $this->menu_model->get($menu_id);
-            $this->load->view('sys/menu/update', $data);
+            send_json(TRUE,$this->load->view('', $data,TRUE));
         } else {
-            $this->menu_model->set_menu();
+            $this->menu_model->save_menu($this->input->post());
             exit(json_encode(['status' => TRUE, 'message' => 'Success']));
         }
     }
@@ -121,7 +125,7 @@ class Menu extends CI_Controller
      */
     public function clean_cache()
     {
-        $this->menu_model->save_menu();
+        $this->menu_model->recreate_menu_json();
         send_json();
     }
 
