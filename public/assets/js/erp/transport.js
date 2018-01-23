@@ -10,12 +10,12 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
     table.on('tool(demo)', function (obj) {
         var data = obj.data;
         if (obj.event === 'edit') {
-            saveWarehouse('update', data.warehouse_id);
+            saveTransport('update', data.transport_id);
         }
     });
     var $ = layui.$, active = {
         getCheckData: function () { //获取选中数据
-            var checkStatus = table.checkStatus('roleListForm')
+            var checkStatus = table.checkStatus('transportListForm')
                 , data = checkStatus.data;
             layer.open({
                 type: 1,
@@ -27,9 +27,9 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                 maxmin: true
             });
 
-        },addWarehouse: function (form) {
+        },addTransport: function (form) {
             var addBoxIndex = -1;
-            saveWarehouse('create');
+            saveTransport('create');
         }
     };
 
@@ -39,19 +39,19 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
     });
 
     /**
-     * 仓库弹出层
+     * 物流弹出层
      *
      * @param type
      * @param warehouse_id
      */
-    function saveWarehouse(type, warehouse_id) {
+    function saveTransport(type, transport_id) {
         var title = '新增仓库';
         var url = '';
         if (type == 'update') {
             title = '更新仓库';
-            url += '?warehouse_id=' + warehouse_id;
+            url += '?transport_id=' + transport_id;
         }
-        $.get(base_url + '/erp/wm/warehouse/' + type + url, null, function (result) {
+        $.get(base_url + '/erp/wm/transport/' + type + url, null, function (result) {
             if (!result.status) {
                 layer.alert(result.message, {icon: 2});
             } else {
@@ -88,7 +88,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                             console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
                             $.ajax({
                                 type: 'POST',
-                                url: base_url + '/erp/wm/warehouse/' + type,
+                                url: base_url + '/erp/wm/transport/' + type,
                                 data: $("form").serialize(),
                                 dataType: 'json',
                                 success: function (callback) {

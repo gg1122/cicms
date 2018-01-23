@@ -29,7 +29,7 @@ class Wmanager extends CI_Controller
                 send_json(FALSE, $e->getMessage());
             }
         } else {
-            $this->load->view('erp/warehouse/index');
+            $this->load->view('');
         }
     }
 
