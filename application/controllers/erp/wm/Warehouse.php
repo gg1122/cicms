@@ -5,7 +5,7 @@
  *
  * User: kendo
  */
-class Wmanager extends CI_Controller
+class Warehouse extends CI_Controller
 {
     private $_warehouse_type =  [1 => '自建仓库', '海外仓', '虚拟仓'];
     public function __construct()
@@ -50,7 +50,7 @@ class Wmanager extends CI_Controller
         $this->load->helper('form');
         if (IS_AJAX) {
             if (IS_GET) {
-                send_json(TRUE, $this->load->view('erp/warehouse/create', ['type_list' => [1 => '自建仓库', '海外仓', '虚拟仓']], TRUE));
+                send_json(TRUE, $this->load->view('', ['type_list' => [1 => '自建仓库', '海外仓', '虚拟仓']], TRUE));
             } else {
                 try {
                     $this->_formValidation();
@@ -76,7 +76,7 @@ class Wmanager extends CI_Controller
                     $warehouse = $this->warehouse_model->get($warehouse_id);
                     $data['type_list'] = $this->_warehouse_type;
                     $data['warehouse'] = $warehouse;
-                    $html = $this->load->view('erp/warehouse/update', $data, TRUE);
+                    $html = $this->load->view('', $data, TRUE);
                     send_json(TRUE, $html);
                 } else {
                     $this->_formValidation();

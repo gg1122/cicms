@@ -10,6 +10,7 @@ class Transport extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('erp/warehouse/transport_model');
     }
 
     /**
@@ -17,8 +18,16 @@ class Transport extends CI_Controller
      */
     public function index()
     {
-
-        $this->load->view();
+        if (IS_AJAX && IS_GET) {
+            try {
+                $get = $this->input->get();
+                exit($this->transport_model->get_transport($get, FALSE));
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
+            }
+        } else {
+            $this->load->view('');
+        }
     }
 
     /**
