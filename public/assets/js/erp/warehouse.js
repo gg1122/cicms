@@ -30,6 +30,12 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
         },addWarehouse: function (form) {
             var addBoxIndex = -1;
             saveWarehouse('create');
+        },searchData:function () {
+            table.reload('warehouseListForm', {
+                where: {
+                    warehouse_status: $('#warehouse_status').val(),
+                },
+            });
         }
     };
 

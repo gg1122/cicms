@@ -12,23 +12,32 @@
 <body style="margin-left: 10px;margin-top: 10px;">
 <div class="demoTable">
     <div class="layui-btn-group ">
-        <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
         <button class="layui-btn" data-type="addWarehouse">
-            <i class="layui-icon">&#xe608;</i> 新增仓库
+            <i class="layui-icon">&#xe608;</i> 新增物流
         </button>
     </div>
+    <div class="layui-inline  layui-form">
+        <label class="layui-form-label">物流状态</label>
+        <div class="layui-input-inline">
+            <select name="warehouse_status" id="warehouse_status" lay-verify="required" lay-search="">
+                <option value="">直接选择或搜索选择</option>
+                <option value="0">已关闭</option>
+                <option value="1">启用中</option>
+            </select>
+        </div>
+    </div>
+    <button class="layui-btn" data-type="searchData">搜索</button>
 </div>
-
 <table class="layui-table"
-       lay-data="{height:'full',url:'/erp/wm/warehouse/index', page:true,id:'roleListForm',where:{role_status:1},limit:10}"
+       lay-data="{height:'full',url:'/erp/wm/transport/index', page:true,id:'transportListForm',where:{warehouse_status:1},limit:10}"
        lay-filter="demo" style="margin-left: 20px;">
     <thead>
     <tr>
         <th lay-data="{checkbox:true, fixed: true}"></th>
-        <th lay-data="{field:'warehouse_id', width:80, sort: true, fixed: true}">ID</th>
-        <th lay-data="{field:'warehouse_code', width:150}">仓库编码</th>
-        <th lay-data="{field:'warehouse_name', width:150}">仓库名称</th>
-        <th lay-data="{field:'warehouse_type', width:150}">仓库类型</th>
+        <th lay-data="{field:'transport_id', width:80, sort: true, fixed: true}">ID</th>
+        <th lay-data="{field:'transport_name', width:150}">物流名称</th>
+        <th lay-data="{field:'transport_desc', width:150}">物流描述</th>
+        <th lay-data="{field:'transport_status', width:150}">物流状态</th>
         <th lay-data="{field:'create_time', width:150}">创建时间</th>
         <th lay-data="{fixed: 'right', width:200,toolbar: '#barDemo'}">操作</th>
     </tr>

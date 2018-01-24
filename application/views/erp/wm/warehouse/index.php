@@ -12,15 +12,25 @@
 <body style="margin-left: 10px;margin-top: 10px;">
 <div class="demoTable">
     <div class="layui-btn-group ">
-        <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
         <button class="layui-btn" data-type="addWarehouse">
             <i class="layui-icon">&#xe608;</i> 新增仓库
         </button>
     </div>
-</div>
 
+    <div class="layui-inline  layui-form">
+        <label class="layui-form-label">仓库状态</label>
+        <div class="layui-input-inline">
+            <select name="warehouse_status" id="warehouse_status" lay-verify="required" lay-search="">
+                <option value="">直接选择或搜索选择</option>
+                <option value="0">已关闭</option>
+                <option value="1">启用中</option>
+            </select>
+        </div>
+    </div>
+    <button class="layui-btn" data-type="searchData">搜索</button>
+</div>
 <table class="layui-table"
-       lay-data="{height:'full',url:'/erp/warehouse/Wmanager/index', page:true,id:'roleListForm',where:{role_status:1},limit:10}"
+       lay-data="{height:'full',url:'/erp/wm/warehouse/index', page:true,id:'warehouseListForm',where:{warehouse_status:1},limit:10}"
        lay-filter="demo" style="margin-left: 20px;">
     <thead>
     <tr>
