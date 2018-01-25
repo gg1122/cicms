@@ -79,8 +79,6 @@ class Product_model extends CI_Model
             $data['create_time'] = $time;
             $data['create_userid'] = $user_id;
         }
-        $data['update_time'] = $time;
-        $data['update_userid'] = $user_id;
         if (!empty($data['product_keyword'])) {
             $data['product_keyword'] = json_encode($data['product_keyword']);
         }
@@ -90,6 +88,9 @@ class Product_model extends CI_Model
         if (!empty($data['category_ids'])) {
             $data['category_ids'] = json_encode($data['category_ids']);
         }
+        $data['update_time'] = $time;
+        $data['update_userid'] = $user_id;
+        $data['category_status'] = intval(isset($data['category_status']));
         if ($this->db->replace($this->_table, $data)) {
             return TRUE;
         } else {

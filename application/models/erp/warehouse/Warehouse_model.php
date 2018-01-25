@@ -85,14 +85,14 @@ class Warehouse_model extends CI_Model
     {
         $time = time();
         $user_id = $this->session->get_userdata()['user_id'];
-        $data['update_time'] = $time;
-        $data['update_userid'] = $user_id;
         if (isset($data['warehouse_id'])) {
             $this->get($data['warehouse_id']);
         } else {
             $data['create_time'] = $time;
             $data['create_userid'] = $user_id;
         }
+        $data['update_time'] = $time;
+        $data['update_userid'] = $user_id;
         $data['warehouse_status'] = intval(isset($data['warehouse_status']));
         if ($this->db->replace($this->_table, $data)) {
             return TRUE;

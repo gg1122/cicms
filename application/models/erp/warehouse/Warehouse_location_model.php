@@ -90,7 +90,7 @@ class Warehouse_location_model extends CI_Model
             $data['create_time'] = $time;
             $data['create_userid'] = $user_id;
         }
-        $data['location_status'] = $data['location_status'] === 'on' ? 1 : 0;
+        $data['location_status'] =  intval(isset($data['location_status']));
         $data['update_time'] = $time;
         $data['update_userid'] = $user_id;
         if ($this->db->replace($this->_table, $data)) {

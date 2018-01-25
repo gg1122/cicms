@@ -43,4 +43,9 @@ class Depot_out_model extends CI_Model
             return send_list_json($depot_out_list, $result->num_rows);
         }
     }
+
+    public function get_out_product()
+    {
+
+    }
 }
