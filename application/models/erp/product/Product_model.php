@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 产品模型
+ * 商品模型
  * User: kendo
  */
 class Product_model extends CI_Model

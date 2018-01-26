@@ -2,7 +2,6 @@
 
 /**
  * 系统角色模型
- *
  * User: kendo
  */
 class Role_model extends CI_Model

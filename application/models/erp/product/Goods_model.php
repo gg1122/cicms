@@ -1,8 +1,8 @@
 <?php
 
 /**
+ * 货品模型
  * User: kendo
- * Date: 2018/1/20
  */
 class Goods_model extends CI_Model
 {
@@ -23,7 +23,7 @@ class Goods_model extends CI_Model
 
     public function get_goods(array $param, $is_page = TRUE, $is_array = TRUE)
     {
-        $this->db->select('g.goods_id,g.goods_name,g.goods_code,g.goods_keyword,g.feature_values');
+        $this->db->select('g.goods_id,g.goods_name,g.goods_code,g.goods_keyword,g.feature_ids');
         if (!empty($param['goods_code'])) {
             $this->db->where('g.goods_code', strtoupper($param['goods_code']));
         }
@@ -53,8 +53,8 @@ class Goods_model extends CI_Model
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
         }
-        $this->db->from($this->_table.' g');
-        $this->db->join('erp_product p');
+        $this->db->from($this->_table . ' g');
+        $this->db->join('erp_product p','g.goods_id = p.goods_id');
         $goods_list = $this->db->get()->result_array();
         if ($is_array) {
             return $goods_list;
