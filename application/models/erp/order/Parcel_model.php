@@ -36,6 +36,8 @@ class Parcel_model extends CI_Model
             'p.parcel_time',
         ];
         $this->db->select(join(',', $select_column));
+        $this->db->from($this->_table . ' p');
+        $this->db->join('erp_parcel_order po', 'p.parcel_code = po.parcel_code');
         $param_int = ['shop_id', 'warehouse_id', 'transport_id', 'parcel_status'];
         foreach ($param_int as $column) {
             if (isset($param[$column]) && $param[$column] !== '') {
@@ -54,8 +56,6 @@ class Parcel_model extends CI_Model
         if (!empty($param['depot_out_code'])) {
             $this->db->where('po.depot_out_code', $param['depot_out_code']);
         }
-        $this->db->from($this->_table . ' p');
-        $this->db->join('erp_parcel_order po', 'p.parcel_code = po.parcel_code');
         if ($is_page) {
             $page = !empty($param['page']) ? intval($param['page']) : 1;
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
