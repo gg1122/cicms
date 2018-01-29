@@ -1,9 +1,11 @@
 <?php
+
 /**
  * 供应商模型
  * User: kendo    2018/1/26
  */
-class Supplier_model extends CI_Model{
+class Supplier_model extends CI_Model
+{
     private $_table = 'erp_supplier';
 
     public function __construct()
@@ -28,8 +30,8 @@ class Supplier_model extends CI_Model{
             'contact_email',
             'contact_qq',
         ];
-        foreach ($param_str as $column){
-
+        foreach ($param_str as $column) {
+            $this->db->where($column, $param[$column]);
         }
         if ($is_page) {
             $page = !empty($param['page']) ? intval($param['page']) : 1;
