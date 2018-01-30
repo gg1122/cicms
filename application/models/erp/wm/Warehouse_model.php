@@ -63,8 +63,9 @@ class Warehouse_model extends CI_Model
             $this->db->limit($limit, ($page - 1) * $limit);
         }
         $warehouse_list = $this->db->get($this->_table)->result_array();
-        foreach ($warehouse_list as &$warehouse){
+        foreach ($warehouse_list as &$warehouse) {
             $warehouse['warehouse_type'] = $param['warehouse_type'][$warehouse['warehouse_type']];
+            $warehouse['create_time'] = date('Y-m-d H:i:s',$warehouse['create_time']);
         }
         if ($is_array) {
             return $warehouse_list;
@@ -98,6 +99,27 @@ class Warehouse_model extends CI_Model
             return TRUE;
         } else {
             throw new Exception($this->db->error());
+        }
+    }
+
+    /**
+     * 变更仓库状态
+     *
+     * @param int $warehouse_id
+     * @param int $warehouse_status
+     * @return array|bool
+     */
+    public function change_warehouse_status($warehouse_id = 0, $warehouse_status = 0)
+    {
+        $warehosue = $this->get($warehouse_id);
+        if ($warehosue['warehouse_status'] === intval($warehouse_status)) {
+            return TRUE;
+        }
+        $exec_status = $this->db->update($this->_table, ['warehouse_status' => intval($warehouse_status)], 'warehouse_id = ' . intval($warehouse_id));
+        if ($exec_status) {
+            return TRUE;
+        } else {
+            return $this->db->error();
         }
     }
 }

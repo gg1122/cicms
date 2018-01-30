@@ -60,7 +60,7 @@
 </table>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
 <script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
 <script src="<?= $this->config->item('base_url') ?>/assets/js/sys/menu.js" charset="utf-8"></script>

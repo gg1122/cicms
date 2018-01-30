@@ -1,11 +1,11 @@
 <?php
 
 /**
- * 物流服务商控制器
+ * 物流转换管理
  *
- * User: kendo
+ * User: kendo    2018/1/29
  */
-class TransportProvider extends CI_Controller
+class Transport_transfer extends CI_Controller
 {
     public function __construct()
     {
@@ -13,7 +13,7 @@ class TransportProvider extends CI_Controller
     }
 
     /**
-     * 物流服务商
+     * 物流转换列表
      */
     public function index()
     {
@@ -21,18 +21,19 @@ class TransportProvider extends CI_Controller
     }
 
     /**
-     * 新增物流服务商
+     * 新增物流转换
      */
     public function create()
     {
-
     }
 
     /**
-     * 更新物流服务商
+     * 更新物流转换
      */
     public function update()
     {
 
     }
+
+
 }

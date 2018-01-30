@@ -11,8 +11,8 @@ layui.use(['table', 'form'], function () {
         var data = obj.data;
         if (obj.event === 'detail') {
             layer.msg('ID：' + data.id + ' 的查看操作');
-        } else if (obj.event === 'del') {
-            layer.confirm('真的删除行么', function (index) {
+        } else if (obj.event === 'delete') {
+            layer.confirm('确认禁用该菜单？', function (index) {
                 $.getJSON(base_url + '/menu/disable', {menu_id: data.menu_id}, function (res) {
                     layer.close(index);
                     if (res.status) {
@@ -46,8 +46,9 @@ layui.use(['table', 'form'], function () {
             table.reload('menuListForm', {
                 where: {
                     menu_fid: $('#search_value').val(),
-                    menu_id: $('#menu_id').val()
-                }
+                    menu_id: $('#menu_id').val(),
+                },
+                page: {curr: 1},
             });
         }, addMenu: function (form) {
             var addBoxIndex = -1;
@@ -70,9 +71,9 @@ layui.use(['table', 'form'], function () {
             var get_tree = $.get(base_url + '/sys/menu/get_module_tree_used', {menu_type: data.value}, function (res) {
                 if (res.status) {
                     var content = '<div class="layui-form-item" id="menu_fid_div">';
-                    content += '<label class="layui-form-label">上级菜单</label>'
-                    content += '<div class="layui-input-block">'
-                    content += '<select name="menu_fid" lay-filter="menu_fid" lay-verify="required">'
+                    content += '<label class="layui-form-label">上级菜单</label>';
+                    content += '<div class="layui-input-inline">';
+                    content += '<select name="menu_fid" lay-filter="menu_fid" lay-verify="required" lay-search="">';
                     content += '<option value="">请选择</option>';
                     $.each(res.data, function (i, data) {
                         content += '<option value="' + data.menu_id + '">' + data.menu_name + '</option>';
@@ -95,9 +96,9 @@ layui.use(['table', 'form'], function () {
                     $.get(base_url + '/sys/menu/get_module_tree', null, function (res) {
                         if (res.status) {
                             var content = '<div class="layui-form-item" id="menu_module_div">';
-                            content += '<label class="layui-form-label">菜单模块</label>'
-                            content += '<div class="layui-input-block">'
-                            content += '<select name="menu_module" lay-filter="menu_module" lay-verify="required">'
+                            content += '<label class="layui-form-label">菜单模块</label>';
+                            content += '<div class="layui-input-inline">';
+                            content += '<select name="menu_module" lay-filter="menu_module" lay-verify="required" lay-search="">';
                             content += '<option value="">请选择</option>';
                             $.each(res.data, function (i, value) {
                                 content += '<option value="' + i + '">' + value + '</option>';
@@ -126,9 +127,9 @@ layui.use(['table', 'form'], function () {
             $.get(base_url + '/sys/menu/get_module_tree', {module: data.value}, function (res) {
                 if (res.status) {
                     var content = '<div class="layui-form-item" id="menu_uri_div">';
-                    content += '<label class="layui-form-label">菜单地址</label>'
-                    content += '<div class="layui-input-block">'
-                    content += '<select name="menu_uri" lay-filter="menu_uri" lay-verify="required">'
+                    content += '<label class="layui-form-label">菜单地址</label>';
+                    content += '<div class="layui-input-inline">';
+                    content += '<select name="menu_uri" lay-filter="menu_uri" lay-verify="required" lay-search="">';
                     content += '<option value="">请选择</option>';
                     $.each(res.data, function (i, value) {
                         content += '<option value="' + i + '">' + value + '</option>';
@@ -139,7 +140,7 @@ layui.use(['table', 'form'], function () {
 
                     content += '<div class="layui-form-item" id="menu_uri_short_div">';
                     content += '<label class="layui-form-label">菜单短地址</label>';
-                    content += '<div class="layui-input-block">';
+                    content += '<div class="layui-input-inline">';
                     content += '<input type="text" name="menu_uri_short" placeholder="请输入" autocomplete="off" class="layui-input">';
                     content += '</div>';
                     content += '</div>';
@@ -181,7 +182,7 @@ layui.use(['table', 'form'], function () {
             url += '?menu_id=' + menu_id;
         }
         $.get(base_url + '/sys/menu/' + type + url, null, function (result) {
-            if(result.status){
+            if (result.status) {
                 layer.open({
                     type: 1,
                     title: title,
@@ -240,10 +241,10 @@ layui.use(['table', 'form'], function () {
                         addBoxIndex = -1;
                     }
                 });
-            }else{
+            } else {
                 layer.alert(result.message);
             }
 
-        },'JSON');
+        }, 'JSON');
     }
 });

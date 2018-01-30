@@ -159,4 +159,9 @@ class User_model extends CI_Model
             header('location:/login');
         }
     }
+
+    public function check_acl($user_id = 0, $route = '')
+    {
+        $role_list = $this->db->query();
+    }
 }

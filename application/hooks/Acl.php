@@ -17,8 +17,10 @@ class Acl
     {
         $this->_ci = &get_instance();
         $this->_ci->load->library('session');
-        $this->_model = $this->_ci->uri->segment(1);
-        $this->_method = $this->_ci->uri->segment(2);
+        $route = $this->_ci->uri->uri_string();
+        $session = $this->_ci->session->get_userdata()['user_id'];
+        $this->_ci->load->model('sys/user_model');
+        if($this->_ci->user_model->login())
     }
 
 

@@ -7,11 +7,12 @@
  */
 class Warehouse extends CI_Controller
 {
-    private $_warehouse_type =  [1 => '自建仓库', '海外仓', '虚拟仓'];
+    private $_warehouse_type = [1 => '自建仓库', '海外仓', '虚拟仓'];
+
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('erp/warehouse/warehouse_model');
+        $this->load->model('erp/wm/warehouse_model');
         $this->load->helper('url');
     }
 
@@ -20,11 +21,16 @@ class Warehouse extends CI_Controller
      */
     public function index()
     {
-        if (IS_AJAX && IS_GET) {
+        if (IS_AJAX) {
             try {
-                $get = $this->input->get();
-                $get['warehouse_type'] = $this->_warehouse_type;
-                exit($this->warehouse_model->get_warehouse($get, FALSE));
+                if (IS_POST) {
+                    $param = $this->input->post();
+                    $param['page'] = 1;
+                } else {
+                    $param = $this->input->get();
+                }
+                $param['warehouse_type'] = $this->_warehouse_type;
+                exit($this->warehouse_model->get_warehouse($param, FALSE));
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }
@@ -84,7 +90,7 @@ class Warehouse extends CI_Controller
                     if (empty($this->input->post())) {
                         throw new Exception('提交的数据不能为空');
                     } else {
-                        if(!array_key_exists($post['warehouse_type'],$this->_warehouse_type)){
+                        if (!array_key_exists($post['warehouse_type'], $this->_warehouse_type)) {
                             throw new Exception('仓库类型未定义');
                         }
                         $this->warehouse_model->save_warehouse($post);
@@ -93,6 +99,40 @@ class Warehouse extends CI_Controller
                 }
             } else {
                 throw new Exception('非法请求');
+            }
+        } catch (Exception $e) {
+            send_json(FALSE, $e->getMessage());
+        }
+    }
+
+    /**
+     * 禁用仓库
+     */
+    public function disable()
+    {
+        try {
+            if (IS_AJAX) {
+                $this->warehouse_model->change_warehouse_status($this->input->get_post('warehouse_id'), 0);
+                send_json(TRUE);
+            } else {
+                throw new Exception('invalid request');
+            }
+        } catch (Exception $e) {
+            send_json(FALSE, $e->getMessage());
+        }
+    }
+
+    /**
+     * 启用仓库
+     */
+    public function enable()
+    {
+        try {
+            if (IS_AJAX) {
+                $this->warehouse_model->change_warehouse_status($this->input->get_post('warehouse_id'), 1);
+                send_json(TRUE);
+            } else {
+                throw new Exception('invalid request');
             }
         } catch (Exception $e) {
             send_json(FALSE, $e->getMessage());

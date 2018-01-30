@@ -11,6 +11,32 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
         var data = obj.data;
         if (obj.event === 'edit') {
             saveWarehouse('update', data.warehouse_id);
+        } else if (obj.event === 'disable') {
+            layer.confirm('确认更改该仓库状态？', function (index) {
+                $.getJSON(base_url + '/erp/wm/warehouse/disable', {warehouse_id: data.warehouse_id}, function (res) {
+                    layer.close(index);
+                    if (res.status) {
+                        layer.msg(res.message, {icon: 1, time: 2000});
+                        obj.del();
+                    } else {
+                        layer.alert(res.message, {icon: 2});
+                    }
+                });
+
+            });
+        } else if (obj.event === 'delete') {
+            layer.confirm('确认更改该仓库状态？', function (index) {
+                $.getJSON(base_url + '/erp/wm/warehouse/disable', {warehouse_id: data.warehouse_id}, function (res) {
+                    layer.close(index);
+                    if (res.status) {
+                        layer.msg(res.message, {icon: 1, time: 2000});
+                        obj.del();
+                    } else {
+                        layer.alert(res.message, {icon: 2});
+                    }
+                });
+
+            });
         }
     });
     var $ = layui.$, active = {
@@ -27,14 +53,15 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                 maxmin: true
             });
 
-        },addWarehouse: function (form) {
+        }, addWarehouse: function (form) {
             var addBoxIndex = -1;
             saveWarehouse('create');
-        },searchData:function () {
+        }, searchData: function () {
             table.reload('warehouseListForm', {
                 where: {
-                    warehouse_status: $('#warehouse_status').val(),
+                    warehouse_status: $('#warehouse_status').val()
                 },
+                page: {curr: 1},
             });
         }
     };

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 物流方式管理
+ * 物流管理
  *
  * User: kendo    Date: 2018/1/23
  */
@@ -10,11 +10,11 @@ class Transport extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('erp/warehouse/transport_model');
+        $this->load->model('erp/wm/transport_model');
     }
 
     /**
-     * 物流方式首页
+     * 物流列表
      */
     public function index()
     {
@@ -31,7 +31,7 @@ class Transport extends CI_Controller
     }
 
     /**
-     * 新增物流方式
+     * 新增物流
      */
     public function create()
     {
@@ -39,10 +39,9 @@ class Transport extends CI_Controller
     }
 
     /**
-     * 更新物流方式
+     * 更新物流
      */
     public function update()
     {
     }
-
 }
