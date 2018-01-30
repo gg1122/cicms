@@ -162,6 +162,9 @@ class User_model extends CI_Model
 
     public function check_acl($user_id = 0, $route = '')
     {
-        $role_list = $this->db->query();
+        $get_menu = 'select menu_id from sys_menu where menu_status = 1 and  menu_uri="'.$route.'" or menu_uri_short = "'.$route.'" limit 1';
+        echo 11;
+        $role_list = $this->db->query($get_menu)->row_array();
+        print_r($role_list);die;
     }
 }
