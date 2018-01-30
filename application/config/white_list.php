@@ -7,5 +7,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 $config['white_list'] = [
     'login',
-    'logout'
+    'is_login',
+    'logout',
+    'front/captcha'
 ];

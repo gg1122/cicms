@@ -162,9 +162,19 @@ class User_model extends CI_Model
 
     public function check_acl($user_id = 0, $route = '')
     {
-        $get_menu = 'select menu_id from sys_menu where menu_status = 1 and  menu_uri="'.$route.'" or menu_uri_short = "'.$route.'" limit 1';
-        echo 11;
-        $role_list = $this->db->query($get_menu)->row_array();
-        print_r($role_list);die;
+        $get_menu = 'select menu_id from sys_menu where menu_status = 1 and  menu_uri="' . $route . '" or menu_uri_short = "' . $route . '" limit 1';
+        $menu = $this->db->query($get_menu)->row_array();
+        if (empty($menu)) {
+            throw new Exception($route . '-不存在');
+        } else {
+            $get_role = 'select role_id from sys_user_role where user_id = ' . $user_id . ' and user_role_status = 1';
+            $sql = 'select id from sys_role_menu where menu_id = ' . $menu['menu_id'] . ' and role_id in ('.$get_role.') limit 1';
+            $data = $this->db->query($sql);
+            if (empty($data)) {
+                throw new Exception('暂无访问权限');
+            } else {
+                return TRUE;
+            }
+        }
     }
 }

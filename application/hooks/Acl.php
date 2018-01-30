@@ -19,7 +19,7 @@ class Acl
         $route = $this->_ci->uri->uri_string();
         if(!empty($route)){
             $white_list = $this->_ci->config->item('white_list');
-            if(!empty($white_list) && in_array(strtoupper($route),$white_list)){
+            if(!empty($white_list) && in_array(strtolower($route),$white_list)){
                 return true;
             }
             $this->_ci->load->library('session');
