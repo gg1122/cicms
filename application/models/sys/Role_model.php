@@ -88,14 +88,22 @@ class Role_model extends CI_Model
         $user_id = $this->session->get_userdata()['user_id'];
         if (isset($data['role_id'])) {
             $this->get($data['role_id']);
+            $info['role_id'] = $data['role_id'];
         } else {
-            $data['create_time'] = $time;
-            $data['create_userid'] = $user_id;
+            $info['create_time'] = $time;
+            $info['create_userid'] = $user_id;
         }
-        $data['role_status'] = $data['role_status'] === 'on' ? 1 : 0;
-        $data['update_time'] = $time;
-        $data['update_userid'] = $user_id;
-        if ($this->db->replace($this->_table, $data)) {
+        $info['role_name'] = $data['role_name'];
+        $info['role_desc'] = $data['role_name'];
+        $info['role_status'] = intval(isset($data['role_status']));
+        $info['update_time'] = $time;
+        $info['update_userid'] = $user_id;
+        if (isset($info['role_id'])) {
+            $done_status = $this->db->update($this->_table, $info, ['role_id' => $info['role_id']]);
+        } else {
+            $done_status = $this->db->insert($this->_table, $info);
+        }
+        if ($done_status) {
             return TRUE;
         } else {
             throw new Exception($this->db->error());

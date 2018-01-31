@@ -37,7 +37,9 @@ class Role extends CI_Controller
         $this->load->library('form_validation');
         $this->form_validation->set_rules('role_name', 'RoleName', 'required');
         $this->form_validation->set_rules('role_desc', 'RoleDesc', 'required');
-        return $this->form_validation->run();
+        if(!$this->form_validation->run()){
+            throw new Exception($this->form_validation->error_string());
+        }
     }
 
     /**

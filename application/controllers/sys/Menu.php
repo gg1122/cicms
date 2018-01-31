@@ -74,12 +74,13 @@ class Menu extends CI_Controller
      */
     private function _formValidation()
     {
-        $this->load->helper('form');
         $this->load->library('form_validation');
         $this->form_validation->set_rules('menu_name', 'MenuName', 'required');
         $this->form_validation->set_rules('menu_icon', 'MenuIcon', 'required');
         $this->form_validation->set_rules('menu_type', 'MenuType', 'required');
-        return $this->form_validation->run();
+        if(!$this->form_validation->run()){
+            throw new Exception($this->form_validation->error_string());
+        }
     }
 
     /**

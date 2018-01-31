@@ -76,12 +76,8 @@ class User extends CI_Controller
         $this->form_validation->set_rules('display_name', 'DisplayName', 'trim|required|max_length[20]');
         $this->form_validation->set_rules('user_email', 'UserEmail', 'trim|required|valid_email|min_length[6]|max_length[100]');
         $this->form_validation->set_rules('user_level', 'UserLevel', 'required|is_natural|less_than[4]');
-
-        $this->form_validation->run();
-        if ($this->form_validation->run() === FALSE) {
+        if(!$this->form_validation->run()){
             throw new Exception($this->form_validation->error_string());
-        } else {
-            return TRUE;
         }
     }
 
@@ -136,10 +132,11 @@ class User extends CI_Controller
                     send_json(FALSE, '提交的数据不能为空');
                 }
                 $this->user_model->save_user($this->input->post());
+                send_json();
             } else {
                 $data['user_info'] = $this->user_model->get($user_id);
                 $data['user_level'] = $this->user_level;
-                $data['user_role'] = array_column($this->user_role_model->get_user_role($user_id), 'role_id');
+                $data['user_role'] = $this->user_role_model->get_user_role($user_id);
                 $data['role_list'] = $this->role_model->get_role(['role_status' => 1], FALSE);
                 $this->load->view('', $data);
             }

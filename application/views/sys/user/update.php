@@ -6,7 +6,7 @@
         <div class="layui-input-block">
             <input type="text" name="user_name" value="<?= $user_info['user_name'] ?>" autocomplete="off"
                    class="layui-input" id="user_name"
-                   lay-verify="required" minlength="4" disabled>
+                   lay-verify="required" minlength="4" readonly>
         </div>
     </div>
 
@@ -58,6 +58,7 @@
         <label class="layui-form-label">角色</label>
         <div class="layui-input-block">
             <select name="user_role" lay-filter="user_role" lay-verify="required" multiple>
+                <option value="">请选择</option>
                 <?php
                 foreach ($role_list as $role):
                     ?>

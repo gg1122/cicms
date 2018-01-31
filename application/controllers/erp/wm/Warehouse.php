@@ -7,7 +7,7 @@
  */
 class Warehouse extends CI_Controller
 {
-    private $_warehouse_type = [1 => '自建仓库', '海外仓', '虚拟仓'];
+    public $_warehouse_type = [1 => '自建仓库', '海外仓', '虚拟仓'];
 
     public function __construct()
     {
@@ -23,12 +23,7 @@ class Warehouse extends CI_Controller
     {
         if (IS_AJAX) {
             try {
-                if (IS_POST) {
-                    $param = $this->input->post();
-                    $param['page'] = 1;
-                } else {
-                    $param = $this->input->get();
-                }
+                $param = $this->input->get();
                 $param['warehouse_type'] = $this->_warehouse_type;
                 exit($this->warehouse_model->get_warehouse($param, FALSE));
             } catch (Exception $e) {
@@ -45,7 +40,9 @@ class Warehouse extends CI_Controller
         $this->form_validation->set_rules('warehouse_code', 'warehouseCode', 'required');
         $this->form_validation->set_rules('warehouse_name', 'warehouseName', 'required');
         $this->form_validation->set_rules('warehouse_type', 'warehouseType', 'required');
-        return $this->form_validation->run();
+        if (!$this->form_validation->run()) {
+            throw new Exception($this->form_validation->error_string());
+        }
     }
 
     /**
@@ -56,7 +53,7 @@ class Warehouse extends CI_Controller
         $this->load->helper('form');
         if (IS_AJAX) {
             if (IS_GET) {
-                send_json(TRUE, $this->load->view('', ['type_list' => [1 => '自建仓库', '海外仓', '虚拟仓']], TRUE));
+                send_json(TRUE, $this->load->view('', ['type_list' => $this->_warehouse_type], TRUE));
             } else {
                 try {
                     $this->_formValidation();
@@ -74,34 +71,26 @@ class Warehouse extends CI_Controller
      */
     public function update()
     {
-        try {
-            $warehouse_id = $this->input->get_post('warehouse_id');
-            if (IS_AJAX) {
+        if (IS_AJAX) {
+            try {
                 if (IS_GET) {
-                    $this->load->helper('form');
+                    $warehouse_id = $this->input->get_post('warehouse_id');
                     $warehouse = $this->warehouse_model->get($warehouse_id);
                     $data['type_list'] = $this->_warehouse_type;
                     $data['warehouse'] = $warehouse;
-                    $html = $this->load->view('', $data, TRUE);
-                    send_json(TRUE, $html);
+                    $this->load->helper('form');
+                    send_json(TRUE, $this->load->view('', $data, TRUE));
                 } else {
                     $this->_formValidation();
-                    $post = $this->input->post();
-                    if (empty($this->input->post())) {
-                        throw new Exception('提交的数据不能为空');
-                    } else {
-                        if (!array_key_exists($post['warehouse_type'], $this->_warehouse_type)) {
-                            throw new Exception('仓库类型未定义');
-                        }
-                        $this->warehouse_model->save_warehouse($post);
-                        send_json();
+                    if (!array_key_exists($this->input->post()['warehouse_type'], $this->_warehouse_type)) {
+                        throw new Exception('仓库类型未定义');
                     }
+                    $this->warehouse_model->save_warehouse($this->input->post());
+                    send_json();
                 }
-            } else {
-                throw new Exception('非法请求');
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
             }
-        } catch (Exception $e) {
-            send_json(FALSE, $e->getMessage());
         }
     }
 
@@ -112,7 +101,7 @@ class Warehouse extends CI_Controller
     {
         try {
             if (IS_AJAX) {
-                $this->warehouse_model->change_warehouse_status($this->input->get_post('warehouse_id'), 0);
+                $this->warehouse_model->change_status($this->input->get_post('warehouse_id'), 0);
                 send_json(TRUE);
             } else {
                 throw new Exception('invalid request');
@@ -129,7 +118,7 @@ class Warehouse extends CI_Controller
     {
         try {
             if (IS_AJAX) {
-                $this->warehouse_model->change_warehouse_status($this->input->get_post('warehouse_id'), 1);
+                $this->warehouse_model->change_status($this->input->get_post('warehouse_id'), 1);
                 send_json(TRUE);
             } else {
                 throw new Exception('invalid request');

@@ -23,9 +23,11 @@ class User_role_model extends CI_Model
      */
     public function get_user_role($user_id = 0)
     {
-        return $this->db->select('role_id')
+        $user_role = $this->db->select('role_id')
             ->get_where($this->_table, ['user_id' => $user_id, 'user_role_status' => 1])
             ->result_array();
+        if (empty($user_role)) return [];
+        return array_column($user_role, 'role_id');
     }
 
 
@@ -33,10 +35,13 @@ class User_role_model extends CI_Model
      * 保存用户-角色配置
      *
      * @param int $user_id
-     * @param array $role_list
+     * @param array $role_list / string
      */
-    public function save_user_role($user_id = 0, array $role_list)
+    public function save_user_role($user_id = 0, $role_list = [])
     {
+        if (!is_array($role_list)) {
+            $role_list = [$role_list];
+        }
         $time = time();
         $operator_userid = $this->session->get_userdata()['user_id'];
         //重制旧的角色组

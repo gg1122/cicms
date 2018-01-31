@@ -25,7 +25,9 @@ class Version extends CI_Controller
         $this->load->library('form_validation');
         $this->form_validation->set_rules('name[css]', 'cssVersion', 'required');
         $this->form_validation->set_rules('name[js]', 'jsVersion', 'required');
-        return $this->form_validation->run();
+        if(!$this->form_validation->run()){
+            throw new Exception($this->form_validation->error_string());
+        }
     }
 
     /**

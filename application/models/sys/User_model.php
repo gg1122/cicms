@@ -68,28 +68,35 @@ class User_model extends CI_Model
      */
     public function save_user(array $data)
     {
-        $data = [
-            'user_name' => $data['user_name'],
-            'user_email' => $data['user_email'],
-            'display_name' => $data['display_name'],
-            'user_level' => $data['user_level'],
-            'create_time' => time(),
-            'update_time' => time(),
-        ];
-        if (isset($data['user_pass'])) {
-            $data['user_pass'] = password_hash($data['user_pass'], PASSWORD_DEFAULT);
-        }
+        $time = time();
         if (isset($data['user_id'])) {
-            unset($data['create_time']);
-        }
-        if ($this->db->replace($this->_table, $data)) {
-            $user_id = $this->db->insert_id();
-            if (!empty($data['user_role'])) {
-                $this->user_role_model->save_user_role($user_id, $data['user_role']);
-            }
-            return TRUE;
+            $this->get($data['user_id']);
         } else {
-            throw new Exception($this->db->error());
+            $data['update_time'] = $time;
+        }
+        if (isset($data['user_pass'])) {
+            $info['user_pass'] = password_hash($data['user_pass'], PASSWORD_DEFAULT);
+        }
+        $info['user_name'] = $data['user_name'];
+        $info['user_email'] = $data['user_email'];
+        $info['display_name'] = $data['display_name'];
+        $info['user_status'] = intval(isset($data['user_status']));
+        try {
+            $this->db->trans_begin();
+            if (isset($data['user_id'])) {
+                $this->db->update($this->_table, $info, ['user_id' => $data['user_id']]);
+            } else {
+                $this->db->insert($this->_table, $info);
+                $data['user_id'] = $this->db->insert_id();
+            }
+            if (!empty($data['user_role'])) {
+                $this->user_role_model->save_user_role($data['user_id'], $data['user_role']);
+            }
+            $this->db->trans_commit();
+            return TRUE;
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -160,18 +167,26 @@ class User_model extends CI_Model
         }
     }
 
+    /**
+     * 菜单存在检测+访问权限控制
+     *
+     * @param int $user_id
+     * @param string $route
+     * @return bool
+     * @throws Exception
+     */
     public function check_acl($user_id = 0, $route = '')
     {
-        $get_menu = 'select menu_id from sys_menu where menu_status = 1 and  menu_uri="' . $route . '" or menu_uri_short = "' . $route . '" limit 1';
+        $get_menu = 'SELECT menu_id,menu_name FROM sys_menu WHERE menu_status = 1 AND  menu_uri="' . $route . '" OR menu_uri_short = "' . $route . '" LIMIT 1';
         $menu = $this->db->query($get_menu)->row_array();
         if (empty($menu)) {
-            throw new Exception($route . '-不存在');
+            throw new Exception($route . '-暂未开放');
         } else {
-            $get_role = 'select role_id from sys_user_role where user_id = ' . $user_id . ' and user_role_status = 1';
-            $sql = 'select id from sys_role_menu where menu_id = ' . $menu['menu_id'] . ' and role_id in ('.$get_role.') limit 1';
-            $data = $this->db->query($sql);
+            $get_role = 'SELECT role_id FROM sys_user_role WHERE user_id = ' . $user_id . ' AND user_role_status = 1';
+            $sql = 'SELECT id FROM sys_role_menu WHERE menu_id = ' . $menu['menu_id'] . ' AND role_id IN (' . $get_role . ') LIMIT 1';
+            $data = $this->db->query($sql)->row_array();
             if (empty($data)) {
-                throw new Exception('暂无访问权限');
+                throw new Exception($menu['menu_name'] . '_暂无访问权限');
             } else {
                 return TRUE;
             }

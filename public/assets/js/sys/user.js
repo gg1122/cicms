@@ -107,7 +107,7 @@ layui.use(['table', 'form'], function () {
                                         location.reload();//刷新
                                     });
                                 } else {
-                                    layer.alert(callback.messawge, {icon: 2});
+                                    layer.alert(callback.message, {icon: 2});
                                 }
                             }
                         });
