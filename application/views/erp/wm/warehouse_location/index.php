@@ -11,16 +11,21 @@
 </head>
 <body style="margin-left: 10px;margin-top: 10px;">
 <div class="demoTable">
-    <div class="layui-btn-group ">
-        <button class="layui-btn" data-type="addWarehouseLocation">
+    <blockquote class="layui-elem-quote">
+        <a href="javascript:;" class="layui-btn layui-btn-small" data-type="addWarehouseLocation">
             <i class="layui-icon">&#xe608;</i> 新增仓库库位
-        </button>
-    </div>
-
+        </a>
+        <a href="#" class="layui-btn layui-btn-small" data-type="importLocation">
+            <i class="layui-icon">&#xe608;</i> 导入库位
+        </a>
+        <a href="#" class="layui-btn layui-btn-small" data-type="exportLocation">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i> 导出库位
+        </a>
+    </blockquote>
     <div class="layui-inline layui-form">
         <label class="layui-form-label">仓库</label>
-        <div class="layui-input-block" style="width: 100px;">
-            <select name="warehouse_id" id="warehouse_id" lay-search="">
+        <div class="layui-input-block" style="width: 150px;">
+            <select name="warehouse_id" id="warehouse_id" lay-search="" lay-filter="warehouse_select">
                 <option value="">请选择</option>
                 <?php
                 foreach ($warehouse_list as $warehouse):
@@ -47,6 +52,7 @@
                 <option value="">请选择</option>
                 <option value="section_name">区域名称</option>
                 <option value="section_code">区域编码</option>
+                <option value="location_code">库位编码</option>
             </select>
         </div>
     </div>
@@ -61,10 +67,9 @@
     <thead>
     <tr>
         <th lay-data="{checkbox:true, fixed: true}"></th>
-        <th lay-data="{field:'location_id', width:80, sort: true, fixed: true,type:space,display:none}">ID</th>
+        <th lay-data="{field:'location_code', width:150}">库位编码</th>
         <th lay-data="{field:'warehouse_name', width:150}">仓库名称</th>
         <th lay-data="{field:'section_name', width:150}">区域名称</th>
-        <th lay-data="{field:'location_code', width:150}">库位编码</th>
         <th lay-data="{field:'create_time', width:150}">创建时间</th>
         <th lay-data="{fixed: 'right', width:200,toolbar: '#barDemo'}">操作</th>
     </tr>
@@ -72,7 +77,6 @@
 </table>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="disable">删除</a>
 </script>
 <script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
 <script src="<?= $this->config->item('base_url') ?>/assets/js/erp/warehouse_location.js" charset="utf-8"></script>

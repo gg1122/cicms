@@ -14,7 +14,7 @@ class Warehouse_section extends CI_Controller
         $this->load->model('erp/wm/warehouse_section_model');
     }
 
-    private function _formValidation($type = 'create')
+    public function _formValidation($type = 'create')
     {
         $this->load->library('form_validation');
         if ($type === 'update') {
@@ -38,7 +38,11 @@ class Warehouse_section extends CI_Controller
                 if (!empty($param['search_type']) && !empty($param['search_value'])) {
                     $param[$param['search_type']] = $param['search_value'];
                 }
-                exit($this->warehouse_section_model->get_section($param, FALSE));
+                $is_page = TRUE;
+                if(isset($param['is_page'])){
+                    $is_page = boolval($param['is_page']);
+                }
+                exit($this->warehouse_section_model->get_section($param, FALSE,$is_page));
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }
@@ -53,12 +57,12 @@ class Warehouse_section extends CI_Controller
      */
     public function create()
     {
-        $this->load->helper('form');
         if (IS_AJAX) {
             try {
                 if (IS_GET) {
                     $warehouse_list = $this->warehouse_model
                         ->get_warehouse(['warehouse_type' => 1, 'warehouse_status' => 1], TRUE, FALSE);
+                    $this->load->helper('form');
                     send_json(TRUE, $this->load->view('', ['warehouse_list' => $warehouse_list], TRUE));
                 } else {
                     $this->_formValidation();
@@ -78,17 +82,14 @@ class Warehouse_section extends CI_Controller
     {
         if (IS_AJAX) {
             try {
-
                 if (IS_GET) {
-                    $section_id = $this->input->get_post('section_id');
-                    $param['section'] = $this->warehouse_section_model->get($section_id);
                     $param['warehouse_list'] = $this->warehouse_model
                         ->get_warehouse(['warehouse_type' => 1, 'warehouse_status' => 1], TRUE, FALSE);
                     $this->load->helper('form');
                     send_json(TRUE, $this->load->view('', $param, TRUE));
                 } else {
                     $this->_formValidation('update');
-                    $this->warehouse_section_model->save_section($this->input->post());
+                    $this->warehouse_location_model->save_location($this->input->post());
                     send_json();
                 }
             } catch (Exception $e) {
@@ -124,5 +125,4 @@ class Warehouse_section extends CI_Controller
             send_json(FALSE, $e->getMessage());
         }
     }
-
 }

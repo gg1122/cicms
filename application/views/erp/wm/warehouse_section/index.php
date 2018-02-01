@@ -61,7 +61,6 @@
     <thead>
     <tr>
         <th lay-data="{checkbox:true, fixed: true}"></th>
-        <th lay-data="{field:'section_id', width:80, sort: true, fixed: true,type:space,display:none}">ID</th>
         <th lay-data="{field:'warehouse_name', width:150}">仓库名称</th>
         <th lay-data="{field:'section_name', width:150}">区域名称</th>
         <th lay-data="{field:'section_code', width:150}">区域编码</th>

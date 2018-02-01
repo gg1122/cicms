@@ -48,7 +48,10 @@ class Warehouse_location_model extends CI_Model
             }
         }
         if (!empty($param['location_code'])) {
-            $this->db->where('l.location_code', $param['location_code']);
+            $this->db->where('location_code', $param['location_code']);
+        }
+        if(!empty($param['section_code'])){
+            $this->db->where('section_code',$param['section_code']);
         }
         $this->db->from($this->_table . ' l');
         $this->db->join('erp_warehouse_section s', 'l.section_id = s.section_id');
@@ -84,16 +87,25 @@ class Warehouse_location_model extends CI_Model
     {
         $time = time();
         $user_id = $this->session->get_userdata()['user_id'];
-        if (isset($data['location_id'])) {
+        if (!empty($data['location_id'])) {
             $this->get($data['location_id']);
         } else {
-            $data['create_time'] = $time;
-            $data['create_userid'] = $user_id;
+            $info['create_time'] = $time;
+            $info['create_userid'] = $user_id;
         }
-        $data['location_status'] =  intval(isset($data['location_status']));
-        $data['update_time'] = $time;
-        $data['update_userid'] = $user_id;
-        if ($this->db->replace($this->_table, $data)) {
+        $info['warehouse_id'] = intval($data['warehouse_id']);
+        $info['section_id'] = intval($data['section_id']);
+        $info['location_code'] = strtoupper($data['location_code']);
+        $info['location_sort'] = intval($data['location_sort']);
+        $info['location_status'] = intval(isset($data['location_status']));
+        $info['update_time'] = $time;
+        $info['update_userid'] = $user_id;
+        if (!empty($data['location_id'])) {
+            $done_status = $this->db->update($this->_table, $info, ['location_id' => $data['location_id']]);
+        } else {
+            $done_status = $this->db->insert($this->_table, $info);
+        }
+        if ($done_status) {
             return TRUE;
         } else {
             throw new Exception($this->db->error());

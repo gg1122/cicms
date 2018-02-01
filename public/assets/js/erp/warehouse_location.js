@@ -1,7 +1,8 @@
 var base_url = 'http://cicms.com';
-layui.use(['table', 'element', 'form', 'tree'], function () {
+layui.use(['table', 'element', 'form', 'tree', 'upload'], function () {
     var table = layui.table;
     var form = layui.form;
+    var upload = layui.upload;
     //监听表格复选框选择
     table.on('checkbox(demo)', function (obj) {
         console.log(obj)
@@ -10,10 +11,10 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
     table.on('tool(demo)', function (obj) {
         var data = obj.data;
         if (obj.event === 'edit') {
-            saveWarehouseSection('update', data.section_id);
+            saveWarehouseLocation('update', data.location_id);
         } else if (obj.event === 'disable') {
-            layer.confirm('确认禁用该仓库区域状态？', function (index) {
-                $.getJSON(base_url + '/erp/wm/warehouse_section/disable', {section_id: data.section_id}, function (res) {
+            layer.confirm('确认禁用该仓库库位？', function (index) {
+                $.getJSON(base_url + '/erp/wm/warehouse_location/disable', {location_id: data.location_id}, function (res) {
                     layer.close(index);
                     if (res.status) {
                         layer.msg(res.message, {icon: 1, time: 2000});
@@ -40,41 +41,86 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                 maxmin: true
             });
 
-        }, addWarehouseSection: function (form) {
+        }, addWarehouseLocation: function () {
             var addBoxIndex = -1;
-            saveWarehouseSection('create');
+            saveWarehouseLocation('create');
         }, searchData: function () {
-            table.reload('warehouseSectionForm', {
+            table.reload('warehouseLocationForm', {
                 where: {
-                    section_status: $('#section_status').val(),
+                    location_status: $('#location_status').val(),
                     warehouse_id: $('#warehouse_id').val(),
                     search_type: $('#search_type').val(),
                     search_value: $('#search_value').val(),
                 },
-                page: {curr: 1},
+                page: {curr: 1}
             });
+        }, importLocation: function () {
+            $.get(base_url + '/erp/wm/warehouse_location/import', null, function (result) {
+                if (!result.status) {
+                    layer.alert(result.message, {icon: 2});
+                } else {
+                    layer.open({
+                        type: 1,
+                        title: '导入库位',
+                        id: 'location_layer',
+                        offset: 'auto',
+                        content: result.message,
+                        btn: '取消',
+                        btnAlign: 'c',
+                        shade: 0,
+                        yes: function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+            }, 'JSON')
         }
     };
+
+    //仓库选择，触发仓库区域
+    form.on('select(warehouse_select)', function (data) {
+        if (data.value != '') {
+            $.get(base_url + '/erp/wm/warehouse_section/index', {warehouse_id: data.value, is_page: 0}, function (res) {
+                if (res.rel) {
+                    var content = '<div class="layui-form-item" id="section_div">';
+                    content += '<label class="layui-form-label">仓库区域</label>';
+                    content += '<div class="layui-input-inline">';
+                    content += '<select name="section_id" lay-verify="required" lay-search="">';
+                    content += '<option value="">请选择</option>';
+                    $.each(res.data, function (i, info) {
+                        content += '<option value="' + info.section_id + '">' + info.section_name + '</option>';
+                    });
+                    content += '</select>';
+                    content += '</div>';
+                    content += '</div>';
+                    $('#section_div').replaceWith(content);
+                    form.render();
+                } else {
+                    layer.alert(res.message, {icon: 2});
+                }
+            }, 'JSON');
+        }
+    });
+
 
     $('.demoTable .layui-btn').on('click', function () {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
     });
 
-    $("[data-field='section_id']").css('display','none');
     /**
-     * 仓库区域探出车
+     * 仓库库位弹出层
      *
      * @param type
      * @param section_id
      */
-    function saveWarehouseSection(type, section_id) {
-        var title = '新增仓库区域';
+    function saveWarehouseLocation(type, section_id) {
+        var title = '新增仓库库位';
         if (type == 'update') {
-            title = '更新仓库区域';
-            type += '?section_id=' + section_id;
+            title = '更新仓库库位';
+            type += '?location_id=' + section_id;
         }
-        $.get(base_url + '/erp/wm/warehouse_section/' + type, null, function (result) {
+        $.get(base_url + '/erp/wm/warehouse_location/' + type, null, function (result) {
             if (!result.status) {
                 layer.alert(result.message, {icon: 2});
             } else {
@@ -107,7 +153,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                         form.on('submit(edit)', function () {
                             $.ajax({
                                 type: 'POST',
-                                url: base_url + '/erp/wm/warehouse_section/' + type,
+                                url: base_url + '/erp/wm/warehouse_location/' + type,
                                 data: $("form").serialize(),
                                 dataType: 'json',
                                 success: function (callback) {

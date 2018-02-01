@@ -1,9 +1,11 @@
 <div style="margin: 15px;">
     <?php echo form_open('erp/wm/warehouse_location/create', array('class' => 'layui-form')); ?>
+    <input type="hidden" name="location_id" value="<?= $location['location_id'] ?>">
     <div class="layui-form-item">
         <label class="layui-form-label">库位编码</label>
         <div class="layui-input-inline">
-            <input type="text" name="location_code" placeholder="请输入库位编码" autocomplete="off" class="layui-input"
+            <input type="text" name="location_code" value="<?= $location['location_code'] ?>" autocomplete="off"
+                   class="layui-input"
                    id="location_code"
                    lay-verify="required" minlength="3" maxlength="45">
         </div>
@@ -16,7 +18,7 @@
                 <?php
                 foreach ($warehouse_list as $warehouse):
                     ?>
-                    <option value="<?= $warehouse['warehouse_id'] ?>"><?= $warehouse['warehouse_name'] ?></option>
+                    <option value="<?= $warehouse['warehouse_id'] ?>" <?= $location['warehouse_id'] === $warehouse['warehouse_id'] ? 'selected' : '' ?>><?= $warehouse['warehouse_name'] ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -24,6 +26,14 @@
     <div class="layui-form-item" id="section_div">
         <label class="layui-form-label">仓库区域</label>
         <div class="layui-input-inline">
+            <select name="section_id"  lay-verify="required">
+                <option value="">请选择</option>
+                <?php
+                foreach ($section_list as $section):
+                    ?>
+                    <option value="<?= $section['section_id'] ?>" <?= $section['section_id'] === $location['section_id'] ? 'selected' : '' ?>><?= $section['section_name'] ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
