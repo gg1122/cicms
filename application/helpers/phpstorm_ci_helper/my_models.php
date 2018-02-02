@@ -63,6 +63,7 @@
  *
  * <log>
  * @property fee_type_log_model $fee_type_log_model
+ * @property upload_log_model $upload_log_model
  *
  */
 class my_models

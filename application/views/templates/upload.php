@@ -157,7 +157,12 @@ if (empty($type) || empty($upload)) {
             accept: 'file',
             exts: 'xlsx|xls',
             done: function (res) {
-                console.log(res)
+                if (res.status) {
+                    layer.closeAll();
+                    layer.alert(res.message, {icon: 1});
+                } else {
+                    layer.alert(res.message, {icon: 2});
+                }
             }
         });
         upload.render({ //CSV上传

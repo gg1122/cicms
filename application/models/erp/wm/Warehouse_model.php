@@ -27,17 +27,26 @@ class Warehouse_model extends CI_Model
     }
 
     /**
-     * 根据仓库ID获取仓库信息
+     * 根据【仓库ID|仓库编码】获取仓库信息
      *
-     * @param int $warehouse_id
+     * @param string $value
+     * @param string $field
      * @return array
      * @throws Exception
      */
-    public function get($warehouse_id = 0)
+    public function get($value = '', $field = 'warehouse_id')
     {
-        $warehouse = $this->db->get_where($this->_table, ['warehouse_id' => $warehouse_id])->row_array();
-        if (empty($warehouse)) throw new Exception('请传入正确的仓库ID');
-        return $warehouse;
+        if (in_array($field, ['warehouse_id', 'warehouse_code'])) {
+            if ($field === 'warehouse_id') {
+                $warehouse = $this->db->get_where($this->_table, ['warehouse_id' => intval($value)])->row_array();
+            } else {
+                $warehouse = $this->db->get_where($this->_table, ['warehouse_code' => strtoupper(trim($value))])->row_array();
+            }
+            if (empty($warehouse)) throw new Exception('请传入正确的【仓库ID|仓库编码】'.$value);
+            return $warehouse;
+        } else {
+            throw new Exception('请传入【仓库ID|仓库编码】');
+        }
     }
 
     /**

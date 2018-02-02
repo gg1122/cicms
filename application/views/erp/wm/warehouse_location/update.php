@@ -26,7 +26,7 @@
     <div class="layui-form-item" id="section_div">
         <label class="layui-form-label">仓库区域</label>
         <div class="layui-input-inline">
-            <select name="section_id"  lay-verify="required">
+            <select name="section_id" lay-verify="required">
                 <option value="">请选择</option>
                 <?php
                 foreach ($section_list as $section):
@@ -39,7 +39,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">排序</label>
         <div class="layui-input-inline">
-            <input type="number" class="layui-input" name="location_sort" value="0" step="1"/>
+            <input type="number" class="layui-input" name="location_sort" value="<?=$location['location_sort']?>"
+                   step="1"/>
         </div>
     </div>
     <div class="layui-form-item">

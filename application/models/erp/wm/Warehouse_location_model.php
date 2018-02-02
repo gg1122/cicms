@@ -50,12 +50,13 @@ class Warehouse_location_model extends CI_Model
         if (!empty($param['location_code'])) {
             $this->db->where('location_code', $param['location_code']);
         }
-        if(!empty($param['section_code'])){
-            $this->db->where('section_code',$param['section_code']);
+        if (!empty($param['section_code'])) {
+            $this->db->where('section_code', $param['section_code']);
         }
         $this->db->from($this->_table . ' l');
         $this->db->join('erp_warehouse_section s', 'l.section_id = s.section_id');
         $this->db->join('erp_warehouse w', 'l.warehouse_id = w.warehouse_id');
+        $this->db->order_by('location_sort asc');
         if ($is_page) {
             $page = !empty($param['page']) ? intval($param['page']) : 1;
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
@@ -87,15 +88,40 @@ class Warehouse_location_model extends CI_Model
     {
         $time = time();
         $user_id = $this->session->get_userdata()['user_id'];
+        $info = [];
         if (!empty($data['location_id'])) {
             $this->get($data['location_id']);
         } else {
             $info['create_time'] = $time;
             $info['create_userid'] = $user_id;
         }
-        $info['warehouse_id'] = intval($data['warehouse_id']);
-        $info['section_id'] = intval($data['section_id']);
-        $info['location_code'] = strtoupper($data['location_code']);
+        if (!empty($data['warehouse_id'])) {
+            $info['warehouse_id'] = intval($data['warehouse_id']);
+        } elseif (!empty($data['warehouse_code'])) {
+            $warehouse = $this->warehouse_model->get($data['warehouse_code'], 'warehouse_code');
+            $info['warehouse_id'] = $warehouse['warehouse_id'];
+        }
+        if (!empty($data['section_id'])) {
+            $info['section_id'] = intval($data['section_id']);
+        } elseif (!empty($data['section_code'])) {
+            $section = $this->warehouse_section_model->get($data['section_code'], 'section_code');
+            if ($section['warehouse_id'] !== $info['warehouse_id']) {
+                throw new Exception('区域:' . $data['section_code'] . '--仓库归属错误');
+            }
+            $info['section_id'] = $section['section_id'];
+        }
+        $info['location_code'] = strtoupper(trim($data['location_code']));
+        //库位查重
+        $where['location_code'] = $info['location_code'];
+        $where['section_id'] = $info['section_id'];
+        $where['warehouse_id'] = $info['warehouse_id'];
+        if (!empty($data['location_id'])) {
+            $where['location_id !='] = $data['location_id'];
+        }
+        $location = $this->db->get_where($this->_table, $where)->row_array();
+        if (!empty($location)) {
+            throw new Exception($info['location_code'] . '--已经存在该仓库区域');
+        }
         $info['location_sort'] = intval($data['location_sort']);
         $info['location_status'] = intval(isset($data['location_status']));
         $info['update_time'] = $time;
@@ -109,6 +135,42 @@ class Warehouse_location_model extends CI_Model
             return TRUE;
         } else {
             throw new Exception($this->db->error());
+        }
+    }
+
+    /**
+     * 保存导入的库位
+     *
+     * @param string $file_name
+     * @throws Exception
+     */
+    public function save_import($file_name = '')
+    {
+        $this->load->library("excel");
+        $header_column = ['库位编码', '区域编码', '仓库编码', '库位排序'];
+        $excelSheet = $this->excel->get_info($file_name, $header_column);
+        try {
+            $this->db->trans_begin();
+            for ($i = 2; $i <= $excelSheet->getHighestRow(); $i++) {
+                if (empty($excelSheet->getCell('A' . $i)->getValue())) {
+                    continue;
+                }
+                $data = [
+                    'location_code' => $excelSheet->getCell('A' . $i)->getValue(),
+                    'location_sort' => $excelSheet->getCell('D' . $i)->getValue(),
+                    'section_code' => $excelSheet->getCell('B' . $i)->getValue(),
+                    'warehouse_code' => $excelSheet->getCell('C' . $i)->getValue(),
+                    'location_status' => 1
+                ];
+                $this->save_location($data);
+            }
+            $config['file_name'] = 'import_location_' . date('YmdHis') . '_' . $this->session->get_userdata()['user_id'];
+            $this->load->model('erp/lm/upload_log_model');
+            $this->upload_log_model->do_upload('file', 'excel', $config);
+            $this->db->trans_commit();
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            throw new Exception($e->getMessage());
         }
     }
 }

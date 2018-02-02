@@ -35,7 +35,6 @@ class Warehouse_location extends CI_Controller
      */
     public function index()
     {
-        print_r($this->config);
         if (IS_AJAX) {
             try {
                 $param = $this->input->get();
@@ -105,16 +104,25 @@ class Warehouse_location extends CI_Controller
     public function import()
     {
         if (IS_AJAX) {
-            if (IS_GET) {
-                $param = [
-                    'type' => 'upload_excel',
-                    'upload' => 'import',
-                    'template' => $this->config->item('base_templates_url').'import_location.xlsx'
-                ];
-                $html = $this->load->view('templates/upload', $param, TRUE);
-                send_json(TRUE, $html);
-            } else {
-                print_r($_FILES);
+            try {
+                if (IS_GET) {
+                    $param = [
+                        'type' => 'upload_excel',
+                        'upload' => 'import',
+                        'template' => $this->config->item('base_template_url') . 'import_location.xlsx'
+                    ];
+                    $html = $this->load->view('templates/upload', $param, TRUE);
+                    send_json(TRUE, $html);
+                } else {
+                    if (!empty($_FILES) && !empty($_FILES['file']['tmp_name'])) {
+                        $this->warehouse_location_model->save_import($_FILES['file']['tmp_name']);
+                        send_json();
+                    } else {
+                        throw new Exception('未捕获到提交的文件');
+                    }
+                }
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
             }
         }
     }

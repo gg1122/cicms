@@ -16,17 +16,26 @@ class Warehouse_section_model extends CI_Model
     }
 
     /**
-     * 根据仓库区域ID获取数据
+     * 根据【仓库区域ID|仓库区域编码】获取数据
      *
-     * @param int $section_id
+     * @param string $value
+     * @param string $field
      * @return array
      * @throws Exception
      */
-    public function get($section_id = 0)
+    public function get($value = '', $field = 'section_id')
     {
-        $section = $this->db->get_where($this->_table, ['section_id' => intval($section_id)])->row_array();
-        if (empty($section)) throw new Exception('请传入正确的仓库区域ID');
-        return $section;
+        if (in_array($field, ['section_id', 'section_code'])) {
+            if ($field === 'section_id') {
+                $section = $this->db->get_where($this->_table, ['section_id' => intval($value)])->row_array();
+            } else {
+                $section = $this->db->get_where($this->_table, ['section_code' => strtoupper(trim($value))])->row_array();
+            }
+            if (empty($section)) throw new Exception('请传入正确的【仓库区域ID|仓库区域编码】');
+            return $section;
+        } else {
+            throw new Exception('请传入【仓库区域ID|仓库区域编码】');
+        }
     }
 
     /**

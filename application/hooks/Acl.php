@@ -9,9 +9,6 @@
 class Acl
 {
     private $_ci;
-    private $_model;
-    private $_method;
-
 
     public function acl_control()
     {
@@ -20,13 +17,14 @@ class Acl
         if (!empty($route)) {
             $white_list = $this->_ci->config->item('white_list');
             if (!empty($white_list) && in_array(strtolower($route), $white_list)) {
-                return true;
+                return TRUE;
             }
             $this->_ci->load->library('session');
-            $user_id = $this->_ci->session->get_userdata()['user_id'];
-            if ($user_id == 1) return true;
+            $user_data = $this->_ci->session->get_userdata();
+            if (!isset($user_data['user_id'])) return FALSE;
+            if ($user_data['user_id'] == 1) return TRUE;
             $this->_ci->load->model('sys/user_model');
-            $this->_ci->user_model->check_acl($user_id, $route);
+            $this->_ci->user_model->check_acl($user_data['user_id'], $route);
         }
     }
 }

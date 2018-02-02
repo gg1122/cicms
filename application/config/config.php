@@ -23,8 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = 'http://cicms.com';
-$config['base_templates'] = APPPATH.'assets/templates/';
-$config['base_templates_url'] = 'http://cicms.com/assets/templates/';
+$config['base_template'] = FCPATH.'assets/template/';
+$config['base_template_url'] = $config['base_url'].'/assets/template/';
 /*
 |--------------------------------------------------------------------------
 | Index File
