@@ -1,39 +1,45 @@
 <div style="margin: 15px;">
-    <?php echo form_open('erp/warehouse/create', array('class' => 'layui-form')); ?>
-    <input type="hidden" name="warehouse_id" value="<?= $warehouse['warehouse_id'] ?>"/>
+    <?php echo form_open('', array('class' => 'layui-form')); ?>
+    <input type="hidden" name="transport_id" value="<?= $transport['transport_id'] ?>"/>
     <div class="layui-form-item">
-        <label class="layui-form-label">仓库名称</label>
+        <label class="layui-form-label">物流名称</label>
         <div class="layui-input-block">
-            <input type="text" name="warehouse_name" value="<?= $warehouse['warehouse_name'] ?>" autocomplete="off"
+            <input type="text" name="transport_name" value="<?= $transport['transport_name'] ?>" autocomplete="off"
                    class="layui-input"
-                   id="user_name"
                    lay-verify="required" minlength="3" maxlength="45">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">仓库编码</label>
+        <label class="layui-form-label">物流编码</label>
         <div class="layui-input-block">
-            <input type="warehouse_code" name="warehouse_code" value="<?= $warehouse['warehouse_code'] ?>"
-                   autocomplete="off" class="layui-input"
-                   id="user_pass" lay-verify="required" minlength="2" maxlength="10">
+            <input type="transport_code" name="transport_code" value="<?= $transport['transport_name'] ?>"
+                   autocomplete="off"
+                   class="layui-input" lay-verify="required" minlength="2" maxlength="10">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">仓库类型</label>
+        <label class="layui-form-label">服务商</label>
         <div class="layui-input-block">
-            <select name="warehouse_type" lay-filter="warehouse_type" lay-verify="required" multiple>
+            <select name="provider_id" lay-verify="required" lay-search="">
+                <option value="">请选择</option>
                 <?php
-                foreach ($type_list as $type_key => $type_name):
+                foreach ($provider_list as $provider):
                     ?>
-                    <option value="<?= $type_key ?>" <?= $type_key == $warehouse['warehouse_type'] ? 'selected' : '' ?>><?= $type_name ?></option>
+                    <option value="<?= $provider['provider_id'] ?>" <?= $transport['provider_id'] === $provider['provider_id'] ? 'selected' : '' ?>><?= $provider['provider_name'] ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">物流描述</label>
+        <div class="layui-input-block">
+            <textarea name="transport_desc" style="width: 100%"><?= $transport['transport_desc'] ?></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="warehouse_status" <?= $warehouse['warehouse_status'] ? 'checked' : '' ?>
+            <input type="checkbox" name="transport_status" <?= $transport['transport_status'] === 1 ? 'checked' : '' ?>
                    lay-skin="switch"/>
         </div>
     </div>

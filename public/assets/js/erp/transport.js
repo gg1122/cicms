@@ -30,7 +30,14 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
         },addTransport: function (form) {
             var addBoxIndex = -1;
             saveTransport('create');
-        }
+        }, searchData: function () {
+            table.reload('transportListForm', {
+                where: {
+                    transport_status: $('#transport_status').val(),
+                },
+                page: {curr: 1}
+            });
+        },
     };
 
     $('.demoTable .layui-btn').on('click', function () {
@@ -45,13 +52,12 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
      * @param warehouse_id
      */
     function saveTransport(type, transport_id) {
-        var title = '新增仓库';
-        var url = '';
+        var title = '新增物流';
         if (type == 'update') {
-            title = '更新仓库';
-            url += '?transport_id=' + transport_id;
+            title = '更新物流';
+            type += '?transport_id=' + transport_id;
         }
-        $.get(base_url + '/erp/wm/transport/' + type + url, null, function (result) {
+        $.get(base_url + '/erp/wm/transport/' + type, null, function (result) {
             if (!result.status) {
                 layer.alert(result.message, {icon: 2});
             } else {
@@ -66,7 +72,6 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                     zIndex: 10,
                     maxmin: true,
                     yes: function () {
-                        //触发表单的提交事件
                         $('form.layui-form').find('button[lay-filter=edit]').click();
                     }, full: function (elem) {
                         var win = window.top === window.self ? window : parent.window;
@@ -83,9 +88,6 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                         var form = layui.form;
                         form.render();
                         form.on('submit(edit)', function (data) {
-                            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
-                            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
-                            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
                             $.ajax({
                                 type: 'POST',
                                 url: base_url + '/erp/wm/transport/' + type,
@@ -105,8 +107,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                                     }
                                 }
                             });
-                            //这里可以写ajax方法提交表单
-                            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                            return false;
                         });
                     },
                     end: function () {

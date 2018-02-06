@@ -26,7 +26,7 @@ class Transport_model extends CI_Model
 
     public function get_transport(array $param, $is_array = TRUE, $is_page = TRUE)
     {
-        $this->db->select('transport_id,provider_name,provider_website,transport_code,transport_name,');
+        $this->db->select('transport_id,provider_name,provider_website,transport_code,transport_name,transport_status,from_unixtime(t.create_time) create_time');
         if (!empty($param['transport_code'])) {
             $this->db->where('t.transport_code', $param['transport_code']);
         }
@@ -65,13 +65,22 @@ class Transport_model extends CI_Model
         if (isset($data['transport_id'])) {
             $this->get($data['transport_id']);
         } else {
-            $data['create_time'] = $time;
-            $data['create_userid'] = $user_id;
+            $info['create_time'] = $time;
+            $info['create_userid'] = $user_id;
         }
-        $data['transport_status'] = intval(isset($data['transport_status']));
-        $data['update_time'] = $time;
-        $data['update_userid'] = $user_id;
-        if ($this->db->replace($this->_table, $data)) {
+        $info['transport_code'] = $data['transport_code'];
+        $info['transport_name'] = $data['transport_name'];
+        $info['provider_id'] = intval($data['provider_id']);
+        $info['transport_status'] = intval(isset($data['transport_status']));
+        $info['transport_desc'] = $data['transport_desc'];
+        $info['update_time'] = $time;
+        $info['update_userid'] = $user_id;
+        if (isset($data['transport_id'])) {
+            $done_status = $this->db->update($this->_table, $info, ['transport_id' => intval($data['transport_id'])]);
+        } else {
+            $done_status = $this->db->insert($this->_table, $info);
+        }
+        if ($done_status) {
             return TRUE;
         } else {
             throw new Exception($this->db->error());
