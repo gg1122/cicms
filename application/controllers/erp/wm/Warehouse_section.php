@@ -20,8 +20,8 @@ class Warehouse_section extends CI_Controller
         if ($type === 'update') {
             $this->form_validation->set_rules('section_id', 'section_id', 'required|integer');
         }
-        $this->form_validation->set_rules('section_name', 'section_name', 'trim|required');
-        $this->form_validation->set_rules('section_code', 'section_code', 'trim|required');
+        $this->form_validation->set_rules('section_name', 'section_name', 'trim|required|min_length[2]|max_length[45]');
+        $this->form_validation->set_rules('section_code', 'section_code', 'trim|required|min_length[3]|max_length[20]');
         if (!$this->form_validation->run()) {
             throw new Exception($this->form_validation->error_string());
         }
@@ -39,10 +39,10 @@ class Warehouse_section extends CI_Controller
                     $param[$param['search_type']] = $param['search_value'];
                 }
                 $is_page = TRUE;
-                if(isset($param['is_page'])){
+                if (isset($param['is_page'])) {
                     $is_page = boolval($param['is_page']);
                 }
-                exit($this->warehouse_section_model->get_section($param, FALSE,$is_page));
+                exit($this->warehouse_section_model->get_section($param, FALSE, $is_page));
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }
@@ -85,11 +85,12 @@ class Warehouse_section extends CI_Controller
                 if (IS_GET) {
                     $param['warehouse_list'] = $this->warehouse_model
                         ->get_warehouse(['warehouse_type' => 1, 'warehouse_status' => 1], TRUE, FALSE);
+                    $param['section'] = $this->warehouse_section_model->get($this->input->get('section_id'));
                     $this->load->helper('form');
                     send_json(TRUE, $this->load->view('', $param, TRUE));
                 } else {
                     $this->_formValidation('update');
-                    $this->warehouse_location_model->save_location($this->input->post());
+                    $this->warehouse_section_model->save_section($this->input->post());
                     send_json();
                 }
             } catch (Exception $e) {

@@ -7,7 +7,7 @@
             <input type="text" name="section_name" value="<?= $section['section_name'] ?>" autocomplete="off"
                    class="layui-input"
                    id="user_name"
-                   lay-verify="required" minlength="3" maxlength="45">
+                   lay-verify="required|section_name" minlength="3" maxlength="45">
         </div>
     </div>
     <div class="layui-form-item">

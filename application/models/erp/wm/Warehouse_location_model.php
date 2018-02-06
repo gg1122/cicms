@@ -91,6 +91,7 @@ class Warehouse_location_model extends CI_Model
         $info = [];
         if (!empty($data['location_id'])) {
             $this->get($data['location_id']);
+            $where['location_id !='] = $data['location_id'];
         } else {
             $info['create_time'] = $time;
             $info['create_userid'] = $user_id;
@@ -115,12 +116,9 @@ class Warehouse_location_model extends CI_Model
         $where['location_code'] = $info['location_code'];
         $where['section_id'] = $info['section_id'];
         $where['warehouse_id'] = $info['warehouse_id'];
-        if (!empty($data['location_id'])) {
-            $where['location_id !='] = $data['location_id'];
-        }
         $location = $this->db->get_where($this->_table, $where)->row_array();
         if (!empty($location)) {
-            throw new Exception($info['location_code'] . '--已经存在该仓库区域');
+            throw new Exception($info['location_code'] . '--已经存在该仓库库位');
         }
         $info['location_sort'] = intval($data['location_sort']);
         $info['location_status'] = intval(isset($data['location_status']));

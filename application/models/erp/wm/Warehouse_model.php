@@ -42,7 +42,7 @@ class Warehouse_model extends CI_Model
             } else {
                 $warehouse = $this->db->get_where($this->_table, ['warehouse_code' => strtoupper(trim($value))])->row_array();
             }
-            if (empty($warehouse)) throw new Exception('请传入正确的【仓库ID|仓库编码】'.$value);
+            if (empty($warehouse)) throw new Exception('请传入正确的【仓库ID|仓库编码】' . $value);
             return $warehouse;
         } else {
             throw new Exception('请传入【仓库ID|仓库编码】');
@@ -115,9 +115,15 @@ class Warehouse_model extends CI_Model
         }
         if (!empty($data['warehouse_id'])) {
             $this->get($data['warehouse_id']);
+            $where['warehouse_id !='] = $data['warehouse_id'];
         } else {
             $info['create_time'] = $time;
             $info['create_userid'] = $user_id;
+        }
+        $where['warehouse_code'] = $data['warehouse_code'];
+        $warehouse = $this->db->get_where($this->_table, $where)->row_array();
+        if (!empty($warehouse)) {
+            throw new Exception($data['warehouse_code'] . '--已经存在该仓库编码');
         }
         $info['warehouse_code'] = $data['warehouse_code'];
         $info['warehouse_name'] = $data['warehouse_name'];
@@ -142,6 +148,7 @@ class Warehouse_model extends CI_Model
      * @param int $warehouse_id
      * @param int $warehouse_status
      * @return array|bool
+     * @throws Exception
      */
     public function change_status($warehouse_id = 0, $warehouse_status = 0)
     {

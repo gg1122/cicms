@@ -104,7 +104,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                     }, success: function (layero, index) {
                         var form = layui.form;
                         form.render();
-                        form.on('submit(edit)', function () {
+                        form.on('submit(edit)', function (data) {
                             $.ajax({
                                 type: 'POST',
                                 url: base_url + '/erp/wm/warehouse_section/' + type,

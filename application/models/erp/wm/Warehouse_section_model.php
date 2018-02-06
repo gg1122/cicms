@@ -102,13 +102,21 @@ class Warehouse_section_model extends CI_Model
         $user_id = $this->session->get_userdata()['user_id'];
         if (!empty($data['section_id'])) {
             $this->get($data['section_id']);
+            $where['section_id !='] = $data['section_id'];
         } else {
             $info['create_time'] = $time;
             $info['create_userid'] = $user_id;
         }
+        //区域查重
+        $where['warehouse_id'] = $data['warehouse_id'];
+        $where['section_code'] = $data['section_code'];
+        $section = $this->db->get_where($this->_table,$where)->row_array();
+        if(!empty($section)){
+            throw new Exception($data['section_code'] . '--当前仓库，已经存在该仓库区域编码');
+        }
         $info['warehouse_id'] = $data['warehouse_id'];
         $info['section_name'] = $data['section_name'];
-        $info['section_code'] = strtoupper($data['section_name']);
+        $info['section_code'] = strtoupper($data['section_code']);
         $info['section_status'] = intval(isset($data['section_status']));
         $info['update_time'] = $time;
         $info['update_userid'] = $user_id;

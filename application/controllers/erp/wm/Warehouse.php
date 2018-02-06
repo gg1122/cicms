@@ -24,7 +24,6 @@ class Warehouse extends CI_Controller
         if (IS_AJAX) {
             try {
                 $param = $this->input->get();
-                $param['warehouse_type'] = $this->_warehouse_type;
                 exit($this->warehouse_model->get_warehouse($param, FALSE));
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
