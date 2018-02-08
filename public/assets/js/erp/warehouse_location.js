@@ -74,6 +74,20 @@ layui.use(['table', 'element', 'form', 'tree', 'upload'], function () {
                     });
                 }
             }, 'JSON')
+        }, exportLocation: function () {
+            var param = {
+                'location_status': $('#location_status').val(),
+                'warehouse_id': $('#warehouse_id').val(),
+                'search_type': $('#search_type').val(),
+                'search_value': $('#search_value').val(),
+            };
+            $.post(base_url + '/erp/wm/warehouse_location/export', param, function (result) {
+                if (!result.status) {
+                    layer.alert(result.message, {icon: 2});
+                } else {
+                    window.open(result.data.uri);
+                }
+            }, 'JSON');
         }
     };
 

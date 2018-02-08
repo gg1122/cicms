@@ -1,6 +1,5 @@
 <div style="margin: 15px;">
-    <?php validation_errors(); ?>
-    <?php echo form_open('sys/menu/update', array('class' => 'layui-form')); ?>
+    <?php echo form_open('', array('class' => 'layui-form')); ?>
     <input type="hidden" name="menu_id" value="<?= $menuObj['menu_id'] ?>"/>
     <div class="layui-form-item" id="menu_type_div">
         <label class="layui-form-label">菜单类型</label>
@@ -14,24 +13,24 @@
         </div>
     </div>
     <?php
-        if($menuObj['menu_type'] > 0):
-    ?>
-    <div class="layui-form-item">
-        <label class="layui-form-label">上级菜单</label>
-        <div class="layui-input-block">
-            <select name="menu_fid" lay-verify="required">
-                <option value="0" disabled>顶级菜单</option>
-                <?php
-                foreach ($menuList as $item) {
-                    $selected = $menuObj['menu_fid'] == $item['menu_id'] ? 'selected' : 'disabled';
-                    echo "<option value='{$item['menu_id']}' {$selected}>{$item['menu_name']}</option>";
-                }
-                ?>
-            </select>
+    if ($menuObj['menu_type'] > 0):
+        ?>
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级菜单</label>
+            <div class="layui-input-block">
+                <select name="menu_fid" lay-verify="required">
+                    <option value="0" disabled>顶级菜单</option>
+                    <?php
+                    foreach ($menuList as $item) {
+                        $selected = $menuObj['menu_fid'] == $item['menu_id'] ? 'selected' : 'disabled';
+                        echo "<option value='{$item['menu_id']}' {$selected}>{$item['menu_name']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
         </div>
-    </div>
     <?php
-        endif;
+    endif;
     ?>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称</label>

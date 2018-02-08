@@ -101,6 +101,9 @@ class Warehouse_location extends CI_Controller
         }
     }
 
+    /**
+     * 导入库位
+     */
     public function import()
     {
         if (IS_AJAX) {
@@ -124,6 +127,29 @@ class Warehouse_location extends CI_Controller
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }
+        }
+    }
+
+    /**
+     * 导出库位
+     *
+     * @throws Exception
+     */
+    public function export()
+    {
+        if (IS_POST) {
+            try {
+                $param = $this->input->post();
+                if (!empty($param['search_type']) && !empty($param['search_value'])) {
+                    $param[$param['search_type']] = $param['search_value'];
+                }
+                $uri = $this->warehouse_location_model->get_export($param);
+                send_json(TRUE, ['uri' => $uri]);
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
+            }
+        } else {
+            throw new Exception('非法提交');
         }
     }
 }

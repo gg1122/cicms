@@ -1,6 +1,5 @@
 <div style="margin: 15px;">
-    <?php echo validation_errors(); ?>
-    <?php echo form_open('sys/menu/add', array('class' => 'layui-form')); ?>
+    <?php echo form_open('', array('class' => 'layui-form')); ?>
     <div class="layui-form-item" id="menu_type_div">
         <label class="layui-form-label">菜单类型</label>
         <div class="layui-input-inline">
@@ -16,7 +15,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称</label>
         <div class="layui-input-inline">
-            <input type="text" name="menu_name" placeholder="请输入" autocomplete="off" class="layui-input" id="menu_name" lay-verify="required">
+            <input type="text" name="menu_name" placeholder="请输入" autocomplete="off" class="layui-input" id="menu_name"
+                   lay-verify="required">
         </div>
     </div>
     <div class="layui-form-item">
@@ -35,7 +35,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">菜单状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="menu_status" checked="" lay-skin="switch" lay-verify="required" lay-value="1|0"/>
+            <input type="checkbox" name="menu_status" checked="" lay-skin="switch" lay-verify="required"
+                   lay-value="1|0"/>
         </div>
     </div>
     <button lay-filter="edit" lay-submit style="display: none;"></button>

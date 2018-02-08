@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/plugins/layui/css/layui.css"
+    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>assets/plugins/layui/css/layui.css"
           media="all"/>
-    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/login.css"/>
+    <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>assets/css/login.css"/>
 </head>
 
 <body class="beg-login-bg">
@@ -40,7 +40,7 @@
                 <input type="text" name="captchacode" lay-verify="captchacode" autocomplete="off"
                        placeholder="验证码" class="layui-input" required>
             </div>
-            <img id="captchacode" src="<?= $this->config->item('base_url') ?>/front/captcha">
+            <img id="captchacode" src="<?= $this->config->item('base_url') ?>front/captcha">
         </div>
         <div class="layui-form-item">
             <div class="beg-pull-left beg-login-remember">
@@ -60,14 +60,14 @@
         <p>ERP © www.cicims.com</p>
     </footer>
 </div>
-<script type="text/javascript" src="<?= $this->config->item('base_url') ?>/assets/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="<?= $this->config->item('base_url') ?>assets/plugins/layui/layui.js"></script>
 <script>
     layui.use(['layer', 'form', 'jquery'], function () {
         var layer = layui.layer,
             $ = layui.jquery,
             form = layui.form();
         $('#captchacode').on('click', function () {
-            $('#captchacode').attr('src', '<?=$this->config->item('base_url')?>/front/captcha?' + Math.random());
+            $('#captchacode').attr('src', '<?=$this->config->item('base_url')?>front/captcha?' + Math.random());
         });
         form.on('submit(login)', function () {
             $.ajax({

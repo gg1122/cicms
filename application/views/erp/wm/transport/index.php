@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet"
-          href="<?= $this->config->item('base_url') ?>/assets/plugins/font-awesome/css/font-awesome.min.css">
+          href="<?= $this->config->item('base_url') ?>assets/plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>/assets/css/layui.css" media="all">
 </head>
 <body style="margin-left: 10px;margin-top: 10px;">
@@ -50,7 +50,7 @@
     <input type="checkbox" name="sex" value="{{d.transport_status}}" lay-skin="switch"
            lay-text="开|关" lay-filter="setTransportStatus" {{ d.transport_status== 1 ? 'checked' : '' }}/>
 </script>
-<script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
-<script src="<?= $this->config->item('base_url') ?>/assets/js/erp/transport.js" charset="utf-8"></script>
+<script src="<?= $this->config->item('base_url') ?>assets/layui/layui.all.js" charset="utf-8"></script>
+<script src="<?= $this->config->item('base_url') ?>assets/js/erp/transport.js" charset="utf-8"></script>
 </body>
 </html>

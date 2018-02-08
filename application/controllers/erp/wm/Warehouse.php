@@ -49,9 +49,9 @@ class Warehouse extends CI_Controller
      */
     public function create()
     {
-        $this->load->helper('form');
         if (IS_AJAX) {
             if (IS_GET) {
+                $this->load->helper('form');
                 send_json(TRUE, $this->load->view('', ['type_list' => $this->_warehouse_type], TRUE));
             } else {
                 try {
@@ -124,6 +124,19 @@ class Warehouse extends CI_Controller
             }
         } catch (Exception $e) {
             send_json(FALSE, $e->getMessage());
+        }
+    }
+
+    public function info()
+    {
+        if (IS_GET) {
+            $param = [
+                'warehouse_id' => intval($this->input->get('warehouse_id')),
+                'section_status' => 1,
+            ];
+            $this->load->model('erp/wm/warehouse_section_model');
+            $data['section_list'] = $this->warehouse_section_model->get_section($param, TRUE, FALSE);
+            send_json(TRUE, $this->load->view('', $data, TRUE));
         }
     }
 }

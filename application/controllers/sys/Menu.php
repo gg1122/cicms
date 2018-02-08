@@ -35,16 +35,20 @@ class Menu extends CI_Controller
      */
     public function create()
     {
-        $data['title'] = '新增菜单';
-        if ($this->_formValidation() === FALSE) {
-            $data['menuList'] = $this->menu_model->get_all_menu();
-            send_json(TRUE,$this->load->view('', $data,TRUE));
-        } else {
-            try{
-                $this->menu_model->save_menu($this->input->post());
-                exit(json_encode(['status' => TRUE, 'message' => 'Success']));
-            }catch (Exception $e){
-                send_json(FALSE,$e->getMessage());
+        if (IS_AJAX) {
+            try {
+                if (IS_GET) {
+                    $this->load->helper('form');
+                    $data['title'] = '新增菜单';
+                    $data['menuList'] = $this->menu_model->get_all_menu();
+                    send_json(TRUE, $this->load->view('', $data, TRUE));
+                } else {
+                    $this->_formValidation();
+                    $this->menu_model->save_menu($this->input->post());
+                    exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+                }
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
             }
         }
     }
@@ -54,23 +58,30 @@ class Menu extends CI_Controller
      */
     public function update()
     {
-        $data['title'] = '更新菜单';
-        $menu_id = $this->input->get_post('menu_id');
-        if ($this->_formValidation() === FALSE || empty($menu_id)) {
-            $data['menuList'] = $this->menu_model->get_all_menu();
-            $data['menuObj'] = $this->menu_model->get($menu_id);
-            send_json(TRUE,$this->load->view('', $data,TRUE));
-        } else {
-            $this->menu_model->save_menu($this->input->post());
-            exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+        if (IS_AJAX) {
+            try {
+                if (IS_GET) {
+                    $this->load->helper('form');
+                    $data['title'] = '更新菜单';
+                    $menu_id = $this->input->get_post('menu_id');
+                    $data['menuList'] = $this->menu_model->get_all_menu();
+                    $data['menuObj'] = $this->menu_model->get($menu_id);
+                    send_json(TRUE, $this->load->view('', $data, TRUE));
+                } else {
+                    $this->_formValidation();
+                    $this->menu_model->save_menu($this->input->post());
+                    exit(json_encode(['status' => TRUE, 'message' => 'Success']));
+                }
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
+            }
         }
     }
-
 
     /**
      * 表单验证
      *
-     * @return mixed
+     * @throws Exception
      */
     private function _formValidation()
     {
@@ -78,7 +89,7 @@ class Menu extends CI_Controller
         $this->form_validation->set_rules('menu_name', 'MenuName', 'required');
         $this->form_validation->set_rules('menu_icon', 'MenuIcon', 'required');
         $this->form_validation->set_rules('menu_type', 'MenuType', 'required');
-        if(!$this->form_validation->run()){
+        if ($this->form_validation->run() === FALSE) {
             throw new Exception($this->form_validation->error_string());
         }
     }

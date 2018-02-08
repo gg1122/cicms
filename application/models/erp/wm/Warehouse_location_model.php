@@ -41,17 +41,23 @@ class Warehouse_location_model extends CI_Model
     public function get_location(array $param, $is_array = TRUE, $is_page = TRUE)
     {
         $this->db->select('l.location_id,l.location_code,l.location_status,s.section_name,w.warehouse_name,from_unixtime(l.create_time) create_time');
-        $param_int = ['location_id', 'warehouse_id', 'section_id', 'location_status'];
+        $param_int = ['location_id', 'warehouse_id', 'section_id'];
         foreach ($param_int as $column) {
-            if (isset($param[$column]) && $param[$column] !== '') {
+            if (!empty($param[$column])) {
                 $this->db->where('l.' . $column, intval($param[$column]));
             }
+        }
+        if (isset($param['location_status']) && $param['location_status'] !== '') {
+            $this->db->where('location_status', intval($param['location_status']));
         }
         if (!empty($param['location_code'])) {
             $this->db->where('location_code', $param['location_code']);
         }
         if (!empty($param['section_code'])) {
             $this->db->where('section_code', $param['section_code']);
+        }
+        if (!empty($param['section_name'])) {
+            $this->db->where('section_name', $param['section_name']);
         }
         $this->db->from($this->_table . ' l');
         $this->db->join('erp_warehouse_section s', 'l.section_id = s.section_id');
@@ -62,6 +68,7 @@ class Warehouse_location_model extends CI_Model
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
         }
+
         $location_list = $this->db->get()->result_array();
         if ($is_array) {
             return $location_list;
@@ -146,7 +153,7 @@ class Warehouse_location_model extends CI_Model
     {
         $this->load->library("excel");
         $header_column = ['库位编码', '区域编码', '仓库编码', '库位排序'];
-        $excelSheet = $this->excel->get_info($file_name, $header_column);
+        $excelSheet = $this->excel->get_data($file_name, $header_column);
         try {
             $this->db->trans_begin();
             for ($i = 2; $i <= $excelSheet->getHighestRow(); $i++) {
@@ -169,6 +176,45 @@ class Warehouse_location_model extends CI_Model
         } catch (Exception $e) {
             $this->db->trans_rollback();
             throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * 导出库位数据
+     *
+     * @param array $param
+     * @param string $type
+     * @return mixed
+     * @throws Exception
+     * @throws PHPExcel_Exception
+     * @throws PHPExcel_Reader_Exception
+     * @throws PHPExcel_Writer_Exception
+     */
+    public function get_export(array $param, $type = 'excel')
+    {
+        if (empty($param['warehouse_id']) && (empty($param['search_type']) && empty($param['search_value']))) {
+            throw new Exception('请选择仓库或者填写搜索条件和内容');
+        }
+        $location_list = $this->get_location($param, TRUE, FALSE);
+        if (!empty($location_list)) {
+            foreach ($location_list as $location) {
+                $data['list'][] = [
+                    $location['location_code'],
+                    $location['warehouse_name'],
+                    $location['section_name'],
+                ];
+            }
+            $this->load->library("excel");
+            $data['table_name'] = '库位列表_' . date('dHis') . '_' . $this->session->get_userdata()['user_id'];
+            $data['table_header'] = ['库位编码', '仓库名称', '区域名称'];
+            if ($type === 'excel') {
+                $final_name = $this->excel->export_excel($data, $data['table_name']);
+                return str_replace(FCPATH, $this->config->item('base_url'), $final_name);
+            } else {
+                $this->excel->export_csv($data);
+            }
+        } else {
+            throw new Exception('暂无数据可导出');
         }
     }
 }

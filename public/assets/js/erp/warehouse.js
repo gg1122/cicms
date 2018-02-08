@@ -1,10 +1,14 @@
-var base_url = 'http://cicms.com';
-layui.use(['table', 'element', 'form', 'tree'], function () {
+var base_url = 'http://cicms.com/';
+layui.use(['table', 'element', 'layer', 'form'], function () {
     var table = layui.table;
     var form = layui.form;
+    var element = layui.element;
     //监听表格复选框选择
     table.on('checkbox(demo)', function (obj) {
         console.log(obj)
+    });
+    element.on('collapse(test)', function (data) {
+        layer.msg('展开状态：' + data.show);
     });
     //监听工具条
     table.on('tool(demo)', function (obj) {
@@ -26,7 +30,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
             });
         } else if (obj.event === 'delete') {
             layer.confirm('确认更改该仓库状态？', function (index) {
-                $.getJSON(base_url + '/erp/wm/warehouse/disable', {warehouse_id: data.warehouse_id}, function (res) {
+                $.getJSON(base_url + 'erp/wm/warehouse/disable', {warehouse_id: data.warehouse_id}, function (res) {
                     layer.close(index);
                     if (res.status) {
                         layer.msg(res.message, {icon: 1, time: 2000});
@@ -37,6 +41,24 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
                 });
 
             });
+        } else if (obj.event === 'dropDown') {
+            var self = $(this);
+            $('.layui-collapse').attr('lay-event', 'dropDown');
+            $('.layui-collapse').html('<i class="layui-icon">&#xe61a;</i>');
+            $.getJSON(base_url + 'erp/wm/warehouse/info', {warehouse_id: data.warehouse_id}, function (result) {
+                $('#section_list').remove();
+                if (result.status) {
+                    self.attr('lay-event', 'packUp');
+                    self.html('<i class="layui-icon">&#xe619;</i>');
+                    obj.tr.after(result.message);
+                } else {
+                    layer.alert(result.message, {icon: 2});
+                }
+            })
+        } else if (obj.event === 'packUp') {
+            $(this).attr('lay-event', 'dropDown');
+            $(this).html('<i class="layui-icon">&#xe61a;</i>');
+            $('#section_list').remove();
         }
     });
     var $ = layui.$, active = {
