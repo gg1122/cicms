@@ -101,13 +101,14 @@ class Menu_model extends CI_Model
     }
 
     /**
-     * 获取菜单
+     * 获取菜单列表
      *
      * @param array $param
-     * @param string $data_type
+     * @param bool $is_array
+     * @param bool $is_page
      * @return string
      */
-    public function get_menu(array $param, $data_type = 'array', $need_page = TRUE)
+    public function get_menu(array $param, $is_array = TRUE, $is_page = TRUE)
     {
         if (empty($param['menu_status'])) {
             $param['menu_status'] = 1;
@@ -122,41 +123,22 @@ class Menu_model extends CI_Model
         }
         $this->db->where('menu_status', $param['menu_status']);
         $this->db->from($this->_table);
-        $db = clone($this->db);
-        if ($need_page) {
+        if ($is_page) {
             $page = isset($param['page']) ? intval($param['page']) : 1;
             $limit = isset($param['limit']) ? intval($param['limit']) : 10;
-            $db->limit($limit, ($page - 1) * $limit);
+            $this->db->limit($limit, ($page - 1) * $limit);
         }
-        $menu = $db->get()->result_array();
-        if ($data_type == 'json') { //只获取一层
-            $menu_list['code'] = 0;
-            $menu_list['rel'] = true;
-            $menu_list['msg'] = '获取成功';
-            $menu_list['count'] = $this->db->count_all_results();
-            foreach ($menu as $item) {
-                $menu_icon = get_icon_str($item['menu_icon']);
-                $menu_list['data'][] = [
-                    'menu_id' => $item['menu_id'],
-                    'menu_name' => $item['menu_name'],
-                    'menu_uri' => $item['menu_uri'],
-                    'menu_icon' => $menu_icon,
-                    'menu_status' => $item['menu_status'],
-                    'create_time' => date('Y-m-d H:i:s', $item['create_time']),
-                ];
+        $menu_list = $this->db->get()->result_array();
+        if ($is_array) {
+            return $menu_list;
+        } else {
+            foreach ($menu_list as &$menu) {
+                $menu['menu_icon'] = get_icon_str($menu['menu_icon']);
+                $menu['create_time'] = date('Y-m-d H:i:s', $menu['create_time']);
             }
-            return json_encode($menu_list);
-        } elseif ($data_type == 'list') {  //返回全部菜单,select
-            $menu = $this->db->order_by('menu_sort asc')->get()->result_array();
-            $menu_list = array();
-            foreach ($menu as $item) {
-                $menu_list[] = [
-                    'menu_id' => $item['menu_id'],
-                    'menu_name' => str_repeat('-', $item['menu_type']) . $item['menu_name']
-                ];
-            }
+            $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
+            return send_list_json($menu_list, $result->num_rows);
         }
-        return $menu;
     }
 
     /**

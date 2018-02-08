@@ -20,14 +20,18 @@ class Menu extends CI_Controller
      */
     public function index()
     {
-        $param['menu_id'] = $this->input->get('menu_id');
-        $param['menu_fid'] = $this->input->get('menu_fid');
-        $param['menu_type'] = $this->input->get('menu_type');
-        $param['menu_status'] = $this->input->get('menu_status');
-        $data['menu'] = $this->menu_model->get_menu($param);
-        $data['title'] = 'Menu List';
-        $data['menuList'] = $this->menu_model->get_all_menu();
-        $this->load->view('sys/menu/index', $data);
+        if (IS_AJAX && IS_GET) {
+            try {
+                $params = $this->input->get();
+                exit($this->menu_model->get_menu($params, FALSE));
+            } catch (Exception $e) {
+                send_json(FALSE, $e->getMessage());
+            }
+        } else {
+            $data['menu'] = $this->menu_model->get_menu($this->input->get());
+            $data['menuList'] = $this->menu_model->get_all_menu();
+            $this->load->view('', $data);
+        }
     }
 
     /**
@@ -166,7 +170,7 @@ class Menu extends CI_Controller
         try {
             if (IS_AJAX) {
                 $menu_type = intval($this->input->get_post('menu_type'));
-                $menu_list = $this->menu_model->get_menu(['menu_type' => $menu_type - 1, 'menu_status' => 1]);
+                $menu_list = $this->menu_model->get_menu(['menu_type' => $menu_type - 1, 'menu_status' => 1], TRUE, FALSE);
                 send_json(TRUE, $menu_list);
             } else {
                 send_json(FALSE, '非法提交');

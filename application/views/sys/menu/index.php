@@ -45,7 +45,7 @@
 </div>
 
 <table class="layui-table"
-       lay-data="{height:'full',url:'/menu/getList', page:true,id:'menuListForm',where:{menu_fid:0},limit:10}"
+       lay-data="{height:'full',url:'/sys/menu/index', page:true,id:'menuListForm',where:{menu_fid:0},limit:10}"
        lay-filter="demo" style="margin-left: 20px;">
     <thead>
     <tr>
