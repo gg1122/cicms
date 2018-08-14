@@ -1,5 +1,7 @@
 # uckendo/cicms
     ERP全站开发，响应式框架
+    演示地址：
+    用户名:kendo  密码:123456
 ***
 # 前端框架
     [LayUI 2.2.45](http://www.layui.com/demo/laytpl.html)
