@@ -1,9 +1,4 @@
 <?php echo form_open('sys/role/set_access', array('class' => 'accessList')); ?>
-<input type="hidden" name="access" id="access"/>
-<input type="hidden" name="role_id" value="<?= $role['role_id'] ?>"/>
-<ul id="accessList" class="ztree"></ul>
-<button lay-filter="edit" lay-submit style="display: none;"></button>
-</form>
 <link rel="stylesheet" href="<?= $this->config->item('base_url') ?>assets/css/ztree.css" type="text/css">
 <script type="text/javascript" src="<?= $this->config->item('base_url') ?>/assets/js/ztree/jquery.min.js"></script>
 <script type="text/javascript"
