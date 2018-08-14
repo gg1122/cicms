@@ -445,9 +445,9 @@ class CI_Loader
      */
     public function view($view = '', $vars = array(), $return = FALSE)
     {
-        if (empty($view) && isset($_SERVER['REDIRECT_URL'])) {
-            $view = $_SERVER['REDIRECT_URL'];
-            if ($_SERVER['REDIRECT_URL'][-1] === '/') {
+        if (empty($view) && (isset($_SERVER['REDIRECT_URL']) || isset($_SERVER['REQUEST_URI']))) {
+            $view = $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'];
+            if ($view[-1] === '/') {
                 $view .= 'index';
             }
         }
