@@ -447,6 +447,7 @@ class CI_Loader
     {
         if (empty($view) && (isset($_SERVER['REDIRECT_URL']) || isset($_SERVER['REQUEST_URI']))) {
             $view = $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'];
+            $view = strtolower($view);
             if ($view[-1] === '/') {
                 $view .= 'index';
             }
