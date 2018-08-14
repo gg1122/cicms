@@ -89,7 +89,7 @@ function send_list_json($list = [], $total = 0)
  */
 function filter_limit_sql($sql = '')
 {
-    $sql = strtoupper($sql);
+//    $sql = strtoupper($sql);
     $pos = strpos($sql, 'LIMIT');
     if ($pos) {
         $sql = substr($sql, 0, $pos);
