@@ -1,5 +1,5 @@
 var tab;
-var base_url = 'https://cicms.com';
+var base_url = 'http://erp.uckendo.com';
 layui.config({
     base: 'http://erp.uckendo.com/assets/js/',
     version: new Date().getTime()

@@ -1,4 +1,4 @@
-var base_url = 'https://cicms.com';
+var base_url = 'http://erp.uckendo.com';
 layui.use(['table', 'form','tree'], function () {
     var table = layui.table;
     var form = layui.form;
