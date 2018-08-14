@@ -3,8 +3,8 @@
 public.zip
 public/layui-v2.1.5.zip
 
-application/cache/database.php
 application/config/*
+application/cache/*
 !application/cache/index.html
 
 application/logs/*
