@@ -63,11 +63,11 @@ class Warehouse_model extends CI_Model
      * 获取仓库列表
      *
      * @param array $param
-     * @param bool $is_page
-     * @param bool $is_array
+     * @param bool $need_page
+     * @param bool $need_array
      * @return string
      */
-    public function get_warehouse(array $param, $is_array = TRUE, $is_page = TRUE)
+    public function get_warehouse(array $param, $need_array = TRUE, $need_page = TRUE)
     {
         if (isset($param['warehouse_status']) && $param['warehouse_status'] !== '') {
             $this->db->where('warehouse_status', intval($param['warehouse_status']));
@@ -81,7 +81,7 @@ class Warehouse_model extends CI_Model
         if (!empty($param['warehouse_code'])) {
             $this->db->where('warehouse_code', $param['warehouse_code']);
         }
-        if ($is_page) {
+        if ($need_page) {
             $page = isset($param['page']) ? intval($param['page']) : 1;
             $limit = isset($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
@@ -91,7 +91,7 @@ class Warehouse_model extends CI_Model
             $warehouse['warehouse_type'] = $this->_warehouse_type[$warehouse['warehouse_type']];
             $warehouse['create_time'] = date('Y-m-d H:i:s', $warehouse['create_time']);
         }
-        if ($is_array) {
+        if ($need_array) {
             return $warehouse_list;
         } else {
             $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
@@ -160,7 +160,7 @@ class Warehouse_model extends CI_Model
         if ($exec_status) {
             return TRUE;
         } else {
-            return $this->db->error();
+            throw new Exception($this->db->error());
         }
     }
 }

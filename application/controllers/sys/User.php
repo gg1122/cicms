@@ -55,7 +55,6 @@ class User extends CI_Controller
      * '超级管理员',       //权限全开
      * ];
      * @param string $type
-     * @return bool
      * @throws Exception
      */
     private function __formValidation($type = 'create')
@@ -113,7 +112,7 @@ class User extends CI_Controller
             }
         } else {
             $data['user_level'] = $this->user_level;
-            $data['role_list'] = $this->role_model->get_role(['role_status' => 1], FALSE);
+            $data['role_list'] = $this->role_model->get_role(['role_status' => 1], TRUE);
             $this->load->view('', $data);
         }
     }
@@ -137,7 +136,7 @@ class User extends CI_Controller
                 $data['user_info'] = $this->user_model->get($user_id);
                 $data['user_level'] = $this->user_level;
                 $data['user_role'] = $this->user_role_model->get_user_role($user_id);
-                $data['role_list'] = $this->role_model->get_role(['role_status' => 1], FALSE);
+                $data['role_list'] = $this->role_model->get_role(['role_status' => 1]);
                 $this->load->view('', $data);
             }
         } catch (Exception $e) {

@@ -13,7 +13,7 @@ var navs = [{
 	}, {
 		"title": "表格",
 		"icon": "&#xe63c;",
-		"href": "http://cicms.com/index.php/product"
+		"href": "http://erp.uckendo.com/index.php/product"
 	}, {
 		"title": "导航",
 		"icon": "&#xe609;",

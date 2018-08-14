@@ -12,8 +12,16 @@ class Goods_model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+        $this->load->model('erp/pm/brand_model');
     }
 
+    /**
+     * 获取货品
+     *
+     * @param int $goods_id
+     * @return array
+     * @throws Exception
+     */
     public function get($goods_id = 0)
     {
         $goods = $this->db->get_where($this->_table, ['goods_id' => $goods_id])->row_array();
@@ -21,51 +29,62 @@ class Goods_model extends CI_Model
         return $goods;
     }
 
-    public function get_goods(array $param, $is_page = TRUE, $is_array = TRUE)
+    /**
+     * 获取货品列表
+     * @param array $param
+     * @param bool $need_array
+     * @param bool $need_page
+     * @param array $column
+     * @return string
+     * @throws Exception
+     */
+    public function get_goods(array $param, $need_array = TRUE, $need_page = TRUE, $column = [])
     {
-        $this->db->select('g.goods_id,g.goods_name,g.goods_code,g.goods_keyword,g.feature_ids');
-        if (!empty($param['goods_code'])) {
-            $this->db->where('g.goods_code', strtoupper($param['goods_code']));
+        if (empty($column) || !is_array($column)) {
+            $column = [
+                'goods_id',
+                'goods_code',
+                'goods_name',
+                'goods_short_name',
+                'goods_keyword',
+                'brand_id',
+                'feature_ids',
+                'create_time',
+                'goods_status'
+            ];
         }
-        if (!empty($param['product_code'])) {
-            $this->db->where('p.product_code', strtoupper($param['product_code']));
+        $this->db->select(join(',', $column));
+        if (!empty($param['goods_code'])) {
+            $this->db->where('goods_code', strtoupper($param['goods_code']));
         }
         if (!empty($param['goods_name'])) {
-            $this->db->like('g.goods_name', $param['goods_name']);
-        }
-        if (!empty($param['product_name'])) {
-            $this->db->like('p.product_name', $param['product_name']);
+            $this->db->like('goods_name', $param['goods_name']);
         }
         if (!empty($param['goods_keyword'])) {
-            $this->db->where('json_search(g.goods_keyword,"one","' . $param['goods_keyword'] . '") is not null');
-        }
-        if (!empty($param['product_keyword'])) {
-            $this->db->where('json_search(p.product_keyword,"one","' . $param['goods_keyword'] . '") is not null');
-        }
-        if (!empty($param['feature_values'])) {
-            $this->db->where('json_search(g.feature_values,"one","' . intval($param['feature_values']) . '") is not null');
+            $this->db->where('json_search(goods_keyword,"one","' . $param['goods_keyword'] . '") is not null');
         }
         if (isset($param['goods_status']) && $param['goods_status'] !== '') {
-            $this->db->where('g.goods_status', intval($param['goods_status']));
+            $this->db->where('goods_status', intval($param['goods_status']));
         }
-        if ($is_page) {
+        if ($need_page) {
             $page = !empty($param['page']) ? intval($param['page']) : 1;
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
         }
-        $this->db->from($this->_table . ' g');
-        $this->db->join('erp_product p','g.goods_id = p.goods_id');
-        $goods_list = $this->db->get()->result_array();
-        if ($is_array) {
+        $goods_list = $this->db->get($this->_table)->result_array();
+        if ($need_array) {
             return $goods_list;
         } else {
-            $data = [];
-            foreach ($goods_list as $goods) {
-                $product['create_time'] = date('Y-m-d H:i:s', $goods['create_time']);
-                $data[] = $goods;
-            }
             $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
-            return send_list_json($data, $result->num_rows);
+            foreach ($goods_list as &$goods) {
+                if ($goods['brand_id'] > 0) {
+                    $goods['brand_name'] = $this->brand_model->get($goods['brand_id'])['brand_name'];
+                } else {
+                    $goods['brand_name'] = '';
+                }
+                $goods['create_time'] = date('Y-m-d H:i:s', $goods['create_time']);
+            }
+            return send_list_json($goods_list, $result->num_rows);
         }
     }
 

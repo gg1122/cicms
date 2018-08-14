@@ -12,19 +12,38 @@ class Brand_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
     }
 
+    /**
+     * 获取品牌
+     *
+     * @param int $brand_id
+     * @return array
+     * @throws Exception
+     */
     public function get($brand_id = 0)
     {
         $brand = $this->db->get_where($this->_table, ['brand_id' => intval($brand_id)])->row_array();
-        if (empty($brand)) throw new Exception('请传入争取的品牌ID');
+        if (empty($brand)) throw new Exception('请传入正确的品牌ID' . $brand_id);
         return $brand;
     }
 
-    public function get_brand(array $param, $is_array = TRUE, $is_page = TRUE)
+    /**
+     * 获取品牌列表
+     *
+     * @param array $param
+     * @param bool $is_array
+     * @param bool $is_page
+     * @param array $column
+     * @return string
+     */
+    public function get_brand(array $param, $is_array = TRUE, $is_page = TRUE, $column = [])
     {
-        $this->db->select('brand_id,brand_code,brand_website,brand_logo,brand_status,create_time');
+        if (!empty($column) && is_array($column)) {
+            $this->db->select(join(',', $column));
+        } else {
+            $this->db->select('brand_id,brand_code,brand_name,brand_website,brand_logo,brand_status,create_time');
+        }
         if (!empty($param['brand_name'])) {
             $this->db->like('brand_name', $param['brand_name']);
         }

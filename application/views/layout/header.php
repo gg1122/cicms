@@ -34,15 +34,6 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;" id="clearCached">清除缓存</a>
                 </li>
-                <li class="layui-nav-item" id="pay">
-                    <a href="javascript:;">捐赠我</a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">浏览网站</a>
-                </li>
-                <li class="layui-nav-item" id="video1">
-                    <a href="javascript:;">视频</a>
-                </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;" class="admin-header-user">
                         <img src="<?= $this->config->item('base_url') ?>/assets/images/0.jpg"/>

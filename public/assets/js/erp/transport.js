@@ -1,11 +1,7 @@
-var base_url = 'http://cicms.com';
-layui.use(['table', 'element', 'form', 'tree'], function () {
+var base_url = 'https://cicms.com';
+layui.use(['table', 'element', 'form'], function () {
     var table = layui.table;
     var form = layui.form;
-    //监听表格复选框选择
-    table.on('checkbox(demo)', function (obj) {
-        console.log(obj)
-    });
     //监听工具条
     table.on('tool(demo)', function (obj) {
         var data = obj.data;
@@ -14,20 +10,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
         }
     });
     var $ = layui.$, active = {
-        getCheckData: function () { //获取选中数据
-            var checkStatus = table.checkStatus('transportListForm')
-                , data = checkStatus.data;
-            layer.open({
-                type: 1,
-                title: '信息',
-                content: JSON.stringify(data),
-                btn: '关闭',
-                shade: false,
-                area: ['600px', '400px'],
-                maxmin: true
-            });
-
-        },addTransport: function (form) {
+        addTransport: function (form) {
             var addBoxIndex = -1;
             saveTransport('create');
         }, searchData: function () {
@@ -49,7 +32,7 @@ layui.use(['table', 'element', 'form', 'tree'], function () {
      * 物流弹出层
      *
      * @param type
-     * @param warehouse_id
+     * @param transport_id
      */
     function saveTransport(type, transport_id) {
         var title = '新增物流';

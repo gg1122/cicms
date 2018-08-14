@@ -1,4 +1,4 @@
-var base_url = 'http://cicms.com';
+var base_url = 'https://cicms.com';
 layui.use(['table', 'form'], function () {
     var table = layui.table;
     var form = layui.form;
@@ -72,7 +72,7 @@ layui.use(['table', 'form'], function () {
                 if (res.status) {
                     var content = '<div class="layui-form-item" id="menu_fid_div">';
                     content += '<label class="layui-form-label">上级菜单</label>';
-                    content += '<div class="layui-input-inline">';
+                    content += '<div class="layui-input-block">';
                     content += '<select name="menu_fid" lay-filter="menu_fid" lay-verify="required" lay-search="">';
                     content += '<option value="">请选择</option>';
                     $.each(res.data, function (i, data) {
@@ -97,7 +97,7 @@ layui.use(['table', 'form'], function () {
                         if (res.status) {
                             var content = '<div class="layui-form-item" id="menu_module_div">';
                             content += '<label class="layui-form-label">菜单模块</label>';
-                            content += '<div class="layui-input-inline">';
+                            content += '<div class="layui-input-block">';
                             content += '<select name="menu_module" lay-filter="menu_module" lay-verify="required" lay-search="">';
                             content += '<option value="">请选择</option>';
                             $.each(res.data, function (i, value) {
@@ -128,7 +128,7 @@ layui.use(['table', 'form'], function () {
                 if (res.status) {
                     var content = '<div class="layui-form-item" id="menu_uri_div">';
                     content += '<label class="layui-form-label">菜单地址</label>';
-                    content += '<div class="layui-input-inline">';
+                    content += '<div class="layui-input-block">';
                     content += '<select name="menu_uri" lay-filter="menu_uri" lay-verify="required" lay-search="">';
                     content += '<option value="">请选择</option>';
                     $.each(res.data, function (i, value) {
@@ -140,7 +140,7 @@ layui.use(['table', 'form'], function () {
 
                     content += '<div class="layui-form-item" id="menu_uri_short_div">';
                     content += '<label class="layui-form-label">菜单短地址</label>';
-                    content += '<div class="layui-input-inline">';
+                    content += '<div class="layui-input-block">';
                     content += '<input type="text" name="menu_uri_short" placeholder="请输入" autocomplete="off" class="layui-input">';
                     content += '</div>';
                     content += '</div>';

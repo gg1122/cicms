@@ -21,8 +21,7 @@ class Transport extends CI_Controller
     {
         if (IS_AJAX && IS_GET) {
             try {
-                $get = $this->input->get();
-                exit($this->transport_model->get_transport($get, FALSE));
+                exit($this->transport_model->get_transport( $this->input->get(), FALSE));
             } catch (Exception $e) {
                 send_json(FALSE, $e->getMessage());
             }

@@ -10,7 +10,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">物流编码</label>
         <div class="layui-input-block">
-            <input type="transport_code" name="transport_code" placeholder="请输入物流编码" autocomplete="off"
+            <input type="text" name="transport_code" placeholder="请输入物流编码" autocomplete="off"
                    class="layui-input" lay-verify="required" minlength="2" maxlength="10">
         </div>
     </div>

@@ -71,13 +71,13 @@ function send_json($status = TRUE, $info = [])
  * @param int $total
  * @return string
  */
-function send_list_json(array $list, $total = 0)
+function send_list_json($list = [], $total = 0)
 {
     $data_list['code'] = 0;
     $data_list['rel'] = true;
     $data_list['msg'] = '获取成功';
     $data_list['count'] = $total;
-    $data_list['data'] = $list;
+    $data_list['data'] = empty($list) ? [] : $list;
     echo json_encode($data_list);
 }
 

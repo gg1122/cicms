@@ -21,7 +21,7 @@ class Product_model extends CI_Model
         return $product;
     }
 
-    public function get_product(array $param, $is_page = TRUE, $is_array = TRUE)
+    public function get_product(array $param, $need_array = TRUE, $need_page = TRUE, $column = [])
     {
         $this->db->select('product_id,product_code,product_name,product_short_name,product_keyword,from_unixtime(create_time) create_time');
         if (!empty($param['product_id'])) {
@@ -54,13 +54,13 @@ class Product_model extends CI_Model
         if (!empty($param['category_ids'])) {
             $this->db->where('json_search(category_ids,"one","' . intval($param['category_ids']) . '") is not null');
         }
-        if ($is_page) {
+        if ($need_page) {
             $page = !empty($param['page']) ? intval($param['page']) : 1;
             $limit = !empty($param['limit']) ? intval($param['limit']) : 10;
             $this->db->limit($limit, ($page - 1) * $limit);
         }
         $product_list = $this->db->get($this->_table)->result_array();
-        if ($is_array) {
+        if ($need_array) {
             return $product_list;
         } else {
             $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));

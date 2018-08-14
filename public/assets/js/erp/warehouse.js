@@ -1,4 +1,4 @@
-var base_url = 'http://cicms.com/';
+var base_url = 'http://erp.uckendo.com/';
 layui.use(['table', 'element', 'layer', 'form'], function () {
     var table = layui.table;
     var form = layui.form;
@@ -111,6 +111,7 @@ layui.use(['table', 'element', 'layer', 'form'], function () {
                 layer.alert(result.message, {icon: 2});
             } else {
                 layer.open({
+                    id:'Layer',
                     type: 1,
                     title: title,
                     content: result.message,

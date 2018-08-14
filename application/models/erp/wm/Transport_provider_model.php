@@ -24,6 +24,7 @@ class Transport_provider_model extends CI_Model
 
     public function get_provider(array $param, $is_array = TRUE, $is_page = TRUE)
     {
+        $this->db->select('provider_id,provider_name,provider_website,provider_contact,provider_address,provider_status,from_unixtime(create_time) create_time');
         if (isset($param['provider_status']) && $param['provider_status'] !== '') {
             $this->db->where('provider_status', intval($param['provider_status']));
         }

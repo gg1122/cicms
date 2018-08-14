@@ -34,7 +34,7 @@
         <th lay-data="{field:'role_id', width:80, sort: true, fixed: true}">ID</th>
         <th lay-data="{field:'role_name', width:150}">角色名称</th>
         <th lay-data="{field:'role_desc', width:150}">角色描述</th>
-        <th lay-data="{field:'role_status', width:150}">角色状态</th>
+        <th lay-data="{field:'role_status', width:150,templet:'#setRoleStatus'}">角色状态</th>
         <th lay-data="{fixed: 'right', width:200,toolbar: '#barDemo'}">操作</th>
     </tr>
     </thead>
@@ -42,6 +42,9 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="config">配置</a>
     <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+</script>
+<script type="text/html" id="setRoleStatus">
+    {{ d.role_status == 1 ? '开启':'关闭' }}
 </script>
 <script src="<?= $this->config->item('base_url') ?>/assets/layui/layui.all.js" charset="utf-8"></script>
 <script src="<?= $this->config->item('base_url') ?>/assets/js/sys/role.js" charset="utf-8"></script>

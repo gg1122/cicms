@@ -818,7 +818,6 @@ class CI_Loader
         foreach (array('_ci_view', '_ci_vars', '_ci_path', '_ci_return') as $_ci_val) {
             $$_ci_val = isset($_ci_data[$_ci_val]) ? $_ci_data[$_ci_val] : FALSE;
         }
-
         $file_exists = FALSE;
 
         // Set the path to the requested file
@@ -912,7 +911,6 @@ class CI_Loader
             $_ci_CI->output->append_output(ob_get_contents());
             @ob_end_clean();
         }
-
         return $this;
     }
 

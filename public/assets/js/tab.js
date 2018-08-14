@@ -104,13 +104,15 @@ layui.define(['element', 'common'], function (exports) {
                 if (!res.status) {
                     $('#lock').click();
                     login = 0;
+                } else {
+
                 }
             }
         });
         promise.then(function () {
-            if (login == 0) {
+            if (login === 0) {
                 promise.break;
-                return ;
+                return;
             }
             var _config = that.config;
             var tabIndex = that.exists(data.title);
@@ -163,6 +165,9 @@ layui.define(['element', 'common'], function (exports) {
                     $(this).height(ELEM.contentBox.height());
                 });
                 if (_config.closed) {
+                    document.cookie = 'herf='+ data.href;
+                    console.log(data.href);
+                    console.log(document.cookie);
                     //监听关闭事件
                     ELEM.titleBox.find('li').children('i.layui-tab-close[data-id=' + globalTabIdIndex + ']').on('click', function () {
                         if (_config.closeBefore) {//tab关闭之前触发
@@ -185,8 +190,7 @@ layui.define(['element', 'common'], function (exports) {
                             }
                         }
                     });
-                }
-                ;
+                };
                 //切换到当前打开的选项卡
                 element.tabChange(ELEM.tabFilter, that.getTabId(data.title));
 
@@ -329,3 +333,11 @@ layui.define(['element', 'common'], function (exports) {
         return tab.set(options);
     });
 });
+
+function tab_cookie(data,type) {
+    if(type === 'in'){
+        var cookie = document
+    }else{
+
+    }
+}

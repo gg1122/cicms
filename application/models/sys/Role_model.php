@@ -36,7 +36,7 @@ class Role_model extends CI_Model
      * @param bool $is_array
      * @return string
      */
-    public function get_role(array $param, $is_page = TRUE, $is_array = TRUE)
+    public function get_role(array $param, $is_array = TRUE, $is_page = TRUE)
     {
         $this->db->select(['role_id', 'role_name', 'role_desc', 'role_status', 'create_time']);
         if (isset($param['role_status'])) {
@@ -60,18 +60,8 @@ class Role_model extends CI_Model
         if ($is_array) {
             return $role_list;
         } else {
-            $data = [];
-            foreach ($role_list as $role) {
-                $data[] = [
-                    'role_id' => $role['role_id'],
-                    'role_name' => $role['role_name'],
-                    'role_desc' => $role['role_desc'],
-                    'role_status' => $role['role_status'] ? '启用中' : '禁用中',
-                    'create_time' => date('Y-m-d H:i:s', $role['create_time']),
-                ];
-            }
             $result = $this->db->simple_query(filter_limit_sql($this->db->last_query()));
-            return send_list_json($data, $result->num_rows);
+            return send_list_json($role_list, $result->num_rows);
         }
     }
 

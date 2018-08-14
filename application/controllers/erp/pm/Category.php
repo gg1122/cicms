@@ -10,7 +10,7 @@ class Category extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('erp/wm/category_model');
+        $this->load->model('erp/pm/category_model');
     }
 
     /**
@@ -18,20 +18,10 @@ class Category extends CI_Controller
      */
     public function index()
     {
-    }
-
-    /**
-     * 新增分类
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * 更新分类
-     */
-    public function update()
-    {
-
+        if (!empty($this->input->post())) {
+            $this->category_model->save_category($this->input->post());
+        }
+        $data['category_tree'] = json_encode($this->category_model->get_category_tree());
+        $this->load->view('', $data);
     }
 }
