@@ -1,6 +1,6 @@
 # uckendo/cicms
     ERP全站开发，响应式框架
-    演示地址：
+    演示地址：http://http://erp.uckendo.com
     用户名:kendo  密码:123456
 ***
 # 前端框架
@@ -13,4 +13,6 @@
     [PHP CodeIgniter 3.1.5](http://codeigniter.org.cn/user_guide/index.html)
 ___
 # 数据库版本：
-    Mysql 5.7.11
+    Mysql 5.
+# 我的联系方式：
+    QQ:455019825
