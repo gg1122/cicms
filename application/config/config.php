@@ -22,7 +22,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://erp.uckendo.com/';
+$config['base_url'] = 'http://cicms.com/';
 $config['base_template'] = FCPATH.'assets/template/';
 $config['base_template_url'] = $config['base_url'].'/assets/template/';
 /*
@@ -400,8 +400,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']	= 'uckendo';
-$config['cookie_domain']	= '.uckendo.com';
+$config['cookie_prefix']	= 'cicms';
+$config['cookie_domain']	= '.cicms.com';
 $config['cookie_path']		= '/';
 $config['cookie_secure']	= FALSE;
 $config['cookie_httponly'] 	= FALSE;

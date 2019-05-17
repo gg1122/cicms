@@ -451,6 +451,7 @@ class CI_Loader
             if ($view[-1] === '/') {
                 $view .= 'index';
             }
+            $view  = explode('?',$view)[0];
         }
         return $this->_ci_load(array('_ci_view' => $view, '_ci_vars' => $this->_ci_prepare_view_vars($vars), '_ci_return' => $return));
     }
@@ -828,7 +829,6 @@ class CI_Loader
         } else {
             $_ci_ext = pathinfo($_ci_view, PATHINFO_EXTENSION);
             $_ci_file = ($_ci_ext === '') ? $_ci_view . '.php' : $_ci_view;
-
             foreach ($this->_ci_view_paths as $_ci_view_file => $cascade) {
                 if (file_exists($_ci_view_file . $_ci_file)) {
                     $_ci_path = $_ci_view_file . $_ci_file;

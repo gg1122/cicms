@@ -1,7 +1,7 @@
 var tab;
-var base_url = 'http://erp.uckendo.com';
+var base_url = 'http://cicms.com';
 layui.config({
-    base: 'http://erp.uckendo.com/assets/js/',
+    base: 'http://cicms.com/assets/js/',
     version: new Date().getTime()
 }).use(['element', 'layer', 'navbar', 'tab'], function () {
     var element = layui.element,

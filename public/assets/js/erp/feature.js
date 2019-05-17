@@ -1,4 +1,4 @@
-var base_url = 'http://erp.uckendo.com/';
+var base_url = 'http://cicms.com/';
 layui.use(['table', 'element', 'form', 'tree'], function () {
     var table = layui.table;
     //监听工具条

@@ -11,7 +11,8 @@
     "source": "https://uckendo.github.io/"
   },
   "require": {
-    "php": ">=7"
+    "php": ">=7",
+    "nikic/php-parser": "^4.0"
   },
   "suggest": {
     "paragonie/random_compat": "Provides better randomness in PHP 5.x"
