@@ -13,6 +13,6 @@
     [PHP CodeIgniter 3.1.5](http://codeigniter.org.cn/user_guide/index.html)
 ___
 # 数据库版本：
-    Mysql 5.7.20 [数据库](https://github.com/blueseashore/cicms/blob/master/erp.sql)
+    ### Mysql 5.7.20 [数据库](https://github.com/blueseashore/cicms/blob/master/erp.sql)
 # 我的联系方式：
     QQ:455019825
