@@ -5,11 +5,9 @@ ERP全站开发，响应式框架
 ***
 # 前端框架
 [LayUI 2.2.45](http://www.layui.com/demo/laytpl.html)
----
 ***
 # 开发语言：
     PHP 7.1.8
----
 ***
 # 后端框架：
 [PHP CodeIgniter 3.1.5](http://codeigniter.org.cn/user_guide/index.html)
