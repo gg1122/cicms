@@ -29,7 +29,7 @@ class Front extends CI_Controller
         $this->load->library('form_validation');
         $this->form_validation->set_rules('loginname', 'LoginName', 'required');
         $this->form_validation->set_rules('loginpass', 'LoginPassword', 'required');
-//        $this->form_validation->set_rules('captchacode', 'CaptchaCode', 'required');
+        $this->form_validation->set_rules('captchacode', 'CaptchaCode', 'required');
         if (IS_AJAX) {
             if ($this->form_validation->run() === FALSE) {
                 $this->load->library('error', 'language');
