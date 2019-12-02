@@ -16,8 +16,8 @@ ERP全站开发，响应式框架
 Mysql 5.7.20 [数据库](https://github.com/blueseashore/cicms/blob/master/erp.sql)
 ***
 # TIPS
-    1、请全局搜索 cicms 并替换 [项目地址|数据库名称|缓存配置]
-    2、请重新配置 application/config/database.php 里 $db['default'] 
+    * 请全局搜索 cicms 并替换 [项目地址|数据库名称|缓存配置]
+    * 请重新配置 application/config/database.php 里 $db['default'] 
 ***
 # 我的联系方式：
     QQ:455019825
