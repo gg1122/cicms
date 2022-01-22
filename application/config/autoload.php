@@ -104,7 +104,9 @@ $autoload['helper'] = array('common');
 |
 */
 $autoload['config'] = array(
-    'web_prompt'
+    'web_prompt',
+    'upload',
+    'white_list',
 );
 
 /*

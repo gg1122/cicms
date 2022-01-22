@@ -17,7 +17,7 @@ class Test extends CI_Controller
 
     public function index()
     {
-        $a = $this->menu_model->get_module();
+        $a = $this->menu_model->get_module('sys/menu');
         print_r($a);
     }
 }

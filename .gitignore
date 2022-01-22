@@ -1,5 +1,9 @@
 .DS_Store
 
+public.zip
+public/layui-v2.1.5.zip
+
+application/config/*
 application/cache/*
 !application/cache/index.html
 
@@ -7,6 +11,9 @@ application/logs/*
 !application/logs/index.html
 
 !application/*/.htaccess
+
+public/assets/upload/*
+public/test.php
 
 composer.lock
 
@@ -29,4 +36,3 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-project
 /tests/tests/
 /tests/results/
-public/*

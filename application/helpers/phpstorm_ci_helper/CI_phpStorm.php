@@ -70,7 +70,6 @@
  * @property CI_Cache $cache                      CodeIgniter Caching Class
  * @property CI_Encryption $encryption            CodeIgniter Encryption Class
  * @method static CI_Controller get_instance()    CodeIgniter CI_Controller instance class
- * @property User_model $user_model               Customized User_model class
  */
 class CI_Controller extends my_models
 {
@@ -123,6 +122,7 @@ class CI_Controller extends my_models
  * @property CI_Security $security                Security Class, xss, csrf, etc...
  * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
  * @property CI_Cache $cache                      CodeIgniter Caching Class
+ * @property Excel $excel                         Customized Library PHPExcel
  */
 class CI_Model extends my_models
 {

@@ -115,22 +115,14 @@ class CI_Controller
                         header('location:/login');
                     } else {
                         $msg = 'Please Login Agian';
-                        if (IS_GET) {
-                            exit($msg);
-                        } else {
-                            exit(json_encode(array('status' => FALSE, 'message' => $msg)));
-                        }
+                        exit(json_encode(['status' => FALSE, 'message' => $msg]));
                     }
                 } elseif ($user_data['expire_time'] <= time()) {   //SESSION超时
                     if (!IS_AJAX) {
                         header('location:/login');
                     } else {
                         $msg = 'Session Time Out';
-                        if (IS_GET) {
-                            exit($msg);
-                        } else {
-                            exit(json_encode(array('status' => FALSE, 'message' => $msg)));
-                        }
+                        exit(json_encode(['status' => FALSE, 'message' => $msg]));
                     }
                 }
                 $this->session->set_userdata('expire_time', time() + 3600);

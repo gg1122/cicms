@@ -90,7 +90,7 @@ defined('EXIT__AUTO_MAX') OR define('EXIT__AUTO_MAX', 125); // highest automatic
 |--------------------------------------------------------------------------
 |
 |   IS_POST
-|   IS_GETz
+|   IS_GET
 |   IS_AJAX
 */
 define('IS_GET', isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'get');

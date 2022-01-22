@@ -19,8 +19,8 @@ class Home extends CI_Controller
             show_404();
         }
         $data['title'] = '网站ERP'; // Capitalize the first letter
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/index', $data);
-        $this->load->view('templates/footer', $data);
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/index', $data);
+        $this->load->view('layout/footer', $data);
     }
 }

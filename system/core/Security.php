@@ -221,7 +221,7 @@ class CI_Security
         $valid = isset($_POST[$this->_csrf_token_name], $_COOKIE[$this->_csrf_cookie_name])
             && hash_equals($_POST[$this->_csrf_token_name], $_COOKIE[$this->_csrf_cookie_name]);
 
-        // We kill this since we're done and we don't want to pollute the _POST array
+        // We kill this since we're done and we don't want to poolute the _POST array
         unset($_POST[$this->_csrf_token_name]);
 
         // Regenerate on every submission?

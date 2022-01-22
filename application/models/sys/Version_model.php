@@ -7,7 +7,7 @@
  */
 class Version_model extends CI_Model
 {
-    private $_model = 'sys_version';
+    private $_table = 'sys_version';
 
     public function __construct()
     {
@@ -17,7 +17,7 @@ class Version_model extends CI_Model
 
     public function get_version_list()
     {
-        return $this->db->get_where($this->_model)->result_array();
+        return $this->db->get_where($this->_table)->result_array();
     }
 
     public function set_version()
@@ -27,7 +27,7 @@ class Version_model extends CI_Model
                 $this->db->reset_query();
                 $this->db->set('version',time());
                 $this->db->where('name', $key);
-                $this->db->update($this->_model);
+                $this->db->update($this->_table);
             }
         } else {
             throw new Exception('非法提交');
